@@ -8,7 +8,7 @@ public class TipoEvento
     {}
 
     //Métodos
-        public override string ToString()
+    public override string ToString()
     {
         return $"Tipo de evento: {tipoEvento}";
     }

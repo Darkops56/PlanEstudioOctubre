@@ -9,7 +9,7 @@ public class Tarifa
     {}
 
     //Métodos
-        public bool HayStock()
+    public bool HayStock()
     {
         return Stock > 0;
     }

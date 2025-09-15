@@ -1,4 +1,4 @@
-DROP DATABASE if EXISTS bd_Eventos;
+DROP DATABASE if EXISTS bdqa<_Eventos;
 
 CREATE DATABASE bd_Eventos;
 
