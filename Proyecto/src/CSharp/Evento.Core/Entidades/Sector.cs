@@ -14,7 +14,7 @@ public class Sector
         this.capacidad = capacidad;
     }
 
-        // Métodos
+    // Métodos
     public void AgregarEvento(Eventos evento)
     {
         Eventos.Add(evento);

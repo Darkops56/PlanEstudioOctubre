@@ -16,7 +16,7 @@ public class RegistroCompra
     }
     
     //Métodos
-        public override string ToString()
+    public override string ToString()
     {
         return $"Compra #{idRegistro} - Cliente: {idCliente} - Entrada: {idEntrada} - Fecha: {Fecha}";
     }

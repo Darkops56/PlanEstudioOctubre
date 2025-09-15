@@ -15,7 +15,7 @@ public class Entrada
         this.tarifa = tarifa;
     }
     //Métodos
-        public void AplicarDescuento(int porcentaje)
+    public void AplicarDescuento(int porcentaje)
     {
         if (porcentaje > 0 && porcentaje <= 100)
             Precio -= (Precio * porcentaje) / 100;
