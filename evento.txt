@@ -1,0 +1,48 @@
+(Evento, Función, Cliente, Entrada, RegistroCompra, Tarifa, Sector)
+
+Local:
+    - idLocal
+    - Nombre
+    - Ubicacion
+Sector:
+    - idSector
+    - Local local
+    - Capacidad
+Evento:
+    - idEvento
+    - Nombre
+    - TipoEvento
+    - FechaHoraInicio
+    - FechaHoraFin
+TipoEvento:
+    - idTipoEvento
+    - TipoEvento
+Entrada:
+    - idEntrada
+    - Precio
+    - Evento Evento
+    - Tarifa tarifa
+Función:
+    - idFuncion
+    - Evento evento
+    - fechaHora
+Cliente:
+    - DNI
+    - Nombre Completo
+    - E-mail
+    - Telefono
+    - Usuario
+    - Contrasena
+RegistroCompra:
+    - idRegistro
+    - Cliente Cliente
+    - EntradaComprada
+Tarifa:
+    - Tipo
+    - idTarifa
+    - Stock
+QR:
+    - idQR
+    - URL
+    - Texto
+    - datos de contacto (vcard)
