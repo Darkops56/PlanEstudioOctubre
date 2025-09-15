@@ -8,14 +8,8 @@ public class Cliente
     public string Telefono { get; set; }
     public string Contrasena { get; set; }
 
-    public Cliente(int DNI, string nombreCompleto, string Email, string Telefono, string Contrasena)
-    {
-        this.DNI = DNI;
-        this.nombreCompleto = nombreCompleto;
-        this.Email = Email;
-        this.Telefono = Telefono;
-        this.Contrasena = Contrasena;
-    }
+    public Cliente()
+    {}
     
     //Métodos
     public void ActualizarContacto(string nuevoEmail, string nuevoTelefono)

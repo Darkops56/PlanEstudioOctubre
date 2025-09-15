@@ -1,7 +1,5 @@
 using Evento.Core.Entidades;
-{
-    
-}
+
 namespace Evento.Core.Services
 {
     public interface IRepoEntrada

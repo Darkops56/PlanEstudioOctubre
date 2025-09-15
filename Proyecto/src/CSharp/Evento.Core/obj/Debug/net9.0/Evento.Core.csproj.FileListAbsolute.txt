@@ -1,0 +1,12 @@
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.GeneratedMSBuildEditorConfig.editorconfig
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.AssemblyInfoInputs.cache
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.AssemblyInfo.cs
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.csproj.CoreCompileInputs.cache
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.sourcelink.json
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/bin/Debug/net9.0/Evento.Core.deps.json
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/bin/Debug/net9.0/Evento.Core.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/bin/Debug/net9.0/Evento.Core.pdb
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/refint/Evento.Core.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.pdb
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/ref/Evento.Core.dll

@@ -48,7 +48,7 @@ CREATE TABLE Local (
 CREATE TABLE Sector (
     idSector INT AUTO_INCREMENT PRIMARY KEY,
     idLocal INT NOT NULL,
-    capacidad TINYINT UNSIGNED NOT NULL,
+    capacidad INT UNSIGNED NOT NULL,
     FOREIGN KEY (idLocal) REFERENCES Local(idLocal)
 );
 

@@ -7,14 +7,10 @@ public class Sector
     public byte capacidad { get; set; }
     public List<Eventos> Eventos { get; set; } = new List<Eventos>();
 
-    public Sector(int idSector, Local local, byte capacidad)
-    {
-        this.idSector = idSector;
-        this.local = local;
-        this.capacidad = capacidad;
-    }
+    public Sector()
+    {}
 
-        // Métodos
+    // Métodos
     public void AgregarEvento(Eventos evento)
     {
         Eventos.Add(evento);

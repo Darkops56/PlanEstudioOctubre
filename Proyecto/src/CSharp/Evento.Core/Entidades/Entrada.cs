@@ -7,13 +7,8 @@ public class Entrada
     public Eventos evento { get; set; }
     public Tarifa tarifa { get; set; }
 
-    public Entrada(int idEntrada, int Precio, Eventos evento, Tarifa tarifa)
-    {
-        this.idEntrada = idEntrada;
-        this.Precio = Precio;
-        this.evento = evento;
-        this.tarifa = tarifa;
-    }
+    public Entrada()
+    {}
     //Métodos
         public void AplicarDescuento(int porcentaje)
     {

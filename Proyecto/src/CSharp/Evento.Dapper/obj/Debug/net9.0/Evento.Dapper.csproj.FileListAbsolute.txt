@@ -1,0 +1,16 @@
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/bin/Debug/net9.0/Evento.Dapper.deps.json
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/bin/Debug/net9.0/Evento.Dapper.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/bin/Debug/net9.0/Evento.Dapper.pdb
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/bin/Debug/net9.0/Evento.Core.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/bin/Debug/net9.0/Evento.Core.pdb
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.csproj.AssemblyReference.cache
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.GeneratedMSBuildEditorConfig.editorconfig
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.AssemblyInfoInputs.cache
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.AssemblyInfo.cs
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.csproj.CoreCompileInputs.cache
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.sourcelink.json
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.D.6DDA6174.Up2Date
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/refint/Evento.Dapper.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/Evento.Dapper.pdb
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/obj/Debug/net9.0/ref/Evento.Dapper.dll

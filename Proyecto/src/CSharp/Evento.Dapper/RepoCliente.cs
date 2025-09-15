@@ -13,14 +13,14 @@ namespace Evento.Dapper
 
         public async Task<bool> DeleteCliente(int id)
         {
-            using var db = _ado.GetConnection();
+            using var db = _ado.GetDbConnection();
             var rows = await db.ExecuteAsync("DELETE FROM Cliente WHERE DNI = @Id", new { Id = id });
             return rows > 0;
         }
 
         public async Task<int> InsertCliente(Cliente cliente)
         {
-            using var db = _ado.GetConnection();
+            using var db = _ado.GetDbConnection();
             var rows = await db.ExecuteAsync("INSERT INTO Cliente(DNI, NombreCompleto, Email, Telefono, Contrasena) VALUES(@dni, @nombrecompleto, @email, @telefono, @contrasena)", new
             {
                 dni = cliente.DNI,
@@ -32,33 +32,33 @@ namespace Evento.Dapper
             return rows > 0 ? rows : 0;
         }
 
-        public Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id)
+        public async Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id)
         {
-            using var db = _ado.GetConnection();
-            return db.QueryAsync<RegistroCompra>("SELECT * FROM RegistroCompra WHERE DNI = @Id", new { Id = id });
+            using var db = _ado.GetDbConnection();
+            return await db.QueryAsync<RegistroCompra>("SELECT * FROM RegistroCompra WHERE DNI = @Id", new { Id = id });
         }
 
-        public Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
+        public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
-            using var db = _ado.GetConnection();
-            return db.QueryAsync<Entrada>("SELECT * FROM Entrada WHERE DNI = @Id", new{ Id = id });
+            using var db = _ado.GetDbConnection();
+            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada WHERE DNI = @Id", new{ Id = id });
         }
 
         public async Task<Cliente?> ObtenerPorId(int id)
         {
-            using var db = _ado.GetConnection();
+            using var db = _ado.GetDbConnection();
             return await db.QueryFirstOrDefaultAsync<Cliente>("SELECT * FROM Cliente WHERE DNI = @Id", new{ Id = id });
         }
 
         public async Task<IEnumerable<Cliente>> ObtenerTodos()
         {
-            using var db = _ado.GetConnection();
+            using var db = _ado.GetDbConnection();
             return await db.QueryAsync<Cliente>("SELECT * FROM Cliente");
         }
 
         public async Task<bool> UpdateCiente(Cliente cliente)
         {
-            using var db = _ado.GetConnection();
+            using var db = _ado.GetDbConnection();
             string query = "UPDATE Cliente SET DNI = @dni, nombreCompleto = @NombreCompleto, Email = @email, Telefono = @telefono, Contrasena = @contrasena";
             var rows = await db.ExecuteAsync(query, new
             {

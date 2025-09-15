@@ -5,12 +5,8 @@ public class Tarifa
     public byte Stock { get; set; }
     public string Tipo { get; set; }
 
-    public Tarifa(int idTarifa, byte Stock, string Tipo)
-    {
-        this.idTarifa = idTarifa;
-        this.Stock = Stock;
-        this.Tipo = Tipo;
-    }
+    public Tarifa()
+    {}
 
     //Métodos
         public bool HayStock()

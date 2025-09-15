@@ -7,14 +7,8 @@ public class Eventos
     public DateTime fechaInicio { get; set; }
     public DateTime fechaFin { get; set; }
 
-    public Eventos(int idEvento, string Nombre, TipoEvento tipoEvento, DateTime fechaInicio, DateTime fechaFin)
-    {      
-        this.idEvento = idEvento;
-        this.Nombre = Nombre;
-        this.tipoEvento = tipoEvento;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-    }
+    public Eventos()
+    {}
 
     //Métodos
     public bool EstaActivo()

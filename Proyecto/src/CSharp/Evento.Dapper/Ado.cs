@@ -1,10 +1,10 @@
 using MySql.Data.MySqlClient;
-using Evento.Core.Entidades;
+using Evento.Core.Services;
 using System.Data;
 
 namespace Evento.Dapper
 {
-    public class Ado
+    public class Ado : IAdo
     {
         private readonly string _connection;
         public Ado(string connection)

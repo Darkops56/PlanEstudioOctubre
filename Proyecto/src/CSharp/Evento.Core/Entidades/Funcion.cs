@@ -6,12 +6,8 @@ public class Funcion
     public Eventos evento { get; set; }
     public DateTime fecha { get; set; }
 
-    public Funcion(int idFuncion, Eventos evento, DateTime fecha)
-    {
-        this.idFuncion = idFuncion;
-        this.evento = evento;
-        this.fecha = fecha;
-    }
+    public Funcion()
+    {}
     
     //Métodos
     public bool EsEnFecha(DateTime fechaComparar)

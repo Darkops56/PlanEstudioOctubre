@@ -7,12 +7,8 @@ public class Local
     public string Ubicacion { get; set; }
     public List<Sector> Sectores { get; set; } = new List<Sector>();
 
-    public Local(int idLocal, string Nombre, string Ubicacion)
-    {
-        this.idLocal = idLocal;
-        this.Nombre = Nombre;
-        this.Ubicacion = Ubicacion;
-    }
+    public Local()
+    {}
     
      // Métodos
     public void AgregarSector(Sector sector)
