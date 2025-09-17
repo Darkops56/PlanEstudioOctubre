@@ -8,9 +8,15 @@ use bd_Eventos;
 CREATE TABLE Cliente (
     DNI INT PRIMARY KEY,
     nombreCompleto VARCHAR(100) NOT NULL,
-    Email VARCHAR(100) UNIQUE NOT NULL,
-    Telefono VARCHAR(30),
-    Contrasena VARCHAR(100) NOT NULL
+    Telefono VARCHAR(30)
+);
+-- Tabla Usuario
+CREATE TABLE Usuario(
+    idUsuario INT PRIMARY KEY,
+    DNI INT,
+    Apodo VARCHAR(45),
+    Contrasena VARCHAR(45),
+    CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente (DNI)
 );
 
 -- Tabla TipoEvento
@@ -64,7 +70,7 @@ CREATE TABLE Sector_Evento (
 -- Tabla Tarifa
 CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
-    Stock TINYINT UNSIGNED NOT NULL,
+    Stock INT UNSIGNED NOT NULL,
     Tipo VARCHAR(50) NOT NULL
 );
 

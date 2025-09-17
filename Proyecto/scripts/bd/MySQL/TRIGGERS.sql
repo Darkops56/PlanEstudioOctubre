@@ -1,7 +1,7 @@
 DELIMITER $$
 
-CREATE TRIGGER BefInsCliente
-BEFORE INSERT ON Cliente
+CREATE TRIGGER BefInsUsuario
+BEFORE INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     -- Si la contraseña no está ya en formato hash, la encripta
@@ -10,8 +10,8 @@ END $$;
 
 
 DELIMITER $$
-CREATE TRIGGER BefUpdCliente
-BEFORE UPDATE ON Cliente
+CREATE TRIGGER BefUpdUsuario
+BEFORE UPDATE ON Usuario
 FOR EACH ROW
 BEGIN
     -- Solo hashea si se cambió la contraseña
