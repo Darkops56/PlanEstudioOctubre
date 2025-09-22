@@ -1,5 +1,6 @@
 using Evento.Core.Services;
 using Evento.Core.Entidades;
+using Evento.Core.DTOs;
 using Evento.Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IAdo>(sp => new Ado(connectionString!));
 builder.Services.AddScoped<IRepoEvento, RepoEvento>();
 builder.Services.AddScoped<IRepoCliente, RepoCliente>();
 builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
+builder.Services.AddScoped<IRepoLocal, RepoLocal>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -58,61 +60,80 @@ app.Urls.Add("http://localhost:5090");
 #region Endpoints
 
 ////////////// LOCALES //////////////
-app.MapPost("/api/locales", async ([FromServices] IRepoLocal repo, [FromBody] Local local) =>
+app.MapPost("/api/locales", async ([FromServices] IRepoLocal repo, [FromBody] LocalDto localDto) =>
 {
+    if(localDto == null)
+        return Results.BadRequest("DTO vacio");
+
+    var local = new Local
+    {
+        Nombre = localDto.Nombre,
+        Ubicacion = localDto.Ubicacion
+    };
+
     var resultado = await repo.InsertLocal(local);
     return Results.Ok(resultado);
 });
 app.MapGet("/api/locales", async ([FromServices] IRepoLocal repo) =>
 {
     var locales = await repo.ObtenerTodos();
-
     return Results.Ok(locales);
 });
 app.MapGet("/api/locales/{id}", async ([FromServices] IRepoLocal repo, int id) =>
 {
     var local = await repo.ObtenerPorId(id);
-
-    return Results.Ok(local);
+    return local != null ? Results.Ok(local) : Results.NotFound();
 });
-app.MapPut("/api/locales/{id}", async ([FromServices] IRepoLocal repo, [FromBody] Local local, int id) =>
+app.MapPut("/api/locales/{id}", async ([FromServices] IRepoLocal repo, [FromBody] LocalDto dto, int id) =>
 {
-    var UpdateLocal = await repo.UpdateLocal(local);
+    var localExistente = await repo.ObtenerPorId(id);
+    if (localExistente == null) return Results.NotFound();
 
-    return Results.Ok(UpdateLocal);
+    localExistente.Nombre = dto.Nombre;
+    localExistente.Ubicacion = dto.Ubicacion;
+
+    var Updated = await repo.UpdateLocal(localExistente);
+    return Results.Ok(Updated);
 });
 app.MapDelete("/api/locales/{id}", async ([FromServices] IRepoLocal repo, int id) =>
 {
     var resultado = await repo.DeleteLocal(id);
-
     return Results.Ok(resultado);
-});
-
-app.MapGet("/api/locales/{id}/sectores", async ([FromServices] IRepoLocal repo, int idlocal) =>
-{
-    var sectores = await repo.ObtenerSectoresDelLocal(idlocal);
-
-    return Results.Ok(sectores);
 });
 
 ////////////// SECTORES //////////////
-app.MapPost("/api/locales/{id}/sectores", async ([FromServices] IRepoLocal repo, [FromBody] Sector sector, int idlocal) =>
+app.MapGet("/api/locales/{id}/sectores", async ([FromServices] IRepoLocal repo, int idlocal) =>
+{
+    var sectores = await repo.ObtenerSectoresDelLocal(idlocal);
+    return Results.Ok(sectores);
+});
+app.MapPost("/api/locales/{id}/sectores", async ([FromServices] IRepoLocal repo, [FromBody] SectorDto sectorDto, int idlocal) =>
 {
     var local = await repo.ObtenerPorId(idlocal);
-    var resultado = await repo.InsertSector(sector, idlocal);
+    if (local == null) return Results.NotFound();
 
+    var sector = new Sector
+    {
+        
+        local = local,
+        Capacidad = sectorDto.Capacidad
+    };
+
+    var resultado = await repo.InsertSector(sector, idlocal);
     return Results.Ok(resultado);
 });
-app.MapPut("/api/sectores/{id}", async ([FromServices] IRepoLocal repo, [FromBody] Sector? sector, int id) =>
+app.MapPut("/api/sectores/{id}", async ([FromServices] IRepoLocal repo, [FromBody] SectorDto? dto, int id) =>
 {
-    var resultado = await repo.UpdateSector(sector);
+    var sectorExistente = await repo.ObtenerSectorPorId(id);
+    if (sectorExistente == null) return Results.NotFound();
 
+    sectorExistente.Capacidad = dto.Capacidad;
+    var resultado = await repo.UpdateSector(sectorExistente, id);
     return Results.Ok(resultado);
 });
 app.MapDelete("/api/sectores/{id}", async ([FromServices] IRepoLocal repo, int id) =>
 {
     var resultado = await repo.DeleteSector(id);
-
     return Results.Ok(resultado);
 });
 
@@ -124,15 +145,23 @@ app.MapGet("/api/eventos", async ([FromServices] IRepoEvento repo) =>
 });
 app.MapGet("/api/evento/{id}", async ([FromServices] IRepoEvento repo, int id) =>
 {
-    var evento = await repo.ObtenerEvento(id);
+    var evento = await repo.ObtenerEventoPorId(id);
     if (evento == null)
     {
         return Results.NotFound();
     }
     return Results.Ok(evento);
 });
-app.MapPost("/api/eventos", async ([FromServices] IRepoEvento repo, [FromBody] Eventos evento) =>
+app.MapPost("/api/eventos", async ([FromServices] IRepoEvento repo, [FromBody] EventoDto dto) =>
 {
+    var TipoEvento = await repo.ObtenerTipoEventoPorId(dto.idTipoEvento);
+    var evento = new Eventos
+    {
+        Nombre = dto.Nombre,
+        fechaFin = dto.fechaFin,
+        fechaInicio = dto.fechaInicio,
+        tipoEvento = TipoEvento
+    };
     var nuevoEvento = await repo.InsertEvento(evento);
     if (nuevoEvento == null || nuevoEvento.ToString() == "")
     {
@@ -149,12 +178,12 @@ app.MapPut("/api/eventos/{id}", async ([FromServices] IRepoEvento repo, [FromBod
 });
 app.MapGet("/api/{id}/publicar", async ([FromServices] IRepoEvento repo, int id) =>
 {
-    var evento = await repo.ObtenerEvento(id);
+    var evento = await repo.ObtenerEventoPorId(id);
     throw new NotImplementedException();
 });
 app.MapGet("/api/{id}/cancelar", async ([FromServices] IRepoEvento repo, int id) =>
 {
-    var evento = await repo.ObtenerEvento(id);
+    var evento = await repo.ObtenerEventoPorId(id);
     throw new NotImplementedException();
 });
 

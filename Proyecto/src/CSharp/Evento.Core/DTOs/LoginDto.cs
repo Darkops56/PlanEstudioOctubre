@@ -1,4 +1,4 @@
-namespace Evento.Core.Entidades;
+namespace Evento.Core.DTOs;
 
 public class LoginDto
 {

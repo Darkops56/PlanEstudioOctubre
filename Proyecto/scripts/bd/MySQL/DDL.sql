@@ -1,8 +1,8 @@
-DROP DATABASE if EXISTS bdqa<_Eventos;
+DROP DATABASE if EXISTS 5to_Eventos
 
-CREATE DATABASE bd_Eventos;
+CREATE DATABASE 5to_Eventos;
 
-use bd_Eventos;
+use 5to_Eventos;
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
@@ -13,11 +13,11 @@ CREATE TABLE Cliente (
 -- Tabla Usuario
 CREATE TABLE Usuario(
     idUsuario INT PRIMARY KEY,
-    DNI UNIQUE INT,
+    DNI INT NOT NULL,
     Apodo VARCHAR(45),
     Contrasena VARCHAR(45),
-    Role VARCHAR(45),
-    CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente (DNI)
+    Roles VARCHAR(45),
+    CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente(DNI)
 );
 
 -- Tabla TipoEvento
@@ -74,7 +74,7 @@ CREATE TABLE Tarifa (
     Stock INT,
     Precio INT NOT NULL,
     Estado BOOLEAN,
-    Tipo VARCHAR(50) NOT NULL,
+    Tipo VARCHAR(50) NOT NULL
 );
 
 -- Tabla Entrada
@@ -86,9 +86,10 @@ CREATE TABLE Entrada (
     CONSTRAINT FK_EntradaFuncion FOREIGN KEY (idFuncion) REFERENCES Funcion (idFuncion)
 );
 -- Tabla OrdenesCompra
-CREATE TABLE OrdenesCompra(
 
-);
+
+
+
 
 -- Tabla RegistroCompra
 CREATE TABLE RegistroCompra (

@@ -31,15 +31,15 @@ namespace Evento.Dapper
         public async Task<int> InsertUsuario(Usuario usuario)
         {
             var db = _ado.GetDbConnection();
-            var query = "INSERT INTO Usuario(Apodo, Email, Contrasena, DNI) VALUES(@apodo, @email, @contrasena, @dni)";
+            var query = "INSERT INTO Usuario(Apodo, Email, Contrasena, DNI, Roles) VALUES(@apodo, @email, @contrasena, @dni, @role)";
             var rows = await db.ExecuteAsync(query, new
             {
                 apodo = usuario.Apodo,
                 email = usuario.Email,
                 contrasena = usuario.Contrasena,
-                dni = usuario.cliente.DNI
+                dni = usuario.cliente.DNI,
+                role = usuario.Role
             });
-
             return rows > 0 ? rows : 0;
         }
 
@@ -78,16 +78,16 @@ namespace Evento.Dapper
         public async Task<bool> UpdateUsuario(Usuario usuario)
         {
             var db = _ado.GetDbConnection();
-            var query = "UPDATE Usuario SET Apodo = @apodo, Email = @email, Contrasena = @contrasena, DNI = @dni WHERE idUsuario = @idusuario";
+            var query = "UPDATE Usuario SET Apodo = @apodo, Email = @email, Contrasena = @contrasena, DNI = @dni, Roles = @role WHERE idUsuario = @idusuario";
             var rows = await db.ExecuteAsync(query, new
             {
                 apodo = usuario.Apodo,
                 email = usuario.Email,
                 contrasena = usuario.Contrasena,
                 idusuario = usuario.idUsuario,
-                dni = usuario.cliente.DNI
+                dni = usuario.cliente.DNI,
+                role = usuario.Role
             });
-
             return rows > 0;
         }
     }
