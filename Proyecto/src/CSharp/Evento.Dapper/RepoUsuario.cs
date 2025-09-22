@@ -16,6 +16,18 @@ namespace Evento.Dapper
             return rows > 0;
         }
 
+        public async Task<bool> ExisteUsuarioPorEmail(string nuevoEmail)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM Usuario WHERE Email = @email";
+            var rows = await db.ExecuteAsync(query, new { email = nuevoEmail });
+            if (rows > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<int> InsertUsuario(Usuario usuario)
         {
             var db = _ado.GetDbConnection();
@@ -29,6 +41,22 @@ namespace Evento.Dapper
             });
 
             return rows > 0 ? rows : 0;
+        }
+
+        public async Task<Usuario?> Login(string nuevoEmail, string nuevaContrasena)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM Usuario JOIN Cliente USING (DNI) WHERE Email = @email AND Contrasena = @contrasena";
+
+            return await db.QueryFirstAsync<Usuario>(query, new{ email = nuevoEmail, contrasena = nuevaContrasena });
+        }
+
+        public async Task<Usuario?> ObtenerPorEmail(string nuevoEmail)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM Usuario WHERE Email = @email";
+
+            return await db.QueryFirstAsync<Usuario>(query, new { email = nuevoEmail});
         }
 
         public async Task<Usuario?> ObtenerPorId(int id)

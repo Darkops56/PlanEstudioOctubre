@@ -16,6 +16,7 @@ CREATE TABLE Usuario(
     DNI UNIQUE INT,
     Apodo VARCHAR(45),
     Contrasena VARCHAR(45),
+    Role VARCHAR(45),
     CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente (DNI)
 );
 

@@ -18,6 +18,11 @@ namespace Evento.Dapper
             return rows > 0;
         }
 
+        public Task<bool> ExistePorDNI(int dni)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<int> InsertCliente(Cliente cliente)
         {
             using var db = _ado.GetDbConnection();

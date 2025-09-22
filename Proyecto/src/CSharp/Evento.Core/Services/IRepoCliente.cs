@@ -12,5 +12,6 @@ namespace Evento.Core.Services
 
         Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id);
         Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id);
+        Task<bool> ExistePorDNI(int dni);
     }
 }
