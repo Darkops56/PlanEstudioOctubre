@@ -60,7 +60,7 @@ namespace Evento.Dapper
         public async Task<bool> UpdateEvento(Eventos evento)
         {
             var db = _ado.GetDbConnection();
-            var query = "UPDATE Eventos SET idEvento = @idevento, Nombre = @nombre, tipoEvento = @tipoevento, fechaInicio = @fechainicio, fechaFin = @fechafin";
+            var query = "UPDATE Eventos SET Nombre = @nombre, tipoEvento = @tipoevento, fechaInicio = @fechainicio, fechaFin = @fechafin WHERE idEvento = @idevento";
             var rows = await db.ExecuteAsync(query, new
             {
                 idevento = evento.idEvento,

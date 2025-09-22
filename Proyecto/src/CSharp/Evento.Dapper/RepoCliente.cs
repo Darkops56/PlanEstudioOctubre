@@ -21,13 +21,11 @@ namespace Evento.Dapper
         public async Task<int> InsertCliente(Cliente cliente)
         {
             using var db = _ado.GetDbConnection();
-            var rows = await db.ExecuteAsync("INSERT INTO Cliente(DNI, NombreCompleto, Email, Telefono, Contrasena) VALUES(@dni, @nombrecompleto, @email, @telefono, @contrasena)", new
+            var rows = await db.ExecuteAsync("INSERT INTO Cliente(DNI, NombreCompleto, Telefono) VALUES(@dni, @nombrecompleto, @telefono)", new
             {
                 dni = cliente.DNI,
                 nombrecompleto = cliente.nombreCompleto,
-                email = cliente.Email,
-                telefono = cliente.Telefono,
-                contrasena = cliente.Contrasena
+                telefono = cliente.Telefono
             });
             return rows > 0 ? rows : 0;
         }
@@ -56,17 +54,15 @@ namespace Evento.Dapper
             return await db.QueryAsync<Cliente>("SELECT * FROM Cliente");
         }
 
-        public async Task<bool> UpdateCiente(Cliente cliente)
+        public async Task<bool> UpdateCliente(Cliente cliente)
         {
             using var db = _ado.GetDbConnection();
-            string query = "UPDATE Cliente SET DNI = @dni, nombreCompleto = @NombreCompleto, Email = @email, Telefono = @telefono, Contrasena = @contrasena";
+            string query = "UPDATE Cliente SET DNI = @dni, nombreCompleto = @NombreCompleto, Telefono = @telefono WHERE DNI = @dni";
             var rows = await db.ExecuteAsync(query, new
             {
                 dni = cliente.DNI,
                 nombrecompleto = cliente.nombreCompleto,
-                email = cliente.Email,
                 telefono = cliente.Telefono,
-                contrasena = cliente.Contrasena
             });
             return rows > 0;
         }

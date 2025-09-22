@@ -7,7 +7,7 @@ namespace Evento.Core.Services
         Task<IEnumerable<Cliente>> ObtenerTodos();
         Task<Cliente?> ObtenerPorId(int id);
         Task<int> InsertCliente(Cliente cliente);
-        Task<bool> UpdateCiente(Cliente cliente);
+        Task<bool> UpdateCliente(Cliente cliente);
         Task<bool> DeleteCliente(int id);
 
         Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id);
