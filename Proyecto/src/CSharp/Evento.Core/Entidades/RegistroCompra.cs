@@ -3,7 +3,7 @@ namespace Evento.Core.Entidades;
 public class RegistroCompra
 {
     public int idRegistro { get; set; }
-    public int idCliente { get; set; }
+    public int idUsuario { get; set; }
     public int idEntrada { get; set; }
     public DateTime Fecha { get; set; }
 
@@ -13,6 +13,6 @@ public class RegistroCompra
     //Métodos
     public override string ToString()
     {
-        return $"Compra #{idRegistro} - Cliente: {idCliente} - Entrada: {idEntrada} - Fecha: {Fecha}";
+        return $"Compra #{idRegistro} - Cliente: {idUsuario} - Entrada: {idEntrada} - Fecha: {Fecha}";
     }
 }

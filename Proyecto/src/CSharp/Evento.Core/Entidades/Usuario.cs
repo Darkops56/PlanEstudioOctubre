@@ -6,7 +6,8 @@ public class Usuario
     public string Apodo { get; set; }
     public string Email { get; set; }
     public string Contrasena { get; set; }
+    public Cliente cliente { get; set; }
 
     public Usuario()
-    {}
+    { }
 }
