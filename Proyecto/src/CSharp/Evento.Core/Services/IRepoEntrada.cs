@@ -8,5 +8,6 @@ namespace Evento.Core.Services
         Task<int> InsertEntrada(Entrada entrada);
         Task<bool> DeleteEntrada(int id);
         Task<Entrada?> ObtenerEntrada(int id);
+        Task<string> AnularEntrada(int id);
     }
 }

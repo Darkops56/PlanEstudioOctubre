@@ -8,6 +8,7 @@ namespace Evento.Core.Services
         Task<int> InsertUsuario(Usuario usuario);
         Task<bool> UpdateUsuario(Usuario usuario);
         Task<bool> DeleteUsuario(int id);
+        Task<IEnumerable<RegistroCompra>> ObtenerComprasPorUsuario(int id);
         Task<Usuario?> ObtenerPorEmail(string nuevoEmail);
         Task<Usuario?> Login(string nuevoEmail, string nuevaContrasena);
         Task<bool> ExisteUsuarioPorEmail(string nuevoEmail);

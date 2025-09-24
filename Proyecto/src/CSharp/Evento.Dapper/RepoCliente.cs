@@ -34,13 +34,6 @@ namespace Evento.Dapper
             });
             return rows > 0 ? rows : 0;
         }
-
-        public async Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id)
-        {
-            using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<RegistroCompra>("SELECT * FROM RegistroCompra WHERE DNI = @Id", new { Id = id });
-        }
-
         public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
             using var db = _ado.GetDbConnection();

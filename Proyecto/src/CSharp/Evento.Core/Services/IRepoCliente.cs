@@ -9,8 +9,6 @@ namespace Evento.Core.Services
         Task<int> InsertCliente(Cliente cliente);
         Task<bool> UpdateCliente(Cliente cliente);
         Task<bool> DeleteCliente(int id);
-
-        Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id);
         Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id);
         Task<bool> ExistePorDNI(int dni);
     }

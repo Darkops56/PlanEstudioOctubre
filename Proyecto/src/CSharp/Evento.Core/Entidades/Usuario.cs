@@ -11,4 +11,9 @@ public class Usuario
 
     public Usuario()
     { }
+
+    public void ComprarEntrada()
+    {
+        
+    }
 }

@@ -27,7 +27,11 @@ namespace Evento.Dapper
             }
             return false;
         }
-
+        public async Task<IEnumerable<RegistroCompra>> ObtenerComprasPorUsuario(int id)
+        {
+            using var db = _ado.GetDbConnection();
+            return await db.QueryAsync<RegistroCompra>("SELECT * FROM RegistroCompra WHERE idUsuario = @Id", new { Id = id });
+        }
         public async Task<int> InsertUsuario(Usuario usuario)
         {
             var db = _ado.GetDbConnection();
@@ -42,7 +46,6 @@ namespace Evento.Dapper
             });
             return rows > 0 ? rows : 0;
         }
-
         public async Task<Usuario?> Login(string nuevoEmail, string nuevaContrasena)
         {
             var db = _ado.GetDbConnection();
@@ -50,7 +53,6 @@ namespace Evento.Dapper
 
             return await db.QueryFirstAsync<Usuario>(query, new{ email = nuevoEmail, contrasena = nuevaContrasena });
         }
-
         public async Task<Usuario?> ObtenerPorEmail(string nuevoEmail)
         {
             var db = _ado.GetDbConnection();
@@ -58,7 +60,6 @@ namespace Evento.Dapper
 
             return await db.QueryFirstAsync<Usuario>(query, new { email = nuevoEmail});
         }
-
         public async Task<Usuario?> ObtenerPorId(int id)
         {
             var db = _ado.GetDbConnection();
@@ -66,7 +67,6 @@ namespace Evento.Dapper
 
             return await db.QueryFirstAsync<Usuario?>(query, new { idusuario = id });
         }
-
         public async Task<IEnumerable<Usuario>> ObtenerTodos()
         {
             var db = _ado.GetDbConnection();
@@ -74,7 +74,6 @@ namespace Evento.Dapper
 
             return await db.QueryAsync<Usuario>(query);
         }
-
         public async Task<bool> UpdateUsuario(Usuario usuario)
         {
             var db = _ado.GetDbConnection();

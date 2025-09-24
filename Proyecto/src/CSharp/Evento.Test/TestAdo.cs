@@ -13,7 +13,7 @@ public class TestAdo
 
     // ⚠️ Ajusta estos datos a tu configuración real de MySQL
     private const string _cadena = 
-        "Server=localhost;Database=bd_Eventos;Uid=usuarioEventos;Pwd=passEventos;Allow User Variables=True";
+        "Server=localhost;Database=5to_Eventos;Uid=5to_agbd;Pwd=Trigg3rs!;Allow User Variables=True";
 
     public TestAdo()
     {

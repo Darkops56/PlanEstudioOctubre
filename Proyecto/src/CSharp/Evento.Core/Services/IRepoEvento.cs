@@ -13,5 +13,7 @@ namespace Evento.Core.Services
         Task<bool> DeleteEvento(int id);
         Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento);
         Task<IEnumerable<Sector>> ObtenerSectoresConTarifaAsync(int idEvento);
+        Task<string> PublicarEvento(int id);
+        Task<string> CancelarEvento(int id);
     }
 }

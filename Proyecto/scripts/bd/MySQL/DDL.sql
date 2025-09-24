@@ -71,25 +71,35 @@ CREATE TABLE Sector_Evento (
 -- Tabla Tarifa
 CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
+    idFuncion INT,
     Stock INT,
     Precio INT NOT NULL,
     Estado BOOLEAN,
-    Tipo VARCHAR(50) NOT NULL
+    Tipo VARCHAR(50) NOT NULL,
+    Foreign Key (idFuncion) REFERENCES Funcion(idFuncion)
+);
+
+-- Tabla OrdenesCompra
+CREATE TABLE OrdenesCompra(
+    idOrdenCompra INT NOT NULL PRIMARY KEY,
+    idUsuario INT NOT NULL,
+    Fecha DATETIME NOT NULL,
+    Total INT NOT NULL,
+    metodoPago VARCHAR(45) NOT NULL,
+    estado VARCHAR(45) NOT NULL,
+    Foreign Key (idUsuario) REFERENCES Usuario (idUsuario)
 );
 
 -- Tabla Entrada
 CREATE TABLE Entrada (
     idEntrada INT AUTO_INCREMENT PRIMARY KEY,
-    idFuncion INT NOT NULL,
     idTarifa INT NOT NULL,
-    FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa),
-    CONSTRAINT FK_EntradaFuncion FOREIGN KEY (idFuncion) REFERENCES Funcion (idFuncion)
+    idOrdenCompra INT NOT NULL,
+    EstadoQR VARCHAR(255),
+    PrecioPagado INT NOT NULL,
+    Foreign Key (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra),
+    FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa)
 );
--- Tabla OrdenesCompra
-
-
-
-
 
 -- Tabla RegistroCompra
 CREATE TABLE RegistroCompra (
