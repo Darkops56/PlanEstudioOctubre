@@ -51,6 +51,7 @@ erDiagram
 
     Tarifa {
         int idTarifa PK
+        int idFuncion FK
         tinyint Stock
         varchar(30) Tipo
     }
@@ -76,8 +77,8 @@ erDiagram
         text VCard
     }
     TipoEvento ||--|{ Eventos : ""
-    Funcion ||--o{ Entrada : ""
     Eventos ||--o{ Funcion : ""
+    Funcion ||--o{ Tarifa : ""
     Entrada ||--|{ RegistroCompra : ""
     Cliente ||--o| Usuario : ""
     Usuario ||--o{ RegistroCompra : ""

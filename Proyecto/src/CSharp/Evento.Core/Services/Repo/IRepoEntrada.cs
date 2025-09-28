@@ -1,6 +1,6 @@
 using Evento.Core.Entidades;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IRepoEntrada
     {
@@ -8,5 +8,6 @@ namespace Evento.Core.Services
         Task<int> InsertEntrada(Entrada entrada);
         Task<bool> DeleteEntrada(int id);
         Task<Entrada?> ObtenerEntrada(int id);
+        Task<string> AnularEntrada(int id);
     }
 }

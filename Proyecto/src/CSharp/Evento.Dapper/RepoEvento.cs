@@ -1,7 +1,7 @@
 using MySql.Data.MySqlClient;
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 using Org.BouncyCastle.Asn1;
 
 namespace Evento.Dapper
@@ -11,6 +11,12 @@ namespace Evento.Dapper
         private readonly IAdo _ado;
 
         public RepoEvento(IAdo ado) => _ado = ado;
+
+        public Task<string> CancelarEvento(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeleteEvento(int id)
         {
             var db = _ado.GetDbConnection();
@@ -32,10 +38,18 @@ namespace Evento.Dapper
             return rows > 0 ? rows : 0;
         }
 
-        public async Task<Eventos?> ObtenerEvento(int id)
+        public async Task<Eventos?> ObtenerEventoPorId(int id)
         {
             var db = _ado.GetDbConnection();
             return await db.QueryFirstAsync<Eventos?>("SELECT * FROM Evento WHERE idEvento = @idevento", new { idevento = id });
+        }
+
+        public async Task<Eventos?> ObtenerEventoPorNombre(string nombre)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM Eventos WHERE Nombre = @name";
+
+            return await db.QueryFirstAsync<Eventos>(query, new{ name = nombre});
         }
 
         public async Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento)
@@ -51,10 +65,23 @@ namespace Evento.Dapper
             return await db.QueryAsync<Sector>(query, new{ idevento = idEvento});
         }
 
+        public async Task<TipoEvento?> ObtenerTipoEventoPorId(int id)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM TipoEvento WHERE idTipoEvento = @idtipoevento";
+
+            return await db.QueryFirstAsync<TipoEvento>(query, new { idtipoevento = id });
+        }
+
         public async Task<IEnumerable<Eventos>> ObtenerTodos()
         {
             var db = _ado.GetDbConnection();
             return await db.QueryAsync<Eventos>("SELECT * FROM Eventos");
+        }
+
+        public Task<string> PublicarEvento(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdateEvento(Eventos evento)

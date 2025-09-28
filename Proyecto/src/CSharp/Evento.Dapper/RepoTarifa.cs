@@ -1,6 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 using Mysqlx.Resultset;
 
 namespace Evento.Dapper

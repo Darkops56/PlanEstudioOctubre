@@ -1,6 +1,6 @@
 using Evento.Core.Entidades;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IRepoCliente
     {
@@ -9,8 +9,7 @@ namespace Evento.Core.Services
         Task<int> InsertCliente(Cliente cliente);
         Task<bool> UpdateCliente(Cliente cliente);
         Task<bool> DeleteCliente(int id);
-
-        Task<IEnumerable<RegistroCompra>> ObtenerComprasPorCliente(int id);
         Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id);
+        Task<bool> ExistePorDNI(int dni);
     }
 }

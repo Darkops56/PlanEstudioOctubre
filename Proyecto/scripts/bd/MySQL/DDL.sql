@@ -1,8 +1,8 @@
-DROP DATABASE if EXISTS bdqa<_Eventos;
+DROP DATABASE if EXISTS 5to_Eventos
 
-CREATE DATABASE bd_Eventos;
+CREATE DATABASE 5to_Eventos;
 
-use bd_Eventos;
+use 5to_Eventos;
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
@@ -13,10 +13,11 @@ CREATE TABLE Cliente (
 -- Tabla Usuario
 CREATE TABLE Usuario(
     idUsuario INT PRIMARY KEY,
-    DNI UNIQUE INT,
+    DNI INT NOT NULL,
     Apodo VARCHAR(45),
     Contrasena VARCHAR(45),
-    CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente (DNI)
+    Roles VARCHAR(45),
+    CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente(DNI)
 );
 
 -- Tabla TipoEvento
@@ -70,23 +71,34 @@ CREATE TABLE Sector_Evento (
 -- Tabla Tarifa
 CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
+    idFuncion INT,
     Stock INT,
     Precio INT NOT NULL,
     Estado BOOLEAN,
     Tipo VARCHAR(50) NOT NULL,
+    Foreign Key (idFuncion) REFERENCES Funcion(idFuncion)
+);
+
+-- Tabla OrdenesCompra
+CREATE TABLE OrdenesCompra(
+    idOrdenCompra INT NOT NULL PRIMARY KEY,
+    idUsuario INT NOT NULL,
+    Fecha DATETIME NOT NULL,
+    Total INT NOT NULL,
+    metodoPago VARCHAR(45) NOT NULL,
+    estado VARCHAR(45) NOT NULL,
+    Foreign Key (idUsuario) REFERENCES Usuario (idUsuario)
 );
 
 -- Tabla Entrada
 CREATE TABLE Entrada (
     idEntrada INT AUTO_INCREMENT PRIMARY KEY,
-    idFuncion INT NOT NULL,
     idTarifa INT NOT NULL,
-    FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa),
-    CONSTRAINT FK_EntradaFuncion FOREIGN KEY (idFuncion) REFERENCES Funcion (idFuncion)
-);
--- Tabla OrdenesCompra
-CREATE TABLE OrdenesCompra(
-
+    idOrdenCompra INT NOT NULL,
+    EstadoQR VARCHAR(255),
+    PrecioPagado INT NOT NULL,
+    Foreign Key (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra),
+    FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa)
 );
 
 -- Tabla RegistroCompra
@@ -104,4 +116,10 @@ CREATE TABLE QR (
     url VARCHAR(255) NOT NULL,
     Duracion TINYINT UNSIGNED NOT NULL,
     VCard TEXT
+);
+CREATE TABLE RefreshTokens (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Token VARCHAR(200) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Expiration DATETIME NOT NULL
 );

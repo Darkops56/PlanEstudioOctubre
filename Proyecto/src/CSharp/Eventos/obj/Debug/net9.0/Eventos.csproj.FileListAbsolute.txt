@@ -90,3 +90,11 @@
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll

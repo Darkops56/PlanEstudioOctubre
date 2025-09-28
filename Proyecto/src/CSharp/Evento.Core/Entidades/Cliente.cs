@@ -12,7 +12,7 @@ public class Cliente
     //Métodos
     public void ActualizarContacto(string nuevoTelefono)
     {
-        this.Telefono = nuevoTelefono;
+        Telefono = nuevoTelefono;
     }
     public override string ToString()
     {

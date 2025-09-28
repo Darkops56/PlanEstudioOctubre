@@ -1,6 +1,6 @@
 using Evento.Core.Entidades;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IRepoFuncion
     {
@@ -10,5 +10,6 @@ namespace Evento.Core.Services
         Task<bool> UpdateFuncion(Funcion funcion);
         Task<bool> DeleteFuncion(int id);
         Task<IEnumerable<Tarifa>> ObtenerTarifasDeFuncion(int id);
+        Task<string> CancelarFuncion(int id);
     }
 }

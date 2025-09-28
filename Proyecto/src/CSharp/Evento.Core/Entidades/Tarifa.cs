@@ -2,6 +2,7 @@ namespace Evento.Core.Entidades;
 public class Tarifa
 {
     public int idTarifa { get; set; }
+    public Funcion funcion { get; set; }
     public string Tipo { get; set; }
     public int Precio { get; set; }
     public byte Stock { get; set; }
@@ -20,7 +21,14 @@ public class Tarifa
     {
         return Stock > 0;
     }
-
+    public bool PuedePublicarse(int idFuncion)
+    {
+        if (idFuncion == funcion.idFuncion && Stock > 0)
+        {
+            return true;
+        }
+        return false;
+    }
     public void ReducirStock()
     {
         if (Stock > 0) Stock--;

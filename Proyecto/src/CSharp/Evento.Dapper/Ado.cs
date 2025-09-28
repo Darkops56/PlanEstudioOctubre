@@ -1,5 +1,5 @@
 using MySql.Data.MySqlClient;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 using System.Data;
 
 namespace Evento.Dapper

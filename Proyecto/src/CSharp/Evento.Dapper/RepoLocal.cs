@@ -1,12 +1,13 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 
 namespace Evento.Dapper
 {
     public class RepoLocal : IRepoLocal
     {
-        private readonly Ado _ado;
+        private readonly IAdo _ado;
+        public RepoLocal(IAdo ado) => _ado = ado;
         public async Task<bool> DeleteLocal(int id)
         {
             var db = _ado.GetDbConnection();
@@ -28,21 +29,27 @@ namespace Evento.Dapper
         public async Task<int> InsertLocal(Local local)
         {
             var db = _ado.GetDbConnection();
-            var query = "INSERT INTO(Nombre, Ubicacion) VALUES(@nombre, @ubicacion)";
-            return await db.ExecuteAsync(query, new{ nombre = local.Nombre, ubicacion = local.Ubicacion });
+            var query = "INSERT INTO Local(Nombre, Ubicacion) VALUES(@nombre, @ubicacion)";
+            var rows = await db.ExecuteAsync(query, new
+            {
+                nombre = local.Nombre,
+                ubicacion = local.Ubicacion
+            });
+            
+            return rows > 0 ? rows : 0;
         }
 
         public async Task<int> InsertSector(Sector sector, int id)
         {
             var db = _ado.GetDbConnection();
             var query = "INSERT INTO Sector(idLocal, Capacidad) VALUES(@idlocal, @capacidad)";
-
-            return await db.ExecuteAsync(query, new
+            var rows = await db.ExecuteAsync(query, new
             {
                 idlocal = id,
-                capacidad = sector.capacidad
+                capacidad = sector.Capacidad
             });
 
+            return rows > 0 ? rows : 0;
         }
 
         public async Task<Local?> ObtenerPorId(int id)
@@ -50,7 +57,7 @@ namespace Evento.Dapper
             var db = _ado.GetDbConnection();
             var query = "SELECT * FROM Local WHERE idLocal = @idlocal";
 
-            return await db.QueryFirstAsync<Local?>(query, new { idlocal = id });
+            return await db.QueryFirstOrDefaultAsync<Local?>(query, new { idlocal = id });
         }
 
         public async Task<IEnumerable<Sector>> ObtenerSectoresDelLocal(int id)
@@ -59,6 +66,14 @@ namespace Evento.Dapper
             var query = "SELECT * FROM Sector JOIN Local USING (idLocal) WHERE Sector.idLocal = @idlocal";
 
             return await db.QueryAsync<Sector>(query, new { idlocal = id });
+        }
+
+        public async Task<Sector?> ObtenerSectorPorId(int id)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "SELECT * FROM Sector WHERE idSector = @idsector";
+            
+            return await db.QueryFirstAsync<Sector>(query, new { idsector = id });
         }
 
         public async Task<IEnumerable<Local>> ObtenerTodos()
@@ -81,16 +96,15 @@ namespace Evento.Dapper
 
             return rows > 0;
         }
-
-        public async Task<bool> UpdateSector(Sector sector)
+        public async Task<bool> UpdateSector(Sector sector, int id)
         {
             var db = _ado.GetDbConnection();
             var query = "UPDATE Sector SET idLocal = @idlocal, Capacidad = @capacidad WHERE idSector = @idsector";
             var rows = await db.ExecuteAsync(query, new
             {
                 idsector = sector.idSector,
-                capacidad = sector.capacidad,
-                idlocal = sector.local.idLocal
+                capacidad = sector.Capacidad,
+                idlocal = id
             });
 
             return rows > 0;

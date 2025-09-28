@@ -1,6 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 
 namespace Evento.Dapper
 {
@@ -60,6 +60,11 @@ namespace Evento.Dapper
             });
 
             return rows > 0;
+        }
+
+        public Task<string> CancelarFuncion(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
