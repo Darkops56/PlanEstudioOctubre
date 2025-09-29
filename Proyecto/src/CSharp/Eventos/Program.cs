@@ -1,4 +1,5 @@
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Utility;
 using Evento.Core.Services.Validation;
 using Evento.Dapper;
 using FluentValidation;
@@ -17,6 +18,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddScoped<IRepoEvento, RepoEvento>();
+builder.Services.AddHostedService<StockExpiradoService>();
 builder.Services.AddScoped<IRepoLocal, RepoLocal>();
 builder.Services.AddScoped<IRepoCliente, RepoCliente>();
 builder.Services.AddScoped<IRepoFuncion, RepoFuncion>();

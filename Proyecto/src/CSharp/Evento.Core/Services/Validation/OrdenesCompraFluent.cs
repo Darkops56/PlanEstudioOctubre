@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Core.Services.Validation
 {
@@ -29,10 +30,10 @@ namespace Evento.Core.Services.Validation
                 .IsInEnum()
                 .WithMessage("El método de pago no es válido");
 
-            RuleFor(x => x.estado)
+            RuleFor(x => x.Estado)
                 .NotEmpty()
                 .WithMessage("El estado de la orden es obligatorio")
-                .Must(estado => estado == "Creada" || estado == "Pagada" || estado == "Cancelada")
+                .Must(Estado => Estado == EEstados.Creado || Estado == EEstados.Pagado || Estado == EEstados.Cancelado)
                 .WithMessage("El estado de la orden debe ser 'Creada', 'Pagada' o 'Cancelada'");
         }
     }

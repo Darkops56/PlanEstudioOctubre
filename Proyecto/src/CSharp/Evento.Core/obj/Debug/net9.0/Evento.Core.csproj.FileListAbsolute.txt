@@ -10,3 +10,4 @@
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/refint/Evento.Core.dll
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.pdb
 /mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/ref/Evento.Core.dll
+/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/obj/Debug/net9.0/Evento.Core.csproj.AssemblyReference.cache

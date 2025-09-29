@@ -6,9 +6,11 @@ namespace Evento.Core.Entidades
     {
         public int idOrdenCompra { get; set; }
         public Usuario? usuario { get; set; }
+        public List<Entrada> entradas { get; set; } = new List<Entrada>();
         public DateTime Fecha { get; set; }
         public int Total { get; set; }
         public EMetodoPago metodoPago { get; set; }
-        public string? estado { get; set; }
+        public EEstados Estado { get; set; }
+        public OrdenesCompra() { }
     }
 }

@@ -91,7 +91,16 @@ CREATE TABLE OrdenesCompra(
     estado VARCHAR(45) NOT NULL,
     Foreign Key (idUsuario) REFERENCES Usuario (idUsuario)
 );
-
+CREATE TABLE StockReservaciones (
+    IdStockReservacion INT AUTO_INCREMENT PRIMARY KEY,
+    idTarifa INT NOT NULL,
+    Cantidad INT NOT NULL,
+    FechaReserva DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ExpiraEn DATETIME NOT NULL,
+    idOrdenCompra INT NOT NULL,
+    FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa),
+    FOREIGN KEY (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra)
+);
 -- Tabla Entrada
 CREATE TABLE Entrada (
     idEntrada INT AUTO_INCREMENT PRIMARY KEY,
@@ -104,14 +113,14 @@ CREATE TABLE Entrada (
 );
 
 -- Tabla RegistroCompra
-CREATE TABLE RegistroCompra (
+/* CREATE TABLE RegistroCompra (
     idRegistro INT AUTO_INCREMENT PRIMARY KEY,
     idUsuario INT NOT NULL,
     idEntrada INT NOT NULL,
     Fecha DATETIME NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario),
     FOREIGN KEY (idEntrada) REFERENCES Entrada(idEntrada)
-);
+); */
 -- Tabla QR
 CREATE TABLE QR (
     idQR INT AUTO_INCREMENT PRIMARY KEY,
@@ -120,7 +129,7 @@ CREATE TABLE QR (
     VCard TEXT
 );
 CREATE TABLE RefreshTokens (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
+    IdRefreshTokens INT AUTO_INCREMENT PRIMARY KEY,
     Token VARCHAR(200) NOT NULL,
     Email VARCHAR(100) NOT NULL,
     Expiration DATETIME NOT NULL

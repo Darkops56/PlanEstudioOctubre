@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Evento.Core.DTOs;
+using Evento.Core.Services.Repo;
 using FluentValidation;
 
 namespace Evento.Core.Services.Validation
 {
     public class RegisterDtoFluent : AbstractValidator<RegisterDto>
     {
-        public RegisterDtoFluent()
+        private readonly IRepoUsuario _repoUsuario;
+        public RegisterDtoFluent(IRepoUsuario repoUsuario)
         {
+            _repoUsuario = repoUsuario;
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("El email es obligatorio")
-                .EmailAddress().WithMessage("Formato de email inválido");
+                .EmailAddress().WithMessage("Formato de email inválido")
+                .MustAsync(async (email, cancellation) =>
+                await _repoUsuario.ExisteUsuarioPorEmail(email) == false)
+            .WithMessage("El email ya está registrado");
 
             RuleFor(x => x.Contrasena)
                 .NotEmpty().WithMessage("La contraseña es obligatoria")

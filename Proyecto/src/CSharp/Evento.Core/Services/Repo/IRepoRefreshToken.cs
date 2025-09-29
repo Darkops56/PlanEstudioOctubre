@@ -12,5 +12,6 @@ namespace Evento.Core.Services.Repo
         Task<RefreshToken?> ObtenerToken(string token);
         Task DeleteToken(string token);
         Task DeleteTokensPorEmail(string email);
+        Task ReemplazarToken(int idUsuario, string nuevoHash, DateTime expiracion);
     }
 }

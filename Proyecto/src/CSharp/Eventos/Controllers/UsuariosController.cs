@@ -1,6 +1,8 @@
 using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Evento.Controllers
@@ -29,6 +31,9 @@ namespace Evento.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var hash = ContrasenaHasher.Hash(usuario.Contrasena);
+            usuario.Contrasena = hash;
+
             var id = await _repo.InsertUsuario(usuario);
             return CreatedAtAction(nameof(ObtenerPorId), new { id }, usuario);
         }
@@ -56,8 +61,8 @@ namespace Evento.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var usuario = await _repo.Login(login.Email, login.Contrasena);
+            var hash = ContrasenaHasher.Hash(login.Contrasena);
+            var usuario = await _repo.Login(login.Email, hash);
             if (usuario == null) return Unauthorized();
 
             // Generar JWT si es necesario (igual que tu implementación anterior)

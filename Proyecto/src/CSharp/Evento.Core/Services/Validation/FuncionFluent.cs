@@ -14,7 +14,7 @@ namespace Evento.Core.Services.Validation
             RuleFor(f => f.evento)
             .NotNull().WithMessage("El evento asociado es obligatorio");
 
-            RuleFor(f => f.fecha)
+            RuleFor(f => f.Fecha)
                 .GreaterThan(DateTime.Now).WithMessage("La fecha debe ser en el futuro");
         }
     }

@@ -8,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Evento.Dapper;
+using Evento.Core.Services.Security;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Controllers
 {
@@ -53,13 +55,15 @@ namespace Evento.Controllers
                     Telefono = cliente.Telefono
                 };
             }
+            var hash = ContrasenaHasher.Hash(nuevoUsuarioDto.Contrasena);
+            nuevoUsuarioDto.Contrasena = hash;
 
             var usuario = new Usuario
             {
                 Apodo = nuevoUsuarioDto.Apodo,
                 Email = nuevoUsuarioDto.Email,
                 Contrasena = nuevoUsuarioDto.Contrasena,
-                Role = "Usuario",
+                Role = ERoles.Usuario,
                 cliente = new Cliente
                 {
                     nombreCompleto = nuevoUsuarioDto.cliente.nombreCompleto,
@@ -91,6 +95,9 @@ namespace Evento.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            
+            var hash = ContrasenaHasher.Hash(login.Contrasena);
+            login.Contrasena = hash;
 
             var usuario = await _repoUsuario.Login(login.Email, login.Contrasena);
             if (usuario is null)
@@ -114,7 +121,7 @@ namespace Evento.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, usuario.Email),
-                new Claim(ClaimTypes.Role, string.IsNullOrEmpty(usuario.Role) ? "Usuario" : usuario.Role),
+                new Claim(ClaimTypes.Role, string.IsNullOrEmpty(usuario.Role.ToString()) ? "Usuario" : usuario.Role.ToString()),
                 new Claim("Apodo", usuario.Apodo),
                 new Claim("DNI", usuario.cliente.DNI.ToString()),
                 new Claim("NombreCompleto", usuario.cliente.nombreCompleto),
@@ -154,16 +161,10 @@ namespace Evento.Controllers
             // Generar nuevos tokens
             var newToken = GenerateJwtToken(usuario);
             var newRefreshToken = Guid.NewGuid().ToString();
-            var newRefreshTokenEntity = new RefreshToken
-            {
-                Token = newRefreshToken,
-                Email = usuario.Email,
-                Expiracion = DateTime.UtcNow.AddMinutes(30)
-            };
+            var newRefreshTokenHash = ContrasenaHasher.Hash(newRefreshToken);
 
             // Reemplazar token
-            await _repoRefreshToken.DeleteToken(refreshRequest.RefreshToken);
-            await _repoRefreshToken.InsertToken(newRefreshTokenEntity);
+            await _repoRefreshToken.ReemplazarToken(usuario.idUsuario, newRefreshTokenHash, DateTime.UtcNow.AddMinutes(30));
 
             return Ok(new { token = newToken, refreshToken = newRefreshToken });
         }
@@ -206,7 +207,7 @@ namespace Evento.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult GetRoles()
         {
-            var roles = new[] { "Admin", "Usuario", "Moderador" };
+            var roles = new[] { ERoles.Admin, ERoles.Usuario };
             return Ok(roles);
         }
 
@@ -218,8 +219,17 @@ namespace Evento.Controllers
             if (usuario == null)
                 return NotFound("Usuario no encontrado");
 
-            usuario.Role = rol;
+            if (ERoles.Usuario.ToString().Trim() != rol.Trim() || ERoles.Admin.ToString().Trim() != rol.Trim())
+                return NotFound("El Role no se encuentra existente");
+
+            if (ERoles.Usuario.ToString().Trim() == rol.Trim())
+                usuario.Role = ERoles.Usuario;
+            else
+            {
+                usuario.Role = ERoles.Admin;            
+            }
             await _repoUsuario.UpdateUsuario(usuario);
+
             return Ok(usuario);
         }
         #endregion

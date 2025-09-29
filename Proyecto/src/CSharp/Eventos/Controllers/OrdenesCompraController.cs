@@ -22,7 +22,7 @@ namespace Evento.Controllers
         public async Task<IActionResult> CrearOrden([FromBody] OrdenesCompra oc)
         {
             if (oc == null) return BadRequest("Debes enviar un cuerpo.");
-                var id = await _repoOrden.InsertOrdenCompra(oc);
+            var id = await _repoOrden.InsertOrdenCompra(oc);
             return CreatedAtAction(nameof(ObtenerOrden), new { id = id }, oc);
         }
 
@@ -58,6 +58,12 @@ namespace Evento.Controllers
                 return BadRequest(resultado);
 
             return Ok(new { mensaje = "Orden cancelada correctamente" });
+        }
+        [HttpPost("liberar-stock-expirado")]
+        public async Task<IActionResult> LiberarStockExpirado()
+        {
+            var cantidadLiberada = await _repoOrden.LiberarStockExpirado();
+            return Ok(new { mensaje = $"Se liberaron {cantidadLiberada} reservas expiradas." });
         }
     }
 }

@@ -20,14 +20,14 @@ namespace Evento.Dapper
         {
             var db = _ado.GetDbConnection();
             var query = "SELECT COUNT(1) FROM Usuario WHERE Email = @email";
-            var count = await db.ExecuteScalarAsync<int>(query, new { email = nuevoEmail });
+            var count = await db.QueryFirstOrDefaultAsync<Usuario>(query, new {email = nuevoEmail});
 
-            return count > 0;
+            return count is not null;
         }
-        public async Task<IEnumerable<RegistroCompra>> ObtenerComprasPorUsuario(int id)
+        public async Task<IEnumerable<OrdenesCompra>> ObtenerComprasPorUsuario(int id)
         {
             using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<RegistroCompra>("SELECT * FROM RegistroCompra WHERE idUsuario = @Id", new { Id = id });
+            return await db.QueryAsync<OrdenesCompra>("SELECT Fecha, Total, metodoPago, Estado FROM OrdenesCompra WHERE idUsuario = @Id", new { Id = id });
         }
         public async Task<int> InsertUsuario(Usuario usuario)
         {
@@ -39,7 +39,7 @@ namespace Evento.Dapper
                 email = usuario.Email,
                 contrasena = usuario.Contrasena,
                 dni = usuario.cliente.DNI,
-                role = usuario.Role
+                role = usuario.Role.ToString()
             });
             return rows > 0 ? rows : 0;
         }
@@ -83,7 +83,7 @@ namespace Evento.Dapper
                 contrasena = usuario.Contrasena,
                 idusuario = usuario.idUsuario,
                 dni = usuario.cliente.DNI,
-                role = usuario.Role
+                role = usuario.Role.ToString()
             });
             return rows > 0;
         }

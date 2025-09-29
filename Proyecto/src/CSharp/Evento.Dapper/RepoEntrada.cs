@@ -2,6 +2,7 @@ using MySql.Data.MySqlClient;
 using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Dapper
 {
@@ -18,7 +19,7 @@ namespace Evento.Dapper
             if (entrada == null)
                 throw new Exception("La entrada no existe");
 
-            if (entrada.Estado == "Anulada")
+            if (entrada.Estado == EEstados.Cancelado)
                 throw new Exception("La entrada ya está anulada");
 
             await db.ExecuteAsync(
@@ -44,22 +45,21 @@ namespace Evento.Dapper
 
         public async Task<int> InsertEntrada(Entrada entrada)
         {
-            if (entrada.tarifa == null) throw new Exception("Tarifa no puede ser null");
-            if (entrada.ordenesCompra == null) throw new Exception("OrdenCompra no puede ser null");
+            if (entrada.tarifa == null) throw new ArgumentNullException("Tarifa no puede ser null");
+            if (entrada.ordenesCompra == null) throw new ArgumentNullException("OrdenCompra no puede ser null");
 
 
             var db = _ado.GetDbConnection();
-            var idGenerado = await db.ExecuteScalarAsync<int>("INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
+            var rows = await db.ExecuteAsync("INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
             new
             {
                 idtarifa = entrada.tarifa.idTarifa,
                 idordencompra = entrada.ordenesCompra.idOrdenCompra,
-                estado = entrada.Estado,
+                estado = entrada.Estado.ToString(),
                 preciopagado = entrada.PrecioPagado
             }
             );
-            entrada.idEntrada = idGenerado;
-            return idGenerado;
+            return rows > 0 ? rows : 0;
         }
 
         public async Task<Entrada?> ObtenerEntrada(int id)

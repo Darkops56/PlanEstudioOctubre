@@ -20,7 +20,12 @@ namespace Evento.Controllers
     public async Task<IActionResult> ObtenerPorId(int id)
     {
         var evento = await _repo.ObtenerEventoPorId(id);
-        return evento != null ? Ok(evento) : NotFound();
+        return evento != null ? Ok(evento) : NotFound(new ProblemDetails
+        {
+            Title = "Evento no encontrado",
+            Detail = $"No existe un evento con id {id}",
+            Status = 404
+        });
     }
 
     [HttpPost]

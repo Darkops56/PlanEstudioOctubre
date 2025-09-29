@@ -1,8 +1,7 @@
-using MySql.Data.MySqlClient;
 using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
-using Org.BouncyCastle.Asn1;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Dapper
 {
@@ -12,22 +11,59 @@ namespace Evento.Dapper
 
         public RepoEvento(IAdo ado) => _ado = ado;
 
-        public async Task<string> CancelarEvento(int id)
+        public async Task<string> CancelarEvento(int idEvento)
         {
-            using var db = _ado.GetDbConnection();
+            var db = _ado.GetDbConnection();
+            var evento = await db.QueryFirstOrDefaultAsync<Eventos>(
+                "SELECT * FROM Eventos WHERE idEvento = @Id",
+                new { Id = idEvento }
+            );
+            if (evento == null) return "Evento no encontrado";
 
-            var evento = await ObtenerEventoPorId(id);
-            if (evento == null)
-                throw new Exception("El evento no existe");
+            try
+            {
+                // Obtener funciones del evento
+                var funciones = await db.QueryAsync<Funcion>(
+                    "SELECT * FROM Funcion WHERE idEvento = @Id",
+                    new { Id = idEvento }
+                );
 
-            if (evento.EstadoEvento == "Cancelado")
-                throw new Exception("El evento ya está cancelado");
+                foreach (var funcion in funciones)
+                {
+                    // Obtener entradas de la función
+                    var entradas = await db.QueryAsync<Entrada>(
+                        "SELECT * FROM Entrada WHERE idFuncion = @Id",
+                        new { Id = funcion.idFuncion }
+                    );
 
-            var rows = await db.ExecuteAsync(
-                "UPDATE Eventos SET Estado = 'Cancelado' WHERE idEvento = @IdEvento",
-                new { IdEvento = id });
+                    foreach (var entrada in entradas)
+                    {
+                        // Liberar stock
+                        await db.ExecuteAsync(
+                            "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
+                            new { Id = entrada.tarifa.idTarifa }
+                        );
 
-            return rows > 0 ? "Evento cancelado correctamente" : "No se pudo cancelar el evento";
+                        // Anular entrada
+                        await db.ExecuteAsync(
+                            "UPDATE Entrada SET EstadoQR = 'Anulada' WHERE idEntrada = @Id",
+                            new { Id = entrada.idEntrada }
+                        );
+                    }
+                }
+
+                // Actualizar estado del evento
+                await db.ExecuteAsync(
+                    "UPDATE Eventos SET estado = 'Cancelado' WHERE idEvento = @Id",
+                    new { Id = idEvento }
+                );
+
+                return string.Empty; // OK
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public async Task<bool> DeleteEvento(int id)
@@ -62,7 +98,7 @@ namespace Evento.Dapper
             var db = _ado.GetDbConnection();
             var query = "SELECT * FROM Eventos WHERE Nombre = @name";
 
-            return await db.QueryFirstAsync<Eventos>(query, new{ name = nombre});
+            return await db.QueryFirstAsync<Eventos>(query, new { name = nombre });
         }
 
         public async Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento)
@@ -75,7 +111,7 @@ namespace Evento.Dapper
         {
             var db = _ado.GetDbConnection();
             string query = "SELECT * FROM Sector JOIN Tarifa USING (@idevento) WHERE idEvento = @idevento";
-            return await db.QueryAsync<Sector>(query, new{ idevento = idEvento});
+            return await db.QueryAsync<Sector>(query, new { idevento = idEvento });
         }
 
         public async Task<TipoEvento?> ObtenerTipoEventoPorId(int id)
@@ -100,9 +136,9 @@ namespace Evento.Dapper
             if (evento == null)
                 throw new Exception("El evento no existe");
 
-            if (evento.EstadoEvento == "Publicado")
+            if (evento.EstadoEvento == EEstados.Publicado)
                 throw new Exception("El evento ya está publicado");
-                
+
             string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0 LIMIT 1";
             var respuesta = await db.ExecuteAsync(query, new
             {

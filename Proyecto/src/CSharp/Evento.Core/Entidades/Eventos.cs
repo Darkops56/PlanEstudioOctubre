@@ -1,3 +1,5 @@
+using Evento.Core.Services.Enums;
+
 namespace Evento.Core.Entidades;
 public class Eventos
 {
@@ -6,7 +8,7 @@ public class Eventos
     public TipoEvento tipoEvento { get; set; }
     public DateTime fechaInicio { get; set; }
     public DateTime fechaFin { get; set; }
-    public string EstadoEvento { get; set; }
+    public EEstados EstadoEvento { get; set; }
 
     public Eventos()
     { }
@@ -23,23 +25,25 @@ public class Eventos
     }
     public string Publicar()
     {
-        if (EstadoEvento == "Publicado")
+        if (EstadoEvento == EEstados.Publicado)
         {
             return "El evento ya fue publicado";
         }
-        else if (EstadoEvento == "Cancelado")
+        else if (EstadoEvento == EEstados.Cancelado)
         {
             return "El evento fue cancelado con anterioridad";
         }
-        return EstadoEvento = "Publicado";
+        EstadoEvento = EEstados.Publicado;
+        return "El evento fue Publicado correctamente.";
     }
     public string Cancelar()
     {
-        if (EstadoEvento == "Cancelado")
+        if (EstadoEvento == EEstados.Cancelado)
         {
             return "El evento ya ha sido cancelado";
         }
-        return EstadoEvento = "Cancelado";
+        EstadoEvento = EEstados.Cancelado;
+        return "El evento fue cancelado con éxito.";
     }
 
     public override string ToString()

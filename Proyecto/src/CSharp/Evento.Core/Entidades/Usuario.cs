@@ -1,3 +1,5 @@
+using Evento.Core.Services.Enums;
+
 namespace Evento.Core.Entidades;
 
 public class Usuario
@@ -7,13 +9,8 @@ public class Usuario
     public string Email { get; set; }
     public string Contrasena { get; set; }
     public Cliente cliente { get; set; }
-    public string Role { get; set; }
+    public ERoles Role { get; set; }
 
     public Usuario()
     { }
-
-    public void ComprarEntrada()
-    {
-        
-    }
 }

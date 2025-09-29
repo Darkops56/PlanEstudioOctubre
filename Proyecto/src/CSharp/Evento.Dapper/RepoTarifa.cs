@@ -15,7 +15,7 @@ namespace Evento.Dapper
 
             return await db.ExecuteAsync(query, new
             {
-                tipo = tarifa.Tipo,
+                tipo = tarifa.Tipo.ToString(),
                 precio = tarifa.Precio,
                 stock = tarifa.Stock
             });
@@ -42,7 +42,7 @@ namespace Evento.Dapper
             var rows = await db.ExecuteAsync(query, new
             {
                 idtarifa = tarifa.idTarifa,
-                tipo = tarifa.Tipo,
+                tipo = tarifa.Tipo.ToString(),
                 precio = tarifa.Precio,
                 estado = tarifa.Estado
             });
