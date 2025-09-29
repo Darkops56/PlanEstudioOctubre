@@ -10,9 +10,29 @@ namespace Evento.Dapper
         private readonly IAdo _ado;
         public RepoEntrada(IAdo ado) => _ado = ado;
 
-        public Task<string> AnularEntrada(int id)
+        public async Task<string> AnularEntrada(int id)
         {
-            throw new NotImplementedException();
+            var db = _ado.GetDbConnection();
+
+            var entrada = await ObtenerEntrada(id);
+            if (entrada == null)
+                throw new Exception("La entrada no existe");
+
+            if (entrada.Estado == "Anulada")
+                throw new Exception("La entrada ya está anulada");
+
+            await db.ExecuteAsync(
+                "UPDATE Entrada SET Estado = 'Anulada' WHERE idEntrada = @IdEntrada",
+                new { IdEntrada = id });
+            var EntradaPagada = await db.QueryFirstAsync<Entrada>("SELECT * FROM Entrada e JOIN OrdenesCompra oc USING (idOrdenCompra) WHERE e.Estado = 'Pagado' AND oc.Estado = 'Pagado'");
+            if (EntradaPagada != null)
+            {
+                await db.ExecuteAsync("UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @idtarifa", new
+                {
+                    idtarifa = EntradaPagada.tarifa.idTarifa
+                });
+            }
+            return string.Empty;
         }
 
         public async Task<bool> DeleteEntrada(int id)
@@ -29,11 +49,13 @@ namespace Evento.Dapper
 
 
             var db = _ado.GetDbConnection();
-            var idGenerado = await db.ExecuteScalarAsync<int>("INSERT INTO Entrada(idTarifa, idOrdenCompra) VALUES(@idtarifa, @idordencompra); SELECT LAST_INSERT_ID();",
+            var idGenerado = await db.ExecuteScalarAsync<int>("INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
             new
             {
                 idtarifa = entrada.tarifa.idTarifa,
-                idordencompra = entrada.ordenesCompra.idOrdenCompra
+                idordencompra = entrada.ordenesCompra.idOrdenCompra,
+                estado = entrada.Estado,
+                preciopagado = entrada.PrecioPagado
             }
             );
             entrada.idEntrada = idGenerado;

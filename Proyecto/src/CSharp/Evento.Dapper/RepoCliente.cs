@@ -21,7 +21,7 @@ namespace Evento.Dapper
         public async Task<bool> ExistePorDNI(int dni)
         {
             using var db = _ado.GetDbConnection();
-            var query = await db.QueryFirstOrDefaultAsync("SELECT * FROM Cliente WHERE DNI = @Dni", new { Dni = dni });
+            var query = await db.QueryFirstOrDefaultAsync("SELECT * FROM Cliente WHERE DNI = @Dni LIMIT 1", new { Dni = dni });
             if (query == null)
             {
                 return false;
@@ -43,7 +43,7 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
             using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada WHERE DNI = @Id", new{ Id = id });
+            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada JOIN OrdenesCompra USING (idOrdenCompra) JOIN Usuario USING (idUsuario) JOIN Cliente USING (DNI) WHERE DNI = @Id", new{ Id = id });
         }
 
         public async Task<Cliente?> ObtenerPorId(int id)

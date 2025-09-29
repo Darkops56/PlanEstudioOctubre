@@ -12,9 +12,22 @@ namespace Evento.Dapper
 
         public RepoEvento(IAdo ado) => _ado = ado;
 
-        public Task<string> CancelarEvento(int id)
+        public async Task<string> CancelarEvento(int id)
         {
-            throw new NotImplementedException();
+            using var db = _ado.GetDbConnection();
+
+            var evento = await ObtenerEventoPorId(id);
+            if (evento == null)
+                throw new Exception("El evento no existe");
+
+            if (evento.EstadoEvento == "Cancelado")
+                throw new Exception("El evento ya está cancelado");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE Eventos SET Estado = 'Cancelado' WHERE idEvento = @IdEvento",
+                new { IdEvento = id });
+
+            return rows > 0 ? "Evento cancelado correctamente" : "No se pudo cancelar el evento";
         }
 
         public async Task<bool> DeleteEvento(int id)
@@ -79,9 +92,30 @@ namespace Evento.Dapper
             return await db.QueryAsync<Eventos>("SELECT * FROM Eventos");
         }
 
-        public Task<string> PublicarEvento(int id)
+        public async Task<string> PublicarEvento(int id)
         {
-            throw new NotImplementedException();
+            using var db = _ado.GetDbConnection();
+
+            var evento = await ObtenerEventoPorId(id);
+            if (evento == null)
+                throw new Exception("El evento no existe");
+
+            if (evento.EstadoEvento == "Publicado")
+                throw new Exception("El evento ya está publicado");
+                
+            string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0 LIMIT 1";
+            var respuesta = await db.ExecuteAsync(query, new
+            {
+                idevento = id
+            });
+            if (respuesta < 0)
+                throw new Exception("No se puede publicar el Evento por falta de Stock");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE Eventos SET Estado = 'Publicado' WHERE idEvento = @IdEvento",
+                new { IdEvento = id });
+
+            return rows > 0 ? "Evento publicado correctamente" : "No se pudo publicar el evento";
         }
 
         public async Task<bool> UpdateEvento(Eventos evento)

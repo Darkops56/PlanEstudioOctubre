@@ -17,173 +17,104 @@ namespace Evento.Dapper
             _ado = ado;
         }
 
-        public async Task<string> CancelarOrdenCompra(int id)
+         public async Task<int> InsertOrdenCompra(OrdenesCompra orden)
         {
-            var db = _ado.GetDbConnection();
-            var orden = await ObtenerOrdenCompra(id);
-            if (orden == null) return "Orden no encontrada";
+            if (orden.usuario == null) throw new Exception("El usuario es obligatorio");
 
-            if (orden.estado == "Cancelada")
-                return "Orden ya fue cancelada";
-
-            using var transaction = db.BeginTransaction();
-
-            try
+            using var db = _ado.GetDbConnection();
+            var sql = @"INSERT INTO OrdenesCompra(idUsuario, Fecha, Total, MetodoPago, Estado)
+                        VALUES(@IdUsuario, @Fecha, @Total, @MetodoPago, @Estado)";
+            var rows = await db.ExecuteAsync(sql, new
             {
-                // 1. Obtener todas las entradas de la orden
-                var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idOrdenCompra = @Id",
-                    new { Id = id },
-                    transaction: transaction
-                );
-
-                // 2. Si la orden estaba pagada, devolver stock de las tarifas
-                if (orden.estado == "Pagada")
-                {
-                    foreach (var entrada in entradas)
-                    {
-                        await db.ExecuteAsync(
-                            "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
-                            new { Id = entrada.tarifa.idTarifa },
-                            transaction: transaction
-                        );
-
-                        // 3. Anular entrada
-                        await db.ExecuteAsync(
-                            "UPDATE Entrada SET EstadoQR = 'Anulada' WHERE idEntrada = @Id",
-                            new { Id = entrada.idEntrada },
-                            transaction: transaction
-                        );
-                    }
-                }
-
-                // 4. Actualizar estado de la orden
-                await db.ExecuteAsync(
-                    "UPDATE OrdenesCompra SET estado='Cancelada' WHERE idOrdenCompra=@Id",
-                    new { Id = id },
-                    transaction: transaction
-                );
-
-                transaction.Commit();
-                return string.Empty; // OK
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                return ex.Message;
-            }
+                IdUsuario = orden.usuario.idUsuario,
+                orden.Fecha,
+                orden.Total,
+                orden.metodoPago,
+                orden.estado
+            });
+            return rows > 0 ? rows : 0;
         }
 
-        public async Task<int> InsertOrdenCompra(OrdenesCompra ordenesCompra)
+        public async Task<bool> UpdateOrdenCompra(OrdenesCompra orden)
         {
-            var db = _ado.GetDbConnection();
-            string sql = @"INSERT INTO OrdenesCompra 
-                           (Fecha, Total, metodoPago, estado)
-                           VALUES (@Fecha, @Total, @MetodoPago, @Estado)";
+            if (orden.usuario == null) throw new Exception("El usuario es obligatorio");
 
-            var parametros = new
+            using var db = _ado.GetDbConnection();
+            var sql = @"UPDATE OrdenesCompra 
+                        SET idUsuario = @IdUsuario, Fecha = @Fecha, Total = @Total, MetodoPago = @MetodoPago, Estado = @Estado
+                        WHERE idOrdenCompra = @IdOrdenCompra";
+            var rows = await db.ExecuteAsync(sql, new
             {
-                Fecha = ordenesCompra.Fecha,
-                Total = ordenesCompra.Total,
-                MetodoPago = ordenesCompra.metodoPago.ToString(),
-                Estado = "Creada"
-            };
+                IdUsuario = orden.usuario.idUsuario,
+                orden.Fecha,
+                orden.Total,
+                orden.metodoPago,
+                orden.estado,
+                orden.idOrdenCompra
+            });
+            return rows > 0;
+        }
 
-            int rows = await db.ExecuteAsync(sql, parametros);
-            return rows > 0 ? rows : 0;
+        public async Task<bool> DeleteOrdenCompra(int id)
+        {
+            using var db = _ado.GetDbConnection();
+            var rows = await db.ExecuteAsync("DELETE FROM OrdenesCompra WHERE idOrdenCompra = @Id", new { Id = id });
+            return rows > 0;
         }
 
         public async Task<OrdenesCompra?> ObtenerOrdenCompra(int id)
         {
-            var db = _ado.GetDbConnection();
-            string sql = @"SELECT o.*, u.idUsuario, u.Apodo, u.DNI
-                           FROM OrdenesCompra o
-                           INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
-                           WHERE o.idOrdenCompra = @Id";
-
-            var orden = (await db.QueryAsync<OrdenesCompra, Usuario, OrdenesCompra>(sql,
-                        (o, u) => { o.usuario = u; return o; },
-                        new { Id = id },
-                        splitOn: "idUsuario"
-                    )).SingleOrDefault();
-
-            return orden;
+            using var db = _ado.GetDbConnection();
+            return await db.QueryFirstOrDefaultAsync<OrdenesCompra>(
+                "SELECT * FROM OrdenesCompra WHERE idOrdenCompra = @Id", new { Id = id });
         }
 
         public async Task<IEnumerable<OrdenesCompra>> ObtenerOrdenesCompra()
         {
-            var db = _ado.GetDbConnection();
-            string sql = @"SELECT o.*, u.idUsuario, u.Apodo, u.DNI
-                           FROM OrdenesCompra o
-                           INNER JOIN Usuario u ON o.idUsuario = u.idUsuario";
-
-            var ordenes = await db.QueryAsync<OrdenesCompra, Usuario, OrdenesCompra>(
-                sql,
-                (orden, usuario) => { orden.usuario = usuario; return orden; },
-                splitOn: "idUsuario"
-            );
-            return ordenes;
+            using var db = _ado.GetDbConnection();
+            return await db.QueryAsync<OrdenesCompra>("SELECT * FROM OrdenesCompra");
         }
 
-        public async Task<string> PagarOrdenCompra(int id)
+        public async Task<IEnumerable<Entrada>> ObtenerEntradasPorOrden(int idOrdenCompra)
         {
-            var db = _ado.GetDbConnection();
-            var orden = await ObtenerOrdenCompra(id);
-            if (orden == null) return "Orden no encontrada";
-            if (orden.estado == "Pagada") return "Orden ya fue pagada";
-            using var transaction = db.BeginTransaction();
+            using var db = _ado.GetDbConnection();
+            return await db.QueryAsync<Entrada>(
+                "SELECT * FROM Entradas WHERE idOrdenCompra = @IdOrdenCompra",
+                new { IdOrdenCompra = idOrdenCompra });
+        }
 
-            try
-            {
-                // 1. Obtener las entradas asociadas a la orden
-                var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idOrdenCompra = @Id",
-                    new { Id = id },
-                    transaction: transaction
-                );
+        public async Task<string> PagarOrdenCompra(int idOrdenCompra)
+        {
+            using var db = _ado.GetDbConnection();
 
-                // 2. Verificar stock de cada tarifa
-                foreach (var entrada in entradas)
-                {
-                    var tarifa = await db.QuerySingleAsync<Tarifa>(
-                        "SELECT * FROM Tarifa WHERE idTarifa = @Id",
-                        new { Id = entrada.tarifa.idTarifa },
-                        transaction: transaction
-                    );
+            var orden = await ObtenerOrdenCompra(idOrdenCompra);
+            if (orden == null) throw new Exception("La orden no existe");
 
-                    if (tarifa.Stock <= 0)
-                        throw new Exception($"No hay stock suficiente para la tarifa {tarifa.Tipo}");
+            if (orden.estado == "Pagada")
+                throw new Exception("La orden ya está pagada");
 
-                    // 3. Reducir stock
-                    await db.ExecuteAsync(
-                        "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @Id",
-                        new { Id = tarifa.idTarifa },
-                        transaction: transaction
-                    );
+            var rows = await db.ExecuteAsync(
+                "UPDATE OrdenesCompra SET Estado = 'Pagada' WHERE idOrdenCompra = @IdOrdenCompra",
+                new { IdOrdenCompra = idOrdenCompra });
 
-                    // 4. Actualizar precio pagado en la entrada
-                    await db.ExecuteAsync(
-                        "UPDATE Entrada SET PrecioPagado = @precio WHERE idEntrada = @Id",
-                        new { precio = tarifa.Precio, Id = entrada.idEntrada },
-                        transaction: transaction
-                    );
-                }
+            return string.Empty;
+        }
 
-                // 5. Actualizar estado de la orden
-                await db.ExecuteAsync(
-                    "UPDATE OrdenesCompra SET estado='Pagada' WHERE idOrdenCompra=@Id",
-                    new { Id = id },
-                    transaction: transaction
-                );
+        public async Task<string> CancelarOrdenCompra(int idOrdenCompra)
+        {
+            using var db = _ado.GetDbConnection();
 
-                transaction.Commit();
-                return string.Empty; // OK
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                return ex.Message;
-            }
+            var orden = await ObtenerOrdenCompra(idOrdenCompra);
+            if (orden == null) throw new Exception("La orden no existe");
+
+            if (orden.estado == "Cancelada")
+                throw new Exception("La orden ya está cancelada");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE OrdenesCompra SET Estado = 'Cancelada' WHERE idOrdenCompra = @IdOrdenCompra",
+                new { IdOrdenCompra = idOrdenCompra });
+
+            return string.Empty;
         }
     }
 }

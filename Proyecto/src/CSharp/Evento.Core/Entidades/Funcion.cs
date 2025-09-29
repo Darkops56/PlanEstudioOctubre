@@ -5,7 +5,7 @@ public class Funcion
     public int idFuncion { get; set; }
     public Eventos evento { get; set; }
     public DateTime fecha { get; set; }
-    public bool Estado { get; set; }
+    public string Estado { get; set; }
 
     public Funcion()
     { }

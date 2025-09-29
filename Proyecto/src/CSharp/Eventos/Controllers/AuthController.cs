@@ -102,7 +102,7 @@ namespace Evento.Controllers
             {
                 Token = refreshToken,
                 Email = usuario.Email,
-                Expiracion = DateTime.UtcNow.AddDays(7) // por ejemplo, 7 días de validez
+                Expiracion = DateTime.UtcNow.AddMinutes(30)
             };
             await repoRefreshToken.InsertToken(refreshTokenEntity);
 
@@ -158,7 +158,7 @@ namespace Evento.Controllers
             {
                 Token = newRefreshToken,
                 Email = usuario.Email,
-                Expiracion = DateTime.UtcNow.AddDays(7)
+                Expiracion = DateTime.UtcNow.AddMinutes(30)
             };
 
             // Reemplazar token

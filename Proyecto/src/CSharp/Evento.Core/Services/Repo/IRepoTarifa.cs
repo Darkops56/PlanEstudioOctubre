@@ -8,5 +8,6 @@ namespace Evento.Core.Services.Repo
         Task<Tarifa?> ObtenerPorId(int id);
         Task<int> InsertTarifa(Tarifa tarifa);
         Task<bool> UpdateTarifa(Tarifa tarifa);
+        Task<bool> ReducirStock(int id);
     }
 }

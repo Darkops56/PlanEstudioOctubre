@@ -31,6 +31,7 @@ CREATE TABLE Eventos (
     idEvento INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
     idTipoEvento INT NOT NULL,
+    Estado VARCHAR(45) NOT NULL,
     fechaInicio DATETIME NOT NULL,
     fechaFin DATETIME NOT NULL,
     FOREIGN KEY (idTipoEvento) REFERENCES TipoEvento(idTipoEvento)
@@ -40,6 +41,7 @@ CREATE TABLE Eventos (
 CREATE TABLE Funcion (
     idFuncion INT AUTO_INCREMENT PRIMARY KEY,
     idEvento INT NOT NULL,
+    Estado VARCHAR(45) NOT NULL,
     Fecha DATETIME NOT NULL,
     FOREIGN KEY (idEvento) REFERENCES Eventos(idEvento)
 );
@@ -95,7 +97,7 @@ CREATE TABLE Entrada (
     idEntrada INT AUTO_INCREMENT PRIMARY KEY,
     idTarifa INT NOT NULL,
     idOrdenCompra INT NOT NULL,
-    EstadoQR VARCHAR(255),
+    Estado VARCHAR(45) NOT NULL,
     PrecioPagado INT NOT NULL,
     Foreign Key (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra),
     FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa)
