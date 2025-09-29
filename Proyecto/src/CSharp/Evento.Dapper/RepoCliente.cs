@@ -1,7 +1,7 @@
 using MySql.Data.MySqlClient;
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 
 namespace Evento.Dapper
 {
@@ -18,9 +18,15 @@ namespace Evento.Dapper
             return rows > 0;
         }
 
-        public Task<bool> ExistePorDNI(int dni)
+        public async Task<bool> ExistePorDNI(int dni)
         {
-            throw new NotImplementedException();
+            using var db = _ado.GetDbConnection();
+            var query = await db.QueryFirstOrDefaultAsync("SELECT * FROM Cliente WHERE DNI = @Dni LIMIT 1", new { Dni = dni });
+            if (query == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<int> InsertCliente(Cliente cliente)
@@ -37,7 +43,7 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
             using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada WHERE DNI = @Id", new{ Id = id });
+            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada JOIN OrdenesCompra USING (idOrdenCompra) JOIN Usuario USING (idUsuario) JOIN Cliente USING (DNI) WHERE DNI = @Id", new{ Id = id });
         }
 
         public async Task<Cliente?> ObtenerPorId(int id)
@@ -55,10 +61,9 @@ namespace Evento.Dapper
         public async Task<bool> UpdateCliente(Cliente cliente)
         {
             using var db = _ado.GetDbConnection();
-            string query = "UPDATE Cliente SET DNI = @dni, nombreCompleto = @NombreCompleto, Telefono = @telefono WHERE DNI = @dni";
+            string query = "UPDATE Cliente SET nombreCompleto = @NombreCompleto, Telefono = @telefono WHERE DNI = @dni";
             var rows = await db.ExecuteAsync(query, new
             {
-                dni = cliente.DNI,
                 nombrecompleto = cliente.nombreCompleto,
                 telefono = cliente.Telefono,
             });

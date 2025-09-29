@@ -1,7 +1,7 @@
 using MySql.Data.MySqlClient;
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 using Org.BouncyCastle.Asn1;
 
 namespace Evento.Dapper
@@ -11,6 +11,25 @@ namespace Evento.Dapper
         private readonly IAdo _ado;
 
         public RepoEvento(IAdo ado) => _ado = ado;
+
+        public async Task<string> CancelarEvento(int id)
+        {
+            using var db = _ado.GetDbConnection();
+
+            var evento = await ObtenerEventoPorId(id);
+            if (evento == null)
+                throw new Exception("El evento no existe");
+
+            if (evento.EstadoEvento == "Cancelado")
+                throw new Exception("El evento ya está cancelado");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE Eventos SET Estado = 'Cancelado' WHERE idEvento = @IdEvento",
+                new { IdEvento = id });
+
+            return rows > 0 ? "Evento cancelado correctamente" : "No se pudo cancelar el evento";
+        }
+
         public async Task<bool> DeleteEvento(int id)
         {
             var db = _ado.GetDbConnection();
@@ -71,6 +90,32 @@ namespace Evento.Dapper
         {
             var db = _ado.GetDbConnection();
             return await db.QueryAsync<Eventos>("SELECT * FROM Eventos");
+        }
+
+        public async Task<string> PublicarEvento(int id)
+        {
+            using var db = _ado.GetDbConnection();
+
+            var evento = await ObtenerEventoPorId(id);
+            if (evento == null)
+                throw new Exception("El evento no existe");
+
+            if (evento.EstadoEvento == "Publicado")
+                throw new Exception("El evento ya está publicado");
+                
+            string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0 LIMIT 1";
+            var respuesta = await db.ExecuteAsync(query, new
+            {
+                idevento = id
+            });
+            if (respuesta < 0)
+                throw new Exception("No se puede publicar el Evento por falta de Stock");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE Eventos SET Estado = 'Publicado' WHERE idEvento = @IdEvento",
+                new { IdEvento = id });
+
+            return rows > 0 ? "Evento publicado correctamente" : "No se pudo publicar el evento";
         }
 
         public async Task<bool> UpdateEvento(Eventos evento)

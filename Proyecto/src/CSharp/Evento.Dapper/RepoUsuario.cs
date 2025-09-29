@@ -1,6 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 
 namespace Evento.Dapper
 {
@@ -19,13 +19,10 @@ namespace Evento.Dapper
         public async Task<bool> ExisteUsuarioPorEmail(string nuevoEmail)
         {
             var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Usuario WHERE Email = @email";
-            var rows = await db.ExecuteAsync(query, new { email = nuevoEmail });
-            if (rows > 0)
-            {
-                return true;
-            }
-            return false;
+            var query = "SELECT COUNT(1) FROM Usuario WHERE Email = @email";
+            var count = await db.ExecuteScalarAsync<int>(query, new { email = nuevoEmail });
+
+            return count > 0;
         }
         public async Task<IEnumerable<RegistroCompra>> ObtenerComprasPorUsuario(int id)
         {
@@ -49,9 +46,10 @@ namespace Evento.Dapper
         public async Task<Usuario?> Login(string nuevoEmail, string nuevaContrasena)
         {
             var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Usuario JOIN Cliente USING (DNI) WHERE Email = @email AND Contrasena = @contrasena";
+            var sql = "SELECT u.*, c.* FROM Usuario u JOIN Cliente c ON u.DNI = c.DNI WHERE u.Email = @email AND Contrasena = @contrasena";
+            var user = (await db.QueryAsync<Usuario, Cliente, Usuario>(sql, (u, c) => { u.cliente = c; return u; }, new { email = nuevoEmail, contrasena = nuevaContrasena })).FirstOrDefault();
 
-            return await db.QueryFirstAsync<Usuario>(query, new{ email = nuevoEmail, contrasena = nuevaContrasena });
+            return user;
         }
         public async Task<Usuario?> ObtenerPorEmail(string nuevoEmail)
         {

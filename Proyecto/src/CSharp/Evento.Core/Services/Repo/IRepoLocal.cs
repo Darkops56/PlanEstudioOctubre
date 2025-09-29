@@ -1,6 +1,6 @@
 using Evento.Core.Entidades;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IRepoLocal
     {

@@ -1,6 +1,6 @@
 using Evento.Core.Entidades;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IRepoTarifa
     {
@@ -8,5 +8,6 @@ namespace Evento.Core.Services
         Task<Tarifa?> ObtenerPorId(int id);
         Task<int> InsertTarifa(Tarifa tarifa);
         Task<bool> UpdateTarifa(Tarifa tarifa);
+        Task<bool> ReducirStock(int id);
     }
 }

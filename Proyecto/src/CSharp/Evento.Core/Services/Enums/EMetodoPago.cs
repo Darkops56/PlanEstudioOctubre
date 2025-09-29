@@ -1,4 +1,4 @@
-namespace Evento.Core.Services;
+namespace Evento.Core.Services.Enums;
 
 public enum EMetodoPago
 {

@@ -1,6 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 
 namespace Evento.Dapper
 {
@@ -27,7 +27,7 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Tarifa>> ObtenerTarifasDeFuncion(int id)
         {
             var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Tarifa JOIN Entrada USING (idTarifa) WHERE Entrada.idFuncion = @idfuncion";
+            var query = "SELECT * FROM Tarifa WHERE idFuncion = @idfuncion";
 
             return await db.QueryAsync<Tarifa>(query, new{ idfuncion = id });
         }
@@ -37,7 +37,7 @@ namespace Evento.Dapper
             var db = _ado.GetDbConnection();
             var query = "SELECT * FROM Funcion WHERE idFuncion = @idfuncion";
             
-            return await db.QueryFirstAsync<Funcion>(query, new { idfuncion = id });
+            return await db.QueryFirstOrDefaultAsync<Funcion>(query, new { idfuncion = id });
         }
 
         public async Task<IEnumerable<Funcion>> ObtenerTodos()
@@ -51,15 +51,34 @@ namespace Evento.Dapper
         public async Task<bool> UpdateFuncion(Funcion funcion)
         {
             var db = _ado.GetDbConnection();
-            var query = "UPDATE Funcion SET idEvento = @idevento, Fecha = @fecha";
+            var query = "UPDATE Funcion SET idEvento = @idevento, Fecha = @fecha where idFuncion = @idfuncion";
 
             var rows = await db.ExecuteAsync(query, new
             {
                 idevento = funcion.evento.idEvento,
-                fecha = funcion.fecha
+                fecha = funcion.fecha,
+                idfuncion = funcion.idFuncion
             });
 
             return rows > 0;
+        }
+
+        public async Task<string> CancelarFuncion(int id)
+        {
+            var db = _ado.GetDbConnection();
+
+            var funcion = await ObtenerPorId(id);
+            if (funcion == null)
+                throw new Exception("La función no existe");
+
+            if (funcion.Estado == "Cancelada")
+                throw new Exception("La función ya está cancelada");
+
+            var rows = await db.ExecuteAsync(
+                "UPDATE Funcion SET Estado = 'Cancelada' WHERE idFuncion = @IdFuncion",
+                new { IdFuncion = id });
+
+            return rows > 0 ? "Función cancelada correctamente" : "No se pudo cancelar la función";
         }
     }
 }

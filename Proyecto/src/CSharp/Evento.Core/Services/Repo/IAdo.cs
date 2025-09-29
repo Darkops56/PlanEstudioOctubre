@@ -1,7 +1,7 @@
 
 using System.Data;
 
-namespace Evento.Core.Services
+namespace Evento.Core.Services.Repo
 {
     public interface IAdo
     {

@@ -1,6 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
-using Evento.Core.Services;
+using Evento.Core.Services.Repo;
 using Mysqlx.Resultset;
 
 namespace Evento.Dapper
@@ -11,7 +11,7 @@ namespace Evento.Dapper
         public async Task<int> InsertTarifa(Tarifa tarifa)
         {
             var db = _ado.GetDbConnection();
-            var query = "INSERT INTO(Tipo, Precio, Stock, Estado) VALUES(@tipo, @precio, @stock, FALSE)";
+            var query = "INSERT INTO Tarifa (Tipo, Precio, Stock, Estado) VALUES(@tipo, @precio, @stock, FALSE)";
 
             return await db.ExecuteAsync(query, new
             {
@@ -25,7 +25,7 @@ namespace Evento.Dapper
             var db = _ado.GetDbConnection();
             var query = "SELECT * FROM Tarifa WHERE idTarifa = @idtarifa";
 
-            return await db.QueryFirstAsync<Tarifa?>(query, new{ idtarifa = id });
+            return await db.QueryFirstAsync<Tarifa?>(query, new { idtarifa = id });
         }
         public async Task<IEnumerable<Tarifa>> ObtenerTodos()
         {
@@ -38,14 +38,23 @@ namespace Evento.Dapper
         public async Task<bool> UpdateTarifa(Tarifa tarifa)
         {
             using var db = _ado.GetDbConnection();
-            var query = "UPDATE Tarifa SET Tipo = @tipo, Precio = @precio, Stock = @stock, Estado = @estado WHERE idTarifa = @idtarifa ";
+            var query = "UPDATE Tarifa SET Tipo = @tipo, Precio = @precio, Estado = @estado WHERE idTarifa = @idtarifa";
             var rows = await db.ExecuteAsync(query, new
             {
                 idtarifa = tarifa.idTarifa,
                 tipo = tarifa.Tipo,
                 precio = tarifa.Precio,
-                stock = tarifa.Stock,
                 estado = tarifa.Estado
+            });
+            return rows > 0;
+        }
+        public async Task<bool> ReducirStock(int id)
+        {
+            var db = _ado.GetDbConnection();
+            var query = "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @idtarifa";
+            var rows = await db.ExecuteAsync(query, new
+            {
+                idtarifa = id
             });
             return rows > 0;
         }
