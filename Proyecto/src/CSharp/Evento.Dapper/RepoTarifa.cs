@@ -7,7 +7,8 @@ namespace Evento.Dapper
 {
     public class RepoTarifa : IRepoTarifa
     {
-        private readonly Ado _ado;
+        private readonly IAdo _ado;
+        public RepoTarifa(IAdo ado) => _ado = ado;
         public async Task<int> InsertTarifa(Tarifa tarifa)
         {
             var db = _ado.GetDbConnection();

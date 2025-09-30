@@ -1,0 +1,4 @@
+"ConnectionStrings": {
+    "MySqlConnection": "Server=localhost;Database=5to_Eventos;User=root;Password=;",
+    "SeconMysqlconnection": "Server=localhost;Database=5to_Eventos;User=5to_agbd;Password=Trigg3rs!;"
+  }

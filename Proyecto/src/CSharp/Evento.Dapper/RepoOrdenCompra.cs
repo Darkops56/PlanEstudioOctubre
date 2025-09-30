@@ -109,12 +109,15 @@ namespace Evento.Dapper
                            FROM OrdenesCompra o
                            INNER JOIN Usuario u ON o.idUsuario = u.idUsuario";
 
-            var ordenes = await db.QueryAsync<OrdenesCompra, Usuario, OrdenesCompra>(
+            var ordenes = await db.QueryAsync<OrdenesCompra?, Usuario?, OrdenesCompra?>(
                 sql,
                 (orden, usuario) => { orden.usuario = usuario; return orden; },
                 splitOn: "idUsuario"
             );
-
+            if (ordenes.Any())
+            {
+                return ordenes;
+            }
             // Cargar entradas de cada orden
             foreach (var orden in ordenes)
             {
@@ -123,7 +126,7 @@ namespace Evento.Dapper
                     new { Id = orden.idOrdenCompra }
                 )).ToList();
             }
-
+        
             return ordenes;
         }
 

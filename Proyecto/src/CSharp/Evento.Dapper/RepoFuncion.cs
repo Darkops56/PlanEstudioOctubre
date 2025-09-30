@@ -7,7 +7,8 @@ namespace Evento.Dapper
 {
     public class RepoFuncion : IRepoFuncion
     {
-        private readonly Ado _ado;
+        private readonly IAdo _ado;
+        public RepoFuncion(IAdo ado) => _ado = ado;
         public async Task<bool> DeleteFuncion(int id)
         {
             var db = _ado.GetDbConnection();

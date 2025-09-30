@@ -43,7 +43,7 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
             using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada JOIN OrdenesCompra oc USING (idOrdenCompra) WHERE oc.DNI = @Id", new{ Id = id });
+            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada JOIN OrdenesCompra USING (idOrdenCompra) JOIN Usuario u USING (idUsuario) WHERE u.DNI = @Id", new{ Id = id });
         }
 
         public async Task<Cliente?> ObtenerPorId(int id)
@@ -66,6 +66,7 @@ namespace Evento.Dapper
             {
                 nombrecompleto = cliente.nombreCompleto,
                 telefono = cliente.Telefono,
+                dni = cliente.DNI
             });
             return rows > 0;
         }

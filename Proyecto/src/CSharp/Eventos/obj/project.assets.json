@@ -986,13 +986,13 @@
           }
         }
       },
-      "Swashbuckle.AspNetCore/9.0.4": {
+      "Swashbuckle.AspNetCore/9.0.5": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "9.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "9.0.4",
-          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.4",
-          "Swashbuckle.AspNetCore.SwaggerUI": "9.0.4"
+          "Swashbuckle.AspNetCore.Swagger": "9.0.5",
+          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.5",
+          "Swashbuckle.AspNetCore.SwaggerUI": "9.0.5"
         },
         "build": {
           "build/Swashbuckle.AspNetCore.props": {}
@@ -1001,7 +1001,7 @@
           "buildMultiTargeting/Swashbuckle.AspNetCore.props": {}
         }
       },
-      "Swashbuckle.AspNetCore.Swagger/9.0.4": {
+      "Swashbuckle.AspNetCore.Swagger/9.0.5": {
         "type": "package",
         "dependencies": {
           "Microsoft.OpenApi": "1.6.25"
@@ -1020,10 +1020,10 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "Swashbuckle.AspNetCore.SwaggerGen/9.0.4": {
+      "Swashbuckle.AspNetCore.SwaggerGen/9.0.5": {
         "type": "package",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "9.0.4"
+          "Swashbuckle.AspNetCore.Swagger": "9.0.5"
         },
         "compile": {
           "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
@@ -1036,7 +1036,7 @@
           }
         }
       },
-      "Swashbuckle.AspNetCore.SwaggerUI/9.0.4": {
+      "Swashbuckle.AspNetCore.SwaggerUI/9.0.5": {
         "type": "package",
         "compile": {
           "lib/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {
@@ -3043,24 +3043,24 @@
         "runtimes/win-x64/native/krbcc64.dll"
       ]
     },
-    "Swashbuckle.AspNetCore/9.0.4": {
-      "sha512": "4hghaogMoS87Ivjj8s7aGuGsxrsjXZpjNvahLsN+zSLrZQcV8zQyiBweBd9AXC1sGkeNYb9/hbeS1EXrZ/hKjQ==",
+    "Swashbuckle.AspNetCore/9.0.5": {
+      "sha512": "qPEsYafg031ixe1NfDEwbTfv9+WE2CAK3YuuIEzv8GTF39HgDgG/mKJqp7Bj6bV1TZT20rx9FeTrATG39WsVBw==",
       "type": "package",
-      "path": "swashbuckle.aspnetcore/9.0.4",
+      "path": "swashbuckle.aspnetcore/9.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "build/Swashbuckle.AspNetCore.props",
         "buildMultiTargeting/Swashbuckle.AspNetCore.props",
         "docs/package-readme.md",
-        "swashbuckle.aspnetcore.9.0.4.nupkg.sha512",
+        "swashbuckle.aspnetcore.9.0.5.nupkg.sha512",
         "swashbuckle.aspnetcore.nuspec"
       ]
     },
-    "Swashbuckle.AspNetCore.Swagger/9.0.4": {
-      "sha512": "syU8U4Eg3DfhU+BBeDUh66erwDsYOhp82InXbrOsqWP3qoOfQbBtePcTetkLNanovYHYX40alZBE6gQQFtBZkQ==",
+    "Swashbuckle.AspNetCore.Swagger/9.0.5": {
+      "sha512": "mdjT7BRsB5T2SuG4UieFgTqTLPugg4RhnZ6m2K1uj8034tcXy6XDYjNPFCL66w2QfdWkKzhaHiJraMOcMRrHUw==",
       "type": "package",
-      "path": "swashbuckle.aspnetcore.swagger/9.0.4",
+      "path": "swashbuckle.aspnetcore.swagger/9.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3071,14 +3071,14 @@
         "lib/net9.0/Swashbuckle.AspNetCore.Swagger.pdb",
         "lib/net9.0/Swashbuckle.AspNetCore.Swagger.xml",
         "package-readme.md",
-        "swashbuckle.aspnetcore.swagger.9.0.4.nupkg.sha512",
+        "swashbuckle.aspnetcore.swagger.9.0.5.nupkg.sha512",
         "swashbuckle.aspnetcore.swagger.nuspec"
       ]
     },
-    "Swashbuckle.AspNetCore.SwaggerGen/9.0.4": {
-      "sha512": "GnCikaq7kagEckGGsrVnKl2icRQebyr14/7s3T/rQQO7edOIXkxtjTOJZqbazOxaTXBDCDdSInMiYbMQhFnE5Q==",
+    "Swashbuckle.AspNetCore.SwaggerGen/9.0.5": {
+      "sha512": "Fdeaanu9uYIQl8uDFLwfHFyiCh04NDZNJq55avdfc0DeeHB/krjW6JUZ0AMAnNRypgRrsF3Lwem511chAU0o+g==",
       "type": "package",
-      "path": "swashbuckle.aspnetcore.swaggergen/9.0.4",
+      "path": "swashbuckle.aspnetcore.swaggergen/9.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3089,14 +3089,14 @@
         "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.pdb",
         "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.xml",
         "package-readme.md",
-        "swashbuckle.aspnetcore.swaggergen.9.0.4.nupkg.sha512",
+        "swashbuckle.aspnetcore.swaggergen.9.0.5.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggergen.nuspec"
       ]
     },
-    "Swashbuckle.AspNetCore.SwaggerUI/9.0.4": {
-      "sha512": "2ugT2OvZsKHqk/2rMDmuqDuFmtix0NvzlXxAfnfHROVMTovbx7Z0UsOQHZa462DBTgdBFnR2Ss6wm4fypfymdA==",
+    "Swashbuckle.AspNetCore.SwaggerUI/9.0.5": {
+      "sha512": "Em1jGT2AX7/fP9LAU0ELUMVDtr6IPTgystcIg8AAEV59CfUtNkeNyirkX7fSxg0qX3R4NAQcsx9FwZIfHItiAQ==",
       "type": "package",
-      "path": "swashbuckle.aspnetcore.swaggerui/9.0.4",
+      "path": "swashbuckle.aspnetcore.swaggerui/9.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3107,7 +3107,7 @@
         "lib/net9.0/Swashbuckle.AspNetCore.SwaggerUI.pdb",
         "lib/net9.0/Swashbuckle.AspNetCore.SwaggerUI.xml",
         "package-readme.md",
-        "swashbuckle.aspnetcore.swaggerui.9.0.4.nupkg.sha512",
+        "swashbuckle.aspnetcore.swaggerui.9.0.5.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
     },
@@ -4190,40 +4190,47 @@
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 9.0.9",
       "Microsoft.AspNetCore.OpenApi >= 9.0.8",
       "System.IdentityModel.Tokens.Jwt >= 8.14.0",
-      "swashbuckle.aspnetcore >= 9.0.4"
+      "swashbuckle.aspnetcore >= 9.0.5"
     ]
   },
   "packageFolders": {
-    "/home/et12alumno/.nuget/packages/": {}
+    "C:\\Users\\darko\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/Eventos.csproj",
+      "projectUniqueName": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
       "projectName": "Eventos",
-      "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/Eventos.csproj",
-      "packagesPath": "/home/et12alumno/.nuget/packages/",
-      "outputPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Eventos/obj/",
+      "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
+      "packagesPath": "C:\\Users\\darko\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/et12alumno/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\darko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "/usr/lib/dotnet/library-packs": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/Evento.Core.csproj": {
-              "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/Evento.Core.csproj"
+            "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+              "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
             },
-            "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/Evento.Dapper.csproj": {
-              "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/Evento.Dapper.csproj"
+            "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
+              "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj"
             }
           }
         }
@@ -4238,7 +4245,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -4262,7 +4269,7 @@
           },
           "swashbuckle.aspnetcore": {
             "target": "Package",
-            "version": "[9.0.4, )"
+            "version": "[9.0.5, )"
           }
         },
         "imports": [
@@ -4284,7 +4291,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

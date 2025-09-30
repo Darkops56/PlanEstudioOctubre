@@ -11,14 +11,18 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 
+var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 builder.Services.AddControllers()
     .AddFluentValidation(fv =>
     {
         fv.RegisterValidatorsFromAssemblyContaining<ClienteFluent>();
     });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IAdo>(sp => new Ado(connectionString));
 builder.Services.AddScoped<IRepoEvento, RepoEvento>();
-builder.Services.AddHostedService<StockExpiradoService>();
+builder.Services.AddScoped<IRepoOrdenCompra, RepoOrdenCompra>();
 builder.Services.AddScoped<IRepoLocal, RepoLocal>();
 builder.Services.AddScoped<IRepoCliente, RepoCliente>();
 builder.Services.AddScoped<IRepoFuncion, RepoFuncion>();
@@ -26,6 +30,8 @@ builder.Services.AddScoped<IRepoTarifa, RepoTarifa>();
 builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
 builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
 builder.Services.AddScoped<IRepoRefreshToken, RepoRefreshToken>();
+
+//builder.Services.AddHostedService<StockExpiradoService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -40,9 +46,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Eventos API V1");
+    c.RoutePrefix = "swagger"; // URL: /swagger
+});
+
 
 app.UseRouting();
 

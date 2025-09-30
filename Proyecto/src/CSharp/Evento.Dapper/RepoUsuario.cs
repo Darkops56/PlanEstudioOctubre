@@ -6,7 +6,8 @@ namespace Evento.Dapper
 {
     public class RepoUsuario : IRepoUsuario
     {
-        private readonly Ado _ado;
+        private readonly IAdo _ado;
+        public RepoUsuario(IAdo ado) => _ado = ado;
         public async Task<bool> DeleteUsuario(int id)
         {
             var db = _ado.GetDbConnection();
