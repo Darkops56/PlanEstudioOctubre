@@ -107,6 +107,14 @@ namespace Evento.Dapper
             return await db.QueryAsync<Funcion>("SELECT * FROM Funcion WHERE idEvento = @idevento", new { idevento = idEvento });
         }
 
+        public async Task<TipoEvento?> ObtenerTipoEventoPorNombre(string tipo)
+        {
+            var db = _ado.GetDbConnection();
+            string query = "SELECT * FROM TipoEvento WHERE tipoEvento = @tipoevento";
+
+            return await db.QueryFirstAsync<TipoEvento?>(query, new {tipoevento = tipo});
+        }
+
         public async Task<IEnumerable<Sector>> ObtenerSectoresConTarifaAsync(int idEvento)
         {
             var db = _ado.GetDbConnection();
@@ -114,13 +122,6 @@ namespace Evento.Dapper
             return await db.QueryAsync<Sector>(query, new { idevento = idEvento });
         }
 
-        public async Task<TipoEvento?> ObtenerTipoEventoPorId(int id)
-        {
-            var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM TipoEvento WHERE idTipoEvento = @idtipoevento";
-
-            return await db.QueryFirstAsync<TipoEvento>(query, new { idtipoevento = id });
-        }
 
         public async Task<IEnumerable<Eventos>> ObtenerTodos()
         {

@@ -116,5 +116,16 @@ namespace Evento.Dapper
                 return ex.Message;
             }
         }
+
+        public async Task<EEstados> ObtenerEstadoFuncion(string estadoFuncion)
+        {
+            var db = _ado.GetDbConnection();
+            string query = "SELECT Estado FROM Funcion WHERE Estado = @estado";
+
+            return await db.QueryFirstOrDefaultAsync<EEstados>(query, new
+            {
+                estado = estadoFuncion
+            });
+        }
     }
 }

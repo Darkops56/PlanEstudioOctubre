@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;

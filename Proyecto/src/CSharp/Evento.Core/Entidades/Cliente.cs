@@ -8,14 +8,4 @@ public class Cliente
 
     public Cliente()
     {}
-    
-    //Métodos
-    public void ActualizarContacto(string nuevoTelefono)
-    {
-        Telefono = nuevoTelefono;
-    }
-    public override string ToString()
-    {
-        return $"Cliente: {nombreCompleto} - DNI: {DNI}";
-    }
 }

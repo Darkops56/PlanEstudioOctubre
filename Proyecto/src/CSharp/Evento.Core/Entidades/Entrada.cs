@@ -11,10 +11,4 @@ public class Entrada
     public int PrecioPagado { get; set; }
     public Entrada()
     { }
-    //Métodos
-    
-    public string MostrarDetalle()
-    {
-        return $"Entrada {idEntrada} - Tarifa: {tarifa.Tipo}";
-    }
 }

@@ -30,10 +30,15 @@ namespace Evento.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] Local local)
+        public async Task<IActionResult> Crear([FromBody] LocalDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var local = new Local
+            {
+                Nombre = dto.Nombre,
+                Ubicacion = dto.Ubicacion
+            };
             var id = await _repo.InsertLocal(local);
             return CreatedAtAction(nameof(ObtenerPorId), new { id }, local);
         }

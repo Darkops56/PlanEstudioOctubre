@@ -11,6 +11,7 @@ namespace Evento.Core.Entidades
         public int Total { get; set; }
         public EMetodoPago metodoPago { get; set; }
         public EEstados Estado { get; set; }
+        
         public OrdenesCompra() { }
     }
 }

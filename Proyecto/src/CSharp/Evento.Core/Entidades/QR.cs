@@ -15,14 +15,4 @@ public class QR
         this.VCard = vCard;
     }
 
-    //Métodos
-    public bool EstaVigente(DateTime fechaGeneracion)
-    {
-        return (DateTime.Now - fechaGeneracion).TotalMinutes <= duracion;
-    }
-
-    public override string ToString()
-    {
-        return $"QR: {url} (Duración: {duracion} min)";
-    }
 }

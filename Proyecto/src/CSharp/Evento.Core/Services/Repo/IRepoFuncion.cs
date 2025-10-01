@@ -1,4 +1,5 @@
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Core.Services.Repo
 {
@@ -11,5 +12,6 @@ namespace Evento.Core.Services.Repo
         Task<bool> DeleteFuncion(int id);
         Task<IEnumerable<Tarifa>> ObtenerTarifasDeFuncion(int id);
         Task<string> CancelarFuncion(int id);
+        Task<EEstados> ObtenerEstadoFuncion(string estadoFuncion);
     }
 }

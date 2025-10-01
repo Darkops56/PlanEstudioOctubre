@@ -12,31 +12,4 @@ public class Tarifa
 
     public Tarifa()
     { }
-
-    //Métodos
-    public void AplicarDescuento(int porcentaje)
-    {
-        if (porcentaje > 0 && porcentaje <= 100)
-            Precio -= (Precio * porcentaje) / 100;
-    }
-    public bool HayStock()
-    {
-        return Stock > 0;
-    }
-    public bool PuedePublicarse(int idFuncion)
-    {
-        if (idFuncion == funcion.idFuncion && Stock > 0)
-        {
-            return true;
-        }
-        return false;
-    }
-    public void ReducirStock()
-    {
-        if (Stock > 0) Stock--;
-    }
-    public override string ToString()
-    {
-        return $"Tarifa {Tipo}";
-    }
 }

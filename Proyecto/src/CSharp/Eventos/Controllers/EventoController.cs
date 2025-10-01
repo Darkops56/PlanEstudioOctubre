@@ -2,6 +2,7 @@ using Evento.Core.Entidades;
 using Evento.Core.DTOs;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
+using Evento.Core.Services.Enums;
 namespace Evento.Controllers
 {
     [ApiController]
@@ -29,14 +30,20 @@ namespace Evento.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Crear([FromBody] Eventos evento)
+    public async Task<IActionResult> Crear([FromBody] EventoDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-
+        
+            var tipo = await _repo.ObtenerTipoEventoPorNombre(dto.tipoEvento.ToLower().Trim());
+        
+        var evento = new Eventos
+        {
+            Nombre = dto.Nombre,
+            tipoEvento = tipo
+        };
         var id = await _repo.InsertEvento(evento);
         return CreatedAtAction(nameof(ObtenerPorId), new { id }, evento);
     }
-
     [HttpPut("{id}")]
     public async Task<IActionResult> Actualizar(int id, [FromBody] Eventos evento)
     {

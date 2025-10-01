@@ -8,10 +8,4 @@ public class TipoEvento
     public ETipoEvento tipoEvento { get; set; }
     public TipoEvento()
     { }
-
-    //Métodos
-    public override string ToString()
-    {
-        return $"Tipo de evento: {tipoEvento}";
-    }
 }

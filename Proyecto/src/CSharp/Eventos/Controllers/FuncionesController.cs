@@ -1,3 +1,4 @@
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,25 @@ namespace Evento.Controllers
     public class FuncionesController : ControllerBase
     {
         private readonly IRepoFuncion _repo;
-
+        private readonly IRepoEvento _repoEvento;
         public FuncionesController(IRepoFuncion repo) => _repo = repo;
+
+        [HttpPost]
+        public async Task<IActionResult> Crear([FromBody] FuncionDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var estadoFuncion = await _repo.ObtenerEstadoFuncion(dto.Estado);
+            var Evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
+
+            var funcion = new Funcion
+            {
+                Estado = estadoFuncion,
+                evento = Evento,
+                Fecha = dto.Fecha
+            };
+            var id = await _repo.InsertFuncion(funcion);
+            return CreatedAtAction(nameof(ObtenerPorId), new { id }, funcion);
+        }
 
         [HttpGet]
         public async Task<IActionResult> ObtenerTodos() =>
@@ -21,15 +39,6 @@ namespace Evento.Controllers
         {
             var funcion = await _repo.ObtenerPorId(id);
             return funcion != null ? Ok(funcion) : NotFound();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] Funcion funcion)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var id = await _repo.InsertFuncion(funcion);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id }, funcion);
         }
 
         [HttpPut("{id}")]

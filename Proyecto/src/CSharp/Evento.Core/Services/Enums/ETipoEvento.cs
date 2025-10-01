@@ -2,20 +2,20 @@ namespace Evento.Core.Services.Enums;
 
 public enum ETipoEvento
 {
-    Formales,
-    Informales,
-    Externos,
-    Internos,
-    Corporativos,
-    Empresariales,
-    Sociales,
-    Ocio,
-    Entretenimiento,
-    Deportivos,
-    Causa,
-    Politicos,
-    Religiosos,
-    Formativos,
-    Virtuales,
-    Hibridos
+    formales,
+    informales,
+    externos,
+    internos,
+    corporativos,
+    empresariales,
+    sociales,
+    ocio,
+    entretenimiento,
+    deportivos,
+    causa,
+    politicos,
+    religiosos,
+    formativos,
+    virtuales,
+    hibridos
 }

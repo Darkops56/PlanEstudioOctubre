@@ -6,7 +6,7 @@ namespace Evento.Core.Services.Repo
     {
         Task<IEnumerable<Eventos>> ObtenerTodos();
         Task<Eventos?> ObtenerEventoPorId(int id);
-        Task<TipoEvento?> ObtenerTipoEventoPorId(int id);
+        Task<TipoEvento?> ObtenerTipoEventoPorNombre(string tipo);
         Task<Eventos?> ObtenerEventoPorNombre(string nombre);
         Task<int> InsertEvento(Eventos evento);
         Task<bool> UpdateEvento(Eventos evento);

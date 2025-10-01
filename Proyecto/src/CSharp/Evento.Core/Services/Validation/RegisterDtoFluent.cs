@@ -16,10 +16,7 @@ namespace Evento.Core.Services.Validation
             _repoUsuario = repoUsuario;
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("El email es obligatorio")
-                .EmailAddress().WithMessage("Formato de email inválido")
-                .MustAsync(async (email, cancellation) =>
-                await _repoUsuario.ExisteUsuarioPorEmail(email) == false)
-            .WithMessage("El email ya está registrado");
+                .EmailAddress().WithMessage("Formato de email inválido");
 
             RuleFor(x => x.Contrasena)
                 .NotEmpty().WithMessage("La contraseña es obligatoria")

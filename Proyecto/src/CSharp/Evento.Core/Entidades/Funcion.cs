@@ -11,14 +11,4 @@ public class Funcion
 
     public Funcion()
     { }
-    
-    //Métodos
-    public bool EsEnFecha(DateTime fechaComparar)
-    {
-        return Fecha.Date == fechaComparar.Date;
-    }
-    public override string ToString()
-    {
-        return $"Función {idFuncion} - Evento: {evento.Nombre} - Fecha: {Fecha.ToShortDateString()}";
-    }
 }

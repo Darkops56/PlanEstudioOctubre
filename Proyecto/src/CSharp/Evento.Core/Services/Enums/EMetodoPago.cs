@@ -9,5 +9,5 @@ public enum EMetodoPago
     Transferencia,
     BilleteraDigital,
     NFC,
-    QR
+    QR,
 }

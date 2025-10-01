@@ -32,6 +32,7 @@ builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
 builder.Services.AddScoped<IRepoRefreshToken, RepoRefreshToken>();
 
 //builder.Services.AddHostedService<StockExpiradoService>();
+builder.WebHost.UseUrls("http://localhost:5001");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
