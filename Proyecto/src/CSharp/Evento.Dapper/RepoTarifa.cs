@@ -1,5 +1,6 @@
 using Dapper;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Mysqlx.Resultset;
 
@@ -58,6 +59,17 @@ namespace Evento.Dapper
                 idtarifa = id
             });
             return rows > 0;
+        }
+
+        public async Task<ETipoTarifa> ObtenerTipoTarifa(string tipo)
+        {
+            var db = _ado.GetDbConnection();
+            string query = "SELECT Tipo FROM Tarifa WHERE Tipo = @tipotarifa";
+
+            return await db.QueryFirstOrDefaultAsync<ETipoTarifa>(query, new
+            {
+                tipotarifa = tipo
+            });
         }
     }
 }

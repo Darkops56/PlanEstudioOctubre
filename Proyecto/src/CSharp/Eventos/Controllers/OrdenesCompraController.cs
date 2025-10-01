@@ -1,3 +1,4 @@
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +10,30 @@ namespace Evento.Controllers
     public class OrdenesCompraController : ControllerBase
     {
         private readonly IRepoOrdenCompra _repoOrden;
+        private readonly IRepoUsuario _repoUsuario;
 
         public OrdenesCompraController(IRepoOrdenCompra repoOrden)
         {
             _repoOrden = repoOrden;
         }
         [HttpPost]
-        public async Task<IActionResult> CrearOrden([FromBody] OrdenesCompra oc)
+        public async Task<IActionResult> CrearOrden([FromBody] OrdenesCompraDto oc)
         {
             if (oc == null) return BadRequest("Debes enviar un cuerpo.");
-            var id = await _repoOrden.InsertOrdenCompra(oc);
+            
+            var estadoOC = await _repoOrden.ObtenerEstado(oc.Estado);
+            var MetodoPago = await _repoOrden.ObtenerMetodoPago(oc.metodoPago);
+            var user = await _repoUsuario.ObtenerPorId(oc.idUsuario);
+
+            var OrdenCompra = new OrdenesCompra
+            {
+                metodoPago = MetodoPago,
+                Estado = estadoOC,
+                Fecha = oc.Fecha,
+                Total = oc.Total,
+                usuario = user
+            };
+            var id = await _repoOrden.InsertOrdenCompra(OrdenCompra);
             return CreatedAtAction(nameof(ObtenerOrden), new { id = id }, oc);
         }
 

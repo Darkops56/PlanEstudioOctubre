@@ -334,5 +334,27 @@ namespace Evento.Dapper
                     throw new Exception($"No hay stock suficiente para la tarifa {tarifa.Tipo} (Entrada {entrada.idEntrada}).");
             }
         }
+
+        public async Task<EMetodoPago> ObtenerMetodoPago(string metodo)
+        {
+            var db = _ado.GetDbConnection();
+            string query = "SELECT metodoPago FROM OrdenesCompra WHERE metodoPago = @metodopago";
+
+            return await db.QueryFirstOrDefaultAsync<EMetodoPago>(query, new
+            {
+                metodopago = metodo
+            });
+        }
+
+        public async Task<EEstados> ObtenerEstado(string estadoOC)
+        {
+            var db = _ado.GetDbConnection();
+            string query = "SELECT Estado FROM OrdenesCompra WHERE Estado = @estado";
+
+            return await db.QueryFirstOrDefaultAsync<EEstados>(query, new
+            {
+                estado = estadoOC
+            });
+        }
     }
 }

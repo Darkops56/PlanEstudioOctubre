@@ -24,7 +24,7 @@ namespace Evento.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] Tarifa tarifa)
+        public async Task<IActionResult> Crear([FromBody] TarifaDto tarifa)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

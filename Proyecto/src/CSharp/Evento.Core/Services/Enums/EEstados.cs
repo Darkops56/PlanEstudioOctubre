@@ -2,10 +2,10 @@ namespace Evento.Core.Services.Enums;
 
 public enum EEstados
 {
-    creado,
-    pagado,
-    pendiente,
-    publicado,
-    cancelado,
-    expirada,
+    Creado,
+    Pagado,
+    Pendiente,
+    Publicado,
+    Cancelado,
+    Expirada,
 }

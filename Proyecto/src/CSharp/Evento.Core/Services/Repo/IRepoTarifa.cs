@@ -1,4 +1,5 @@
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 
 namespace Evento.Core.Services.Repo
 {
@@ -9,5 +10,6 @@ namespace Evento.Core.Services.Repo
         Task<int> InsertTarifa(Tarifa tarifa);
         Task<bool> UpdateTarifa(Tarifa tarifa);
         Task<bool> ReducirStock(int id);
+        Task<ETipoTarifa> ObtenerTipoTarifa(string tipo);
     }
 }
