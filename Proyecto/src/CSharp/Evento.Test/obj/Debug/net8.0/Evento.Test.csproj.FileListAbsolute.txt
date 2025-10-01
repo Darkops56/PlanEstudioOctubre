@@ -1,0 +1,6 @@
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.csproj.AssemblyReference.cache
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.GeneratedMSBuildEditorConfig.editorconfig
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.AssemblyInfoInputs.cache
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.AssemblyInfo.cs
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.csproj.CoreCompileInputs.cache
+/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/Debug/net8.0/Evento.Test.sourcelink.json

@@ -1,31 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj": {}
+    "/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj": {}
   },
   "projects": {
-    "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj": {
+    "/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
+        "projectUniqueName": "/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
         "projectName": "Evento.Test",
-        "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
+        "projectPath": "/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
         "packagesPath": "/home/et12alumno/.nuget/packages/",
-        "outputPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/",
+        "outputPath": "/home/et12alumno/Escritorio/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/et12alumno/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -33,21 +32,19 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[17.12.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
             },
             "coverlet.collector": {
               "target": "Package",
@@ -78,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.115/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

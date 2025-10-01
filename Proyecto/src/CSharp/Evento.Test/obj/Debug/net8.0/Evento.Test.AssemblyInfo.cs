@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Evento.Core")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Evento.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d39f2ed79eec07a825744613559a38b9070ef978")]
-[assembly: System.Reflection.AssemblyProductAttribute("Evento.Core")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Evento.Core")]
+[assembly: System.Reflection.AssemblyProductAttribute("Evento.Test")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Evento.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Generado por la clase WriteCodeFragment de MSBuild.
