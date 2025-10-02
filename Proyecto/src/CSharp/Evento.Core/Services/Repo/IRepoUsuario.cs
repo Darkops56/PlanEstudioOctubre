@@ -10,7 +10,6 @@ namespace Evento.Core.Services.Repo
         Task<bool> DeleteUsuario(int id);
         Task<IEnumerable<OrdenesCompra>> ObtenerComprasPorUsuario(int id);
         Task<Usuario?> ObtenerPorEmail(string nuevoEmail);
-        Task<Usuario?> Login(string nuevoEmail, string nuevaContrasena);
         Task<bool> ExisteUsuarioPorEmail(string nuevoEmail);
     }
 }

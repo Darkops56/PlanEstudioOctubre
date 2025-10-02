@@ -21,14 +21,18 @@ namespace Evento.Dapper
         public async Task<int> InsertFuncion(Funcion funcion)
         {
             var db = _ado.GetDbConnection();
-            string query = "INSERT INTO Funcion(idEvento, Fecha, Estado) VALUES(@idevento, @fecha, @estado)";
-            var rows = await db.ExecuteAsync(query, new
+            string query = @"INSERT INTO Funcion(idEvento, Fecha, Estado)
+                            VALUES(@idevento, @fecha, @estado);
+                            SELECT LAST_INSERT_ID();";
+
+            var id = await db.ExecuteScalarAsync<int>(query, new
             {
                 idevento = funcion.evento!.idEvento,
                 fecha = funcion.Fecha,
                 estado = funcion.Estado.ToString()
             });
-            return rows > 0 ? rows : 0;
+
+            return id;
         }
 
         public async Task<IEnumerable<Tarifa>> ObtenerTarifasDeFuncion(int id)
@@ -76,38 +80,40 @@ namespace Evento.Dapper
 
             // Verificar si la función existe
             var funcion = await db.QueryFirstOrDefaultAsync<Funcion>(
-                "SELECT * FROM Funcion WHERE idFuncion = @Id",
-                new { Id = idFuncion }
+                "SELECT * FROM Funcion WHERE idFuncion = @idFuncion",
+                new { idFuncion }
             );
-            if (funcion == null) return "Función no encontrada";
+
+            if (funcion == null)
+                return "Función no encontrada";
 
             try
             {
                 // Obtener entradas de la función
                 var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idFuncion = @Id",
-                    new { Id = idFuncion }
+                    "SELECT * FROM Entrada WHERE idFuncion = @idFuncion",
+                    new { idFuncion }
                 );
 
                 foreach (var entrada in entradas)
                 {
                     // Liberar stock
                     await db.ExecuteAsync(
-                        "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
-                        new { Id = entrada.tarifa.idTarifa }
+                        "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @idTarifa",
+                        new { idTarifa = entrada.tarifa.idTarifa }
                     );
 
                     // Anular entrada
                     await db.ExecuteAsync(
-                        "UPDATE Entrada SET EstadoQR = 'Anulada' WHERE idEntrada = @Id",
-                        new { Id = entrada.idEntrada }
+                        "UPDATE Entrada SET Estado = 'Anulada' WHERE idEntrada = @idEntrada",
+                        new { idEntrada = entrada.idEntrada }
                     );
                 }
 
-                // Opcional: marcar la función como cancelada si tienes un campo Estado
+                // Marcar la función como cancelada
                 await db.ExecuteAsync(
-                    "UPDATE Funcion SET Estado = 'Cancelada' WHERE idFuncion = @Id",
-                    new { Id = idFuncion }
+                    "UPDATE Funcion SET Estado = 'Cancelada' WHERE idFuncion = @idFuncion",
+                    new { idFuncion }
                 );
 
                 return string.Empty; // OK
@@ -117,6 +123,7 @@ namespace Evento.Dapper
                 return ex.Message;
             }
         }
+
 
         public async Task<EEstados> ObtenerEstadoFuncion(string estadoFuncion)
         {

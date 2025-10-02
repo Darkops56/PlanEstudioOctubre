@@ -36,15 +36,17 @@ namespace Evento.Controllers
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
         var tipoDto = await _repo.ObtenerTipoEventoPorNombre(dto.tipoEvento.ToLower().Trim());
-            if (tipoDto == null) return NotFound("No se encontro el tipo del evento.");
-            var tipo = new TipoEvento
-            {
-                tipoEvento = UniqueFormatStrings.NormalizarString(tipoDto.tipoEvento.ToString()),
-                idTipoEvento = tipoDto.idTipoEvento
-            };
+        if (tipoDto == null) return NotFound("No se encontro el tipo del evento.");
+
+        var tipo = new TipoEvento
+        {
+            tipoEvento = UniqueFormatStrings.NormalizarString(tipoDto.tipoEvento.ToString()),
+            idTipoEvento = tipoDto.idTipoEvento
+        };
         var evento = new Eventos
         {
             Nombre = dto.Nombre,
+            idTipoEvento = tipo.idTipoEvento,
             tipoEvento = tipo,
             EstadoEvento = EEstados.Pendiente,
             fechaFin = dto.fechaFin,
@@ -54,9 +56,26 @@ namespace Evento.Controllers
         return CreatedAtAction(nameof(ObtenerPorId), new { id }, evento);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Actualizar(int id, [FromBody] Eventos evento)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Actualizar(int id, [FromBody] EventoDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var tipoDto = await _repo.ObtenerTipoEventoPorNombre(dto.tipoEvento);
+        var tipo = new TipoEvento
+        {
+            tipoEvento = tipoDto.tipoEvento.ToString(),
+            idTipoEvento = tipoDto.idTipoEvento
+        };
+        var evento = new Eventos
+        {
+            idTipoEvento = tipo.idTipoEvento,
+            tipoEvento = tipo,
+            fechaFin = dto.fechaFin,
+            fechaInicio = dto.fechaInicio,
+            Nombre = dto.Nombre
+        };
 
         evento.idEvento = id;
         var ok = await _repo.UpdateEvento(evento);

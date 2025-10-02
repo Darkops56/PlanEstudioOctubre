@@ -12,36 +12,56 @@ namespace Evento.Controllers
     {
         private readonly IRepoFuncion _repo;
         private readonly IRepoEvento _repoEvento;
-        public FuncionesController(IRepoFuncion repo) => _repo = repo;
+        private readonly ILogger<FuncionesController> _logger;
+        public FuncionesController(IRepoFuncion repo, IRepoEvento repoEvento, ILogger<FuncionesController> logger)
+        {
+            _repo = repo;
+            _repoEvento = repoEvento;
+            _logger = logger;
+        }
+        [HttpGet]
+        public async Task<IActionResult> ObtenerTodos() =>
+            Ok(await _repo.ObtenerTodos());
 
         [HttpPost]
         public async Task<IActionResult> Crear([FromBody] FuncionDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             if (!Enum.TryParse<EEstados>(dto.Estado, true, out var estadoFuncion))
-            {
                 return BadRequest($"Estado '{dto.Estado}' no válido.");
+
+            // Obtener evento
+            var evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
+
+            // Validar null
+            if (evento == null)
+            {
+                _logger.LogWarning("No se encontró el evento con id {IdEvento}", dto.idEvento);
+                return NotFound($"No se encontró el evento con id {dto.idEvento}");
             }
 
-            var evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
-            if (evento == null)
-                return NotFound("No se encontró el evento");
-
+            // Crear función
             var funcion = new Funcion
             {
                 Estado = estadoFuncion,
                 evento = evento,
                 Fecha = dto.Fecha
             };
-            var id = await _repo.InsertFuncion(funcion);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id }, funcion);
+
+            _logger.LogInformation("Insertando Funcion con idEvento {IdEvento} y fecha {Fecha}", funcion.evento.idEvento, funcion.Fecha);
+
+            var rows = await _repo.InsertFuncion(funcion);
+
+            if (rows <= 0)
+            {
+                _logger.LogError("Error al insertar la función");
+                return StatusCode(500, "Error al insertar la función");
+            }
+
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = rows }, funcion);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ObtenerTodos() =>
-            Ok(await _repo.ObtenerTodos());
-
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
@@ -50,10 +70,19 @@ namespace Evento.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Actualizar(int id, [FromBody] Funcion funcion)
+        public async Task<IActionResult> Actualizar(int id, [FromBody] FuncionDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var estado = await _repo.ObtenerEstadoFuncion(dto.Estado);
+            var evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
+            var funcion = new Funcion
+            {
+                idFuncion = id,
+                Fecha = dto.Fecha,
+                Estado = estado,
+                evento = evento
+            };
             funcion.idFuncion = id;
             var ok = await _repo.UpdateFuncion(funcion);
             return ok ? NoContent() : NotFound();

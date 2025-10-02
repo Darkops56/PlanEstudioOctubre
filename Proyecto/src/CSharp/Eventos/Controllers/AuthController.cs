@@ -79,19 +79,23 @@ namespace Evento.Controllers
 
         #region Login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromServices] RepoRefreshToken repoRefreshToken, [FromBody] LoginDto login)
+        public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            
-            var hash = ContrasenaHasher.Hash(login.Contrasena);
-            login.Contrasena = hash;
 
-            var usuario = await _repoUsuario.Login(login.Email, login.Contrasena);
-            if (usuario is null)
-                return Unauthorized("Email o contraseña incorrectos.");
+            // Obtener usuario por email
+            var usuario = await _repoUsuario.ObtenerPorEmail(login.Email);
+                if (usuario is null)
+                    return Unauthorized("Email o contraseña incorrectos.");
 
+                // Verificar contraseña usando hash seguro
+                if (!ContrasenaHasher.Verificar(login.Contrasena, usuario.Contrasena))
+                    return Unauthorized("Email o contraseña incorrectos.");
+            // Generar JWT
             var token = GenerateJwtToken(usuario);
+
+            // Crear refresh token
             var refreshToken = Guid.NewGuid().ToString();
             var refreshTokenEntity = new RefreshToken
             {
@@ -99,7 +103,7 @@ namespace Evento.Controllers
                 Email = usuario.Email,
                 Expiracion = DateTime.UtcNow.AddMinutes(30)
             };
-            await repoRefreshToken.InsertToken(refreshTokenEntity);
+            await _repoRefreshToken.InsertToken(refreshTokenEntity);
 
             return Ok(new { token, refreshToken });
         }
@@ -214,13 +218,13 @@ namespace Evento.Controllers
                 usuario.Role = ERoles.Usuario;
             else
             {
-                usuario.Role = ERoles.Admin;            
+                usuario.Role = ERoles.Admin;
             }
             await _repoUsuario.UpdateUsuario(usuario);
 
             return Ok(usuario);
         }
         #endregion
-        
+
     }
 }

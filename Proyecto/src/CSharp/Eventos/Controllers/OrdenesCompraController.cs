@@ -23,7 +23,7 @@ namespace Evento.Controllers
             
             var estadoOC = await _repoOrden.ObtenerEstado(oc.Estado);
             var MetodoPago = await _repoOrden.ObtenerMetodoPago(oc.metodoPago);
-            var user = await _repoUsuario.ObtenerPorId(oc.idUsuario);
+            var user = await _repoUsuario.ObtenerPorEmail(oc.Email);
 
             var OrdenCompra = new OrdenesCompra
             {

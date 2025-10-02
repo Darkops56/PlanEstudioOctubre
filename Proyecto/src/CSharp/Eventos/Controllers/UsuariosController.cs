@@ -1,4 +1,4 @@
-using Evento.Core.DTOs;
+/* using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Security;
@@ -69,4 +69,4 @@ namespace Evento.Controllers
             return Ok(usuario);
         }
     }
-}
+} */

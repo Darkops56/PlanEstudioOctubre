@@ -44,10 +44,15 @@ namespace Evento.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Actualizar(int id, [FromBody] Local local)
+        public async Task<IActionResult> Actualizar(int id, [FromBody] LocalDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
+            var local = new Local
+            {
+                idLocal = id,
+                Ubicacion = dto.Ubicacion,
+                Nombre = dto.Nombre,
+            };
             local.idLocal = id;
             var ok = await _repo.UpdateLocal(local);
             return ok ? NoContent() : NotFound();
@@ -63,20 +68,32 @@ namespace Evento.Controllers
             Ok(await _repo.ObtenerSectoresDelLocal(id));
 
         [HttpPost("{id}/sectores")]
-        public async Task<IActionResult> CrearSector(int id, [FromBody] Sector sector)
+        public async Task<IActionResult> CrearSector(int id, [FromBody] SectorDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            var local = await _repo.ObtenerPorId(id);
 
+            var sector = new Sector
+            {
+                local = local,
+                Capacidad = dto.Capacidad
+            };
             var sectorId = await _repo.InsertSector(sector, id);
             return CreatedAtAction(nameof(ObtenerSectores), new { id }, sector);
         }
 
-        [HttpPut("sectores/{sectorId}")]
-        public async Task<IActionResult> ActualizarSector(int sectorId, [FromBody] Sector sector)
+        [HttpPut("sectores/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ActualizarSector(int id, [FromBody] SectorDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            var sector = await _repo.ObtenerSectorPorId(id);
+            if (sector == null) return NotFound("No se encontró el Sector");
 
-            var ok = await _repo.UpdateSector(sector, sectorId);
+            sector.Capacidad = dto.Capacidad;
+   
+            var ok = await _repo.UpdateSector(sector, id);
             return ok ? NoContent() : NotFound();
         }
 

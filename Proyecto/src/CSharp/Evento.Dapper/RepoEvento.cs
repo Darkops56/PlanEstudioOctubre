@@ -82,7 +82,7 @@ namespace Evento.Dapper
             {
                 idevento = evento.idEvento,
                 nombre = evento.Nombre,
-                tipoevento = evento.tipoEvento.idTipoEvento,
+                tipoevento = evento.idTipoEvento,
                 fechainicio = evento.fechaInicio,
                 fechafin = evento.fechaFin,
                 estado = evento.EstadoEvento
@@ -93,7 +93,34 @@ namespace Evento.Dapper
         public async Task<Eventos?> ObtenerEventoPorId(int id)
         {
             var db = _ado.GetDbConnection();
-            return await db.QueryFirstOrDefaultAsync<Eventos?>("SELECT * FROM Evento WHERE idEvento = @idevento", new { idevento = id });
+            string query = @"
+                            SELECT e.idEvento, e.Nombre, e.idTipoEvento AS Evento_idTipoEvento, e.Estado AS EstadoEvento, e.fechaInicio, e.fechaFin,
+                                t.idTipoEvento AS Tipo_idTipoEvento, t.tipoEvento
+                            FROM Evento e
+                            INNER JOIN TipoEvento t ON e.idTipoEvento = t.idTipoEvento
+                            WHERE idEvento = @idevento
+                            LIMIT 1";
+
+            var evento = await db.QueryAsync<Eventos, TipoEvento, Eventos>(
+                query,
+                (ev, tipo) =>
+                {
+                    ev.tipoEvento = tipo;
+                    return ev;
+                },
+                new { idevento = id },
+                splitOn: "Tipo_idTipoEvento"
+            );
+            var result = evento.FirstOrDefault();
+            if (result == null)
+            {
+                Console.WriteLine($"⚠️ No se encontró evento con id {id}");
+            }
+            else
+            {
+                Console.WriteLine($"✅ Evento encontrado: {result.Nombre}, {result.idEvento}, {result.tipoEvento.tipoEvento}");
+            }
+            return result;
         }
 
         public async Task<Eventos?> ObtenerEventoPorNombre(string nombre)
@@ -127,7 +154,22 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Eventos>> ObtenerTodos()
         {
             var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Eventos>("SELECT * FROM Evento");
+            string query = @"
+                    SELECT e.idEvento, e.Nombre, e.idTipoEvento, e.Estado, e.fechaInicio, e.fechaFin,
+                        t.idTipoEvento, t.tipoEvento
+                    FROM Evento e
+                    INNER JOIN TipoEvento t ON e.idTipoEvento = t.idTipoEvento";
+
+            var eventos = await db.QueryAsync<Eventos, TipoEvento, Eventos>(
+                query,
+                (ev, tipo) =>
+                {
+                    ev.tipoEvento = tipo;
+                    return ev;
+                },
+                splitOn: "idTipoEvento"
+            );
+            return eventos;
         }
 
         public async Task<string> PublicarEvento(int id)
@@ -159,15 +201,26 @@ namespace Evento.Dapper
         public async Task<bool> UpdateEvento(Eventos evento)
         {
             var db = _ado.GetDbConnection();
-            var query = "UPDATE Evento SET Nombre = @nombre, tipoEvento = @tipoevento, fechaInicio = @fechainicio, fechaFin = @fechafin WHERE idEvento = @idevento";
+
+            string query = @"
+                            UPDATE Evento
+                            SET Nombre = @Nombre,
+                                idTipoEvento = @idTipoEvento,
+                                Estado = @Estado,
+                                fechaInicio = @fechaInicio,
+                                fechaFin = @fechaFin
+                            WHERE idEvento = @idEvento";
+
             var rows = await db.ExecuteAsync(query, new
             {
-                idevento = evento.idEvento,
-                nombre = evento.Nombre,
-                tipoevento = evento.tipoEvento.tipoEvento,
-                fechainicio = evento.fechaInicio,
-                fechafin = evento.fechaFin
+                evento.Nombre,
+                evento.idTipoEvento,
+                Estado = evento.EstadoEvento.ToString(),
+                evento.fechaInicio,
+                evento.fechaFin,
+                evento.idEvento
             });
+
             return rows > 0;
         }
     }

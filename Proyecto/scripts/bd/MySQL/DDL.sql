@@ -14,6 +14,7 @@ CREATE TABLE Cliente (
 CREATE TABLE Usuario(
     idUsuario INT PRIMARY KEY,
     DNI INT NOT NULL,
+    Email VARCHAR(60) NOT NULL,
     Apodo VARCHAR(45),
     Contrasena VARCHAR(45),
     Roles VARCHAR(45),
@@ -43,7 +44,7 @@ CREATE TABLE Funcion (
     idEvento INT NOT NULL,
     Estado VARCHAR(45) NOT NULL,
     Fecha DATETIME NOT NULL,
-    FOREIGN KEY (idEvento) REFERENCES Eventos(idEvento)
+    FOREIGN KEY (idEvento) REFERENCES Evento(idEvento)
 );
 
 -- Tabla Local
@@ -67,7 +68,7 @@ CREATE TABLE Sector_Evento (
     idEvento INT NOT NULL,
     PRIMARY KEY (idSector, idEvento),
     FOREIGN KEY (idSector) REFERENCES Sector(idSector),
-    FOREIGN KEY (idEvento) REFERENCES Eventos(idEvento)
+    FOREIGN KEY (idEvento) REFERENCES Evento(idEvento)
 );
 
 -- Tabla Tarifa
