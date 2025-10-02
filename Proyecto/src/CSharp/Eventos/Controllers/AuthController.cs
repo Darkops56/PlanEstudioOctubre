@@ -10,6 +10,7 @@ using System.Text;
 using Evento.Dapper;
 using Evento.Core.Services.Security;
 using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
 
 namespace Evento.Controllers
 {
@@ -39,22 +40,9 @@ namespace Evento.Controllers
             if (await _repoUsuario.ExisteUsuarioPorEmail(nuevoUsuarioDto.Email))
                 return BadRequest("Ya existe un usuario con este email.");
 
-            if (!await _repoCliente.ExistePorDNI(nuevoUsuarioDto.cliente.DNI))
-            {
-                var cliente = new Cliente
-                {
-                    nombreCompleto = nuevoUsuarioDto.cliente.nombreCompleto,
-                    DNI = nuevoUsuarioDto.cliente.DNI,
-                    Telefono = nuevoUsuarioDto.cliente.Telefono
-                };
-                await _repoCliente.InsertCliente(cliente);
-                nuevoUsuarioDto.cliente = new ClienteDto
-                {
-                    nombreCompleto = cliente.nombreCompleto,
-                    DNI = cliente.DNI,
-                    Telefono = cliente.Telefono
-                };
-            }
+            var cliente = await _repoCliente.ObtenerPorId(nuevoUsuarioDto.DNI);
+            if (cliente == null)
+                return NotFound("El cliente no se encontró.");
             var hash = ContrasenaHasher.Hash(nuevoUsuarioDto.Contrasena);
             nuevoUsuarioDto.Contrasena = hash;
 
@@ -66,9 +54,9 @@ namespace Evento.Controllers
                 Role = ERoles.Usuario,
                 cliente = new Cliente
                 {
-                    nombreCompleto = nuevoUsuarioDto.cliente.nombreCompleto,
-                    DNI = nuevoUsuarioDto.cliente.DNI,
-                    Telefono = nuevoUsuarioDto.cliente.Telefono
+                    nombreCompleto = cliente.nombreCompleto,
+                    DNI = cliente.DNI,
+                    Telefono = cliente.Telefono
                 }
             };
 
@@ -219,10 +207,10 @@ namespace Evento.Controllers
             if (usuario == null)
                 return NotFound("Usuario no encontrado");
 
-            if (ERoles.Usuario.ToString().Trim() != rol.Trim() || ERoles.Admin.ToString().Trim() != rol.Trim())
+            if (UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()) != UniqueFormatStrings.NormalizarString(rol) || UniqueFormatStrings.NormalizarString(ERoles.Admin.ToString()) != UniqueFormatStrings.NormalizarString(rol))
                 return NotFound("El Role no se encuentra existente");
 
-            if (ERoles.Usuario.ToString().Trim() == rol.Trim())
+            if (UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()) == UniqueFormatStrings.NormalizarString(rol))
                 usuario.Role = ERoles.Usuario;
             else
             {

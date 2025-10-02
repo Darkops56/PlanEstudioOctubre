@@ -26,13 +26,9 @@ namespace Evento.Core.Services.Validation
                 .NotEmpty().WithMessage("El apodo es obligatorio")
                 .MaximumLength(45).WithMessage("El apodo no puede superar los 45 caracteres");
 
-            RuleFor(x => x.cliente.DNI)
+            RuleFor(x => x.DNI)
                 .NotEmpty().WithMessage("El DNI es obligatorio")
                 .GreaterThan(0).WithMessage("El DNI debe ser mayor a 0");
-
-            RuleFor(x => x.cliente.nombreCompleto)
-                .NotEmpty().WithMessage("El nombre completo es obligatorio")
-                .MaximumLength(100).WithMessage("El nombre completo no puede superar 100 caracteres");
         }
     }
 }

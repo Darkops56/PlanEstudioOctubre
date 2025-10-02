@@ -21,11 +21,12 @@ namespace Evento.Dapper
         public async Task<int> InsertFuncion(Funcion funcion)
         {
             var db = _ado.GetDbConnection();
-            string query = "INSERT INTO Funcion(idEvento, Fecha) VALUES(@idevento, @fecha)";
+            string query = "INSERT INTO Funcion(idEvento, Fecha, Estado) VALUES(@idevento, @fecha, @estado)";
             var rows = await db.ExecuteAsync(query, new
             {
-                idevento = funcion.evento.idEvento,
-                fecha = funcion.Fecha
+                idevento = funcion.evento!.idEvento,
+                fecha = funcion.Fecha,
+                estado = funcion.Estado.ToString()
             });
             return rows > 0 ? rows : 0;
         }

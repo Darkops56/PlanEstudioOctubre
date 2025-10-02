@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Utility;
 using Evento.Core.Services.Enums;
 
 namespace Evento.Core.Services.Validation
@@ -33,7 +34,7 @@ namespace Evento.Core.Services.Validation
             RuleFor(x => x.Estado)
                 .NotEmpty()
                 .WithMessage("El estado de la orden es obligatorio")
-                .Must(Estado => Estado == EEstados.Creado || Estado == EEstados.Pagado || Estado == EEstados.Cancelado)
+                .Must(Estado => UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Creado.ToString()) || UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()) || UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                 .WithMessage("El estado de la orden debe ser 'Creada', 'Pagada' o 'Cancelada'");
         }
     }

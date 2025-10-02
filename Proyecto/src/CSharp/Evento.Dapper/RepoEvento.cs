@@ -2,6 +2,8 @@ using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
+using Evento.Core.DTOs;
 
 namespace Evento.Dapper
 {
@@ -76,13 +78,14 @@ namespace Evento.Dapper
         public async Task<int> InsertEvento(Eventos evento)
         {
             var db = _ado.GetDbConnection();
-            var rows = await db.ExecuteAsync("INSERT INTO Evento(idEvento, Nombre, tipoEvento, fechaInicio, fechaFin) VALUES(@idevento, @nombre, @tipoevento, @fechainicio, @fechafin)", new
+            var rows = await db.ExecuteAsync("INSERT INTO Evento(idEvento, Nombre, idTipoEvento, fechaInicio, fechaFin, Estado) VALUES(@idevento, @nombre, @tipoevento, @fechainicio, @fechafin, @estado)", new
             {
                 idevento = evento.idEvento,
                 nombre = evento.Nombre,
-                tipoevento = evento.tipoEvento.tipoEvento,
+                tipoevento = evento.tipoEvento.idTipoEvento,
                 fechainicio = evento.fechaInicio,
-                fechafin = evento.fechaFin
+                fechafin = evento.fechaFin,
+                estado = evento.EstadoEvento
             });
             return rows > 0 ? rows : 0;
         }
@@ -90,13 +93,13 @@ namespace Evento.Dapper
         public async Task<Eventos?> ObtenerEventoPorId(int id)
         {
             var db = _ado.GetDbConnection();
-            return await db.QueryFirstAsync<Eventos?>("SELECT * FROM Evento WHERE idEvento = @idevento", new { idevento = id });
+            return await db.QueryFirstOrDefaultAsync<Eventos?>("SELECT * FROM Evento WHERE idEvento = @idevento", new { idevento = id });
         }
 
         public async Task<Eventos?> ObtenerEventoPorNombre(string nombre)
         {
             var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Eventos WHERE Nombre = @name";
+            var query = "SELECT * FROM Evento WHERE Nombre = @name";
 
             return await db.QueryFirstAsync<Eventos>(query, new { name = nombre });
         }
@@ -107,26 +110,24 @@ namespace Evento.Dapper
             return await db.QueryAsync<Funcion>("SELECT * FROM Funcion WHERE idEvento = @idevento", new { idevento = idEvento });
         }
 
-        public async Task<TipoEvento?> ObtenerTipoEventoPorNombre(string tipo)
+        public async Task<TipoEventoDto?> ObtenerTipoEventoPorNombre(string tipo)
         {
             var db = _ado.GetDbConnection();
-            string query = "SELECT * FROM TipoEvento WHERE tipoEvento = @tipoevento";
+            string query = "SELECT * FROM TipoEvento WHERE LOWER(tipoEvento) = @tipoevento";
 
-            return await db.QueryFirstAsync<TipoEvento?>(query, new {tipoevento = tipo});
+            var tipoevento = await db.QueryFirstAsync<TipoEvento?>(query, new { tipoevento = tipo });
+            if (tipoevento == null) return null;
+
+            return new TipoEventoDto
+            {
+                idTipoEvento = tipoevento.idTipoEvento,
+                tipoEvento = Enum.Parse<ETipoEvento>(tipoevento.tipoEvento, true)
+            };
         }
-
-        public async Task<IEnumerable<Sector>> ObtenerSectoresConTarifaAsync(int idEvento)
-        {
-            var db = _ado.GetDbConnection();
-            string query = "SELECT * FROM Sector JOIN Tarifa USING (@idevento) WHERE idEvento = @idevento";
-            return await db.QueryAsync<Sector>(query, new { idevento = idEvento });
-        }
-
-
         public async Task<IEnumerable<Eventos>> ObtenerTodos()
         {
             var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Eventos>("SELECT * FROM Eventos");
+            return await db.QueryAsync<Eventos>("SELECT * FROM Evento");
         }
 
         public async Task<string> PublicarEvento(int id)
@@ -137,7 +138,7 @@ namespace Evento.Dapper
             if (evento == null)
                 throw new Exception("El evento no existe");
 
-            if (evento.EstadoEvento == EEstados.Publicado)
+            if (evento.EstadoEvento.ToString() == UniqueFormatStrings.NormalizarString(EEstados.Publicado.ToString()))
                 throw new Exception("El evento ya está publicado");
 
             string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0 LIMIT 1";
@@ -149,7 +150,7 @@ namespace Evento.Dapper
                 throw new Exception("No se puede publicar el Evento por falta de Stock");
 
             var rows = await db.ExecuteAsync(
-                "UPDATE Eventos SET Estado = 'Publicado' WHERE idEvento = @IdEvento",
+                "UPDATE Evento SET Estado = 'Publicado' WHERE idEvento = @IdEvento",
                 new { IdEvento = id });
 
             return rows > 0 ? "Evento publicado correctamente" : "No se pudo publicar el evento";
@@ -158,7 +159,7 @@ namespace Evento.Dapper
         public async Task<bool> UpdateEvento(Eventos evento)
         {
             var db = _ado.GetDbConnection();
-            var query = "UPDATE Eventos SET Nombre = @nombre, tipoEvento = @tipoevento, fechaInicio = @fechainicio, fechaFin = @fechafin WHERE idEvento = @idevento";
+            var query = "UPDATE Evento SET Nombre = @nombre, tipoEvento = @tipoevento, fechaInicio = @fechainicio, fechaFin = @fechafin WHERE idEvento = @idevento";
             var rows = await db.ExecuteAsync(query, new
             {
                 idevento = evento.idEvento,
@@ -167,11 +168,7 @@ namespace Evento.Dapper
                 fechainicio = evento.fechaInicio,
                 fechafin = evento.fechaFin
             });
-            if (rows == 0)
-            {
-                return false;
-            }
-            return true;
+            return rows > 0;
         }
     }
 }

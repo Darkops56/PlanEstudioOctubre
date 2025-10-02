@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
 using FluentValidation;
 
 namespace Evento.Core.Services.Validation
@@ -23,7 +25,8 @@ namespace Evento.Core.Services.Validation
                 .MinimumLength(6).WithMessage("La contraseña debe tener al menos 6 caracteres");
 
             RuleFor(u => u.Role)
-                .NotEmpty().WithMessage("El rol es obligatorio");
+                .NotEmpty().WithMessage("El rol es obligatorio")
+                .Must(Role => UniqueFormatStrings.NormalizarString(Role.ToString()) == UniqueFormatStrings.NormalizarString(ERoles.Admin.ToString()) || UniqueFormatStrings.NormalizarString(Role.ToString()) == UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()));
         }
     }
 }

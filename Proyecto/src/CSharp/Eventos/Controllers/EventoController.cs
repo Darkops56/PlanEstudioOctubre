@@ -3,6 +3,7 @@ using Evento.Core.DTOs;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
 using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
 namespace Evento.Controllers
 {
     [ApiController]
@@ -34,12 +35,20 @@ namespace Evento.Controllers
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
-            var tipo = await _repo.ObtenerTipoEventoPorNombre(dto.tipoEvento.ToLower().Trim());
-        
+        var tipoDto = await _repo.ObtenerTipoEventoPorNombre(dto.tipoEvento.ToLower().Trim());
+            if (tipoDto == null) return NotFound("No se encontro el tipo del evento.");
+            var tipo = new TipoEvento
+            {
+                tipoEvento = UniqueFormatStrings.NormalizarString(tipoDto.tipoEvento.ToString()),
+                idTipoEvento = tipoDto.idTipoEvento
+            };
         var evento = new Eventos
         {
             Nombre = dto.Nombre,
-            tipoEvento = tipo
+            tipoEvento = tipo,
+            EstadoEvento = EEstados.Pendiente,
+            fechaFin = dto.fechaFin,
+            fechaInicio = dto.fechaInicio
         };
         var id = await _repo.InsertEvento(evento);
         return CreatedAtAction(nameof(ObtenerPorId), new { id }, evento);
@@ -75,9 +84,5 @@ namespace Evento.Controllers
     [HttpGet("{id}/funciones")]
     public async Task<IActionResult> ObtenerFunciones(int id) =>
         Ok(await _repo.ObtenerFuncionesPorEventoAsync(id));
-
-    [HttpGet("{id}/sectores")]
-    public async Task<IActionResult> ObtenerSectoresConTarifas(int id) =>
-        Ok(await _repo.ObtenerSectoresConTarifaAsync(id));
     }
 }

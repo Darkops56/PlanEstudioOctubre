@@ -7,6 +7,7 @@ using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Utility;
 
 namespace Evento.Dapper
 {
@@ -31,8 +32,8 @@ namespace Evento.Dapper
             {
                 fecha = orden.Fecha,
                 total = orden.Total,
-                metodopago = orden.metodoPago.ToString(),
-                estado = EEstados.Creado.ToString()
+                metodopago = UniqueFormatStrings.NormalizarString(orden.metodoPago.ToString()),
+                estado = UniqueFormatStrings.NormalizarString(EEstados.Creado.ToString())
             });
 
             foreach (var entrada in orden.entradas)
@@ -145,7 +146,7 @@ namespace Evento.Dapper
 
             var orden = await ObtenerOrdenCompra(idOrdenCompra);
             if (orden == null) return "Orden no encontrada";
-            if (orden.Estado == EEstados.Pagado) return "Orden ya fue pagada";
+            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString())) return "Orden ya fue pagada";
             var entradas = await db.QueryAsync<Entrada>(
                 "SELECT * FROM Entrada WHERE idOrdenCompra = @Id", new { Id = idOrdenCompra }
                 );
@@ -216,7 +217,7 @@ namespace Evento.Dapper
             if (orden == null)
                 throw new Exception("La orden no existe");
 
-            if (orden.Estado == EEstados.Cancelado)
+            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                 throw new Exception("La orden ya está cancelada");
 
             try
@@ -228,7 +229,7 @@ namespace Evento.Dapper
                 );
 
                 // Si la orden estaba pagada, devolver stock y anular entradas
-                if (orden.Estado == EEstados.Pagado)
+                if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()))
                 {
                     foreach (var entrada in entradas)
                     {
@@ -303,9 +304,9 @@ namespace Evento.Dapper
                 throw new Exception("Orden no encontrada.");
 
             // 2. Verificar estado
-            if (orden.Estado == EEstados.Pagado)
+            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()))
                 throw new Exception("La orden ya fue pagada.");
-            if (orden.Estado == EEstados.Cancelado)
+            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                 throw new Exception("La orden fue cancelada y no puede pagarse.");
 
             // 3. Verificar entradas asociadas

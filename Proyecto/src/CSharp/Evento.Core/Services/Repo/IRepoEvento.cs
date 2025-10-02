@@ -1,3 +1,4 @@
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 
 namespace Evento.Core.Services.Repo
@@ -6,13 +7,12 @@ namespace Evento.Core.Services.Repo
     {
         Task<IEnumerable<Eventos>> ObtenerTodos();
         Task<Eventos?> ObtenerEventoPorId(int id);
-        Task<TipoEvento?> ObtenerTipoEventoPorNombre(string tipo);
+        Task<TipoEventoDto?> ObtenerTipoEventoPorNombre(string tipo);
         Task<Eventos?> ObtenerEventoPorNombre(string nombre);
         Task<int> InsertEvento(Eventos evento);
         Task<bool> UpdateEvento(Eventos evento);
         Task<bool> DeleteEvento(int id);
         Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento);
-        Task<IEnumerable<Sector>> ObtenerSectoresConTarifaAsync(int idEvento);
         Task<string> PublicarEvento(int id);
         Task<string> CancelarEvento(int id);
     }

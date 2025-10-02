@@ -1,6 +1,7 @@
 using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Utility;
 
 namespace Evento.Dapper;
 
@@ -40,7 +41,7 @@ public class RepoUsuario : IRepoUsuario
             email = usuario.Email,
             contrasena = usuario.Contrasena,
             dni = usuario.cliente.DNI,
-            role = usuario.Role.ToString()
+            role = UniqueFormatStrings.NormalizarString(usuario.Role.ToString())
         });
         return rows != 0 ? rows : 0;
     }
@@ -92,7 +93,7 @@ public class RepoUsuario : IRepoUsuario
             contrasena = usuario.Contrasena,
             idusuario = usuario.idUsuario,
             dni = usuario.cliente.DNI,
-            role = usuario.Role.ToString()
+            role = UniqueFormatStrings.NormalizarString(usuario.Role.ToString())
         });
         return rows > 0;
     }

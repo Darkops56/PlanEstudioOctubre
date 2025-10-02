@@ -1,5 +1,6 @@
 using Evento.Core.DTOs;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +18,20 @@ namespace Evento.Controllers
         public async Task<IActionResult> Crear([FromBody] FuncionDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var estadoFuncion = await _repo.ObtenerEstadoFuncion(dto.Estado);
-            var Evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
+
+            if (!Enum.TryParse<EEstados>(dto.Estado, true, out var estadoFuncion))
+            {
+                return BadRequest($"Estado '{dto.Estado}' no válido.");
+            }
+
+            var evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
+            if (evento == null)
+                return NotFound("No se encontró el evento");
 
             var funcion = new Funcion
             {
                 Estado = estadoFuncion,
-                evento = Evento,
+                evento = evento,
                 Fecha = dto.Fecha
             };
             var id = await _repo.InsertFuncion(funcion);

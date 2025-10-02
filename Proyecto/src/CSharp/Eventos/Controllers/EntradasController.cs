@@ -3,6 +3,7 @@ using Evento.Core.DTOs;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
 using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
 
 namespace Evento.Controllers
 {

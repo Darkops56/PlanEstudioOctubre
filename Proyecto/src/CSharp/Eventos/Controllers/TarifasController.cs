@@ -1,3 +1,4 @@
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Evento.Controllers
     public class TarifasController : ControllerBase
     {
         private readonly IRepoTarifa _repo;
+        private readonly IRepoFuncion _repoFuncion;
 
         public TarifasController(IRepoTarifa repo) => _repo = repo;
 
@@ -24,9 +26,20 @@ namespace Evento.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] TarifaDto tarifa)
+        public async Task<IActionResult> Crear([FromBody] TarifaDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var funcion = await _repoFuncion.ObtenerPorId(dto.idFuncion);
+            var tipo = await _repo.ObtenerTipoTarifa(dto.Tipo);
+            var tarifa = new Tarifa
+            {
+                Precio = dto.Precio,
+                Tipo = tipo,
+                funcion = funcion,
+                Stock = dto.Stock,
+                Estado = true
+            };
 
             var id = await _repo.InsertTarifa(tarifa);
             return CreatedAtAction(nameof(ObtenerPorId), new { id }, tarifa);

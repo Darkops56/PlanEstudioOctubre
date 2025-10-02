@@ -3,6 +3,7 @@ using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Enums;
+using Evento.Core.Services.Utility;
 
 namespace Evento.Dapper
 {
@@ -19,7 +20,7 @@ namespace Evento.Dapper
             if (entrada == null)
                 throw new Exception("La entrada no existe");
 
-            if (entrada.Estado == EEstados.Cancelado)
+            if (entrada.Estado.ToString().ToLower().Trim() == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                 throw new Exception("La entrada ya está anulada");
 
             await db.ExecuteAsync(

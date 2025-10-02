@@ -26,8 +26,8 @@ CREATE TABLE TipoEvento (
     tipoEvento VARCHAR(50) NOT NULL
 );
 
--- Tabla Eventos
-CREATE TABLE Eventos (
+-- Tabla Evento
+CREATE TABLE Evento (
     idEvento INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
     idTipoEvento INT NOT NULL,
