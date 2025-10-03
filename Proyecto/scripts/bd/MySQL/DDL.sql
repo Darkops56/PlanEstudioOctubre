@@ -15,9 +15,9 @@ CREATE TABLE Usuario(
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
     DNI INT NOT NULL,
     Email VARCHAR(255) NOT NULL UNIQUE,
-    Apodo VARCHAR(45),
-    Contrasena VARCHAR(255),
-    Roles VARCHAR(45),
+    Apodo VARCHAR(45) NOT NULL,
+    Contrasena TEXT NOT NULL,
+    Roles VARCHAR(45) NOT NULL,
     CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente(DNI)
 );
 

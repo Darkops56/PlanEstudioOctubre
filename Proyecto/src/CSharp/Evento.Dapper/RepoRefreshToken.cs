@@ -54,16 +54,16 @@ namespace Evento.Dapper
         public async Task ReemplazarToken(int idUsuario, string nuevoHash, DateTime expiracion)
         {
             var db = _ado.GetDbConnection();
-            var deleteSql = "DELETE FROM RefreshTokens WHERE idUsuario = @idusuario";
-            await db.ExecuteAsync(deleteSql, new { idusuario = idUsuario });
 
             string queryUsuario = "SELECT * FROM Usuario WHERE idUsuario = @idusuario";
             var usuario = await db.QueryFirstOrDefaultAsync<Usuario>(queryUsuario, new {idusuario = idUsuario});
 
-            string insertSql = "INSERT INTO RefreshTokens (idUsuario, Token, Email, Expiration) VALUES (@idusuario, @token, @email, @expiration)";
+            var deleteSql = "DELETE FROM RefreshTokens WHERE Email = @email";
+            await db.ExecuteAsync(deleteSql, new { email = usuario.Email });
+
+            string insertSql = "INSERT INTO RefreshTokens (Token, Email, Expiration) VALUES (@token, @email, @expiration)";
             await db.ExecuteAsync(insertSql, new
             {
-                idusuario = idUsuario,
                 token = nuevoHash,
                 email = usuario?.Email,
                 expiration = expiracion

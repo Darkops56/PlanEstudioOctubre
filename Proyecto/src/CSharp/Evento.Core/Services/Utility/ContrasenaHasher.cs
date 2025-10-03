@@ -7,7 +7,7 @@ public static class ContrasenaHasher
     {
         return Argon2.Hash(contrasena, 
             timeCost: 2,
-            memoryCost: 16384,
+            memoryCost: 2048,
             parallelism: 1,  
             hashLength: 32);
     }
