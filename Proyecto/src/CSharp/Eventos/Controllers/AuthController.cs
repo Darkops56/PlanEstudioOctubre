@@ -43,6 +43,7 @@ namespace Evento.Controllers
             var cliente = await _repoCliente.ObtenerPorId(nuevoUsuarioDto.DNI);
             if (cliente == null)
                 return NotFound("El cliente no se encontró.");
+
             var hash = ContrasenaHasher.Hash(nuevoUsuarioDto.Contrasena);
             nuevoUsuarioDto.Contrasena = hash;
 
@@ -83,7 +84,6 @@ namespace Evento.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
             // Obtener usuario por email
             var usuario = await _repoUsuario.ObtenerPorEmail(login.Email);
                 if (usuario is null)
@@ -101,7 +101,7 @@ namespace Evento.Controllers
             {
                 Token = refreshToken,
                 Email = usuario.Email,
-                Expiracion = DateTime.UtcNow.AddMinutes(30)
+                Expiration = DateTime.UtcNow.AddMinutes(30)
             };
             await _repoRefreshToken.InsertToken(refreshTokenEntity);
 
@@ -143,7 +143,7 @@ namespace Evento.Controllers
                 return BadRequest(ModelState);
 
             var existingToken = await _repoRefreshToken.ObtenerToken(refreshRequest.RefreshToken);
-            if (existingToken == null || existingToken.Expiracion < DateTime.UtcNow)
+            if (existingToken == null || existingToken.Expiration < DateTime.UtcNow)
                 return Unauthorized("Refresh token inválido o expirado");
 
             var usuario = await _repoUsuario.ObtenerPorEmail(existingToken.Email);
@@ -174,7 +174,7 @@ namespace Evento.Controllers
 
         #region Me
         [HttpGet("me")]
-        [Authorize]
+        [Authorize ]
         public IActionResult Me()
         {
             var email = User.Identity?.Name;

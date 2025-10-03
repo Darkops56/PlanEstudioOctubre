@@ -5,10 +5,14 @@ public static class ContrasenaHasher
 {
     public static string Hash(string contrasena)
     {
-        return Argon2.Hash(contrasena);
+        return Argon2.Hash(contrasena, 
+            timeCost: 2,
+            memoryCost: 16384,
+            parallelism: 1,  
+            hashLength: 32);
     }
     public static bool Verificar(string contrasena, string Hash)
     {
-        return Argon2.Verify(contrasena, Hash);
+        return Argon2.Verify(Hash, contrasena);
     }
 }

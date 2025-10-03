@@ -19,8 +19,13 @@ namespace Evento.Dapper
         public async Task<int> InsertToken(RefreshToken token)
         {
             var db = _ado.GetDbConnection();
-            var sql = "INSERT INTO RefreshTokens (Token, Email, Expiration) VALUES (@Token, @Email, @Expiration)";
-            var rows = await db.ExecuteAsync(sql, token);
+            var sql = "INSERT INTO RefreshTokens (Token, Email, Expiration) VALUES (@toke, @email, @expiration)";
+            var rows = await db.ExecuteAsync(sql, new
+            {
+                toke = token.Token,
+                email = token.Email,
+                expiration = token.Expiration
+            });
 
             return rows > 0 ? rows : 0;
         }

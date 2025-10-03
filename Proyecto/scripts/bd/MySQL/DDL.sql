@@ -12,11 +12,11 @@ CREATE TABLE Cliente (
 );
 -- Tabla Usuario
 CREATE TABLE Usuario(
-    idUsuario INT PRIMARY KEY,
+    idUsuario INT PRIMARY KEY AUTO_INCREMENT,
     DNI INT NOT NULL,
-    Email VARCHAR(60) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
     Apodo VARCHAR(45),
-    Contrasena VARCHAR(45),
+    Contrasena VARCHAR(255),
     Roles VARCHAR(45),
     CONSTRAINT FK_UsuarioCliente FOREIGN KEY (DNI) REFERENCES Cliente(DNI)
 );
@@ -134,5 +134,5 @@ CREATE TABLE RefreshTokens (
     Token VARCHAR(200) NOT NULL,
     Email VARCHAR(100) NOT NULL,
     Expiration DATETIME NOT NULL,
-    Foreign Key (Email) REFERENCES Usuario (Email)
+    CONSTRAINT FK_UsuarioRT Foreign Key (Email) REFERENCES Usuario (Email)
 );

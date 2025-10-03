@@ -5,7 +5,7 @@ namespace Evento.Core.Entidades
         public int Id { get; set; }
         public string Token { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public DateTime Expiracion { get; set; }
+        public DateTime Expiration { get; set; }
         
         public RefreshToken() { }
     }

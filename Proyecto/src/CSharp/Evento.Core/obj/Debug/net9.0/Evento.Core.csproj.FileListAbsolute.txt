@@ -24,3 +24,16 @@ C:\Users\darko\Documents\GitHub\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Co
 C:\Users\darko\Documents\GitHub\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\refint\Evento.Core.dll
 C:\Users\darko\Documents\GitHub\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.pdb
 C:\Users\darko\Documents\GitHub\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\ref\Evento.Core.dll
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.deps.json
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.dll
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.pdb
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.csproj.AssemblyReference.cache
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.AssemblyInfoInputs.cache
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.AssemblyInfo.cs
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.csproj.CoreCompileInputs.cache
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.sourcelink.json
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.dll
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\refint\Evento.Core.dll
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.pdb
+D:\lab\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\ref\Evento.Core.dll
