@@ -64,9 +64,11 @@ namespace Evento.Dapper
         public async Task<int> InsertEntrada(Entrada entrada)
         {
             if (entrada.tarifa?.idTarifa == null)
-                throw new ArgumentNullException("Tarifa no puede ser null o tener idTarifa null");
+                throw new ArgumentNullException("Tarifa no puede estar vacio");
             if (entrada.ordenesCompra?.idOrdenCompra == null)
-                throw new ArgumentNullException("OrdenCompra no puede ser null o tener idOrdenCompra null");
+                throw new ArgumentNullException("OrdenCompra no puede estar vacio");
+            if (entrada.tarifa.Stock == 0)
+                throw new ArgumentOutOfRangeException("No se puede crear una entrada con una tarifa sin stock");
 
             using var db = _ado.GetDbConnection();
 

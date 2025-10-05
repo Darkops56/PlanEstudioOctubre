@@ -9,8 +9,6 @@ public class Funcion
     public Eventos evento { get; set; }
     public DateTime Fecha { get; set; }
     public EEstados Estado { get; set; }
-    public List<Tarifa?> Tarifas{ get; set; } = new List<Tarifa?>();
-
     public Funcion()
     { }
 }

@@ -6,16 +6,19 @@ using FluentValidation;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Utility;
 using Evento.Core.Services.Enums;
+using Evento.Core.DTOs;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Evento.Core.Services.Validation
 {
-    public class OrdenesCompraFluent : AbstractValidator<OrdenesCompra>
+    public class OrdenesCompraFluent : AbstractValidator<OrdenesCompraDto>
     {
         public OrdenesCompraFluent()
         {
-            RuleFor(x => x.usuario)
+            RuleFor(x => x.Email)
                 .NotNull()
-                .WithMessage("El usuario asociado a la orden es obligatorio");
+                .WithMessage("El usuario asociado a la orden es obligatorio")
+                .EmailAddress().WithMessage("El formato es invalido o el correo es incorrecto");
 
             RuleFor(x => x.Fecha)
                 .NotEmpty()

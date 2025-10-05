@@ -17,5 +17,7 @@ namespace Evento.Core.Services.Repo
         EMetodoPago ObtenerMetodoPago(string metodo);
         EEstados ObtenerEstado(string estadoOC);
         Task<int> LiberarStockExpirado();
+        Task<string> InsertStockReservaciones(StockReservaciones stockReservaciones);
+        Task<IEnumerable<StockReservaciones>> ObtenerReservacionesPorIdOrden(int idOrden);
     }
 }

@@ -18,55 +18,57 @@ namespace Evento.Dapper
             using var db = _ado.GetDbConnection();
             
             var evento = await ObtenerEventoPorId(idEvento);
-            if (evento == null) return "Evento no encontrado";
-
+            if (evento == null)
+                throw new ArgumentNullException("Evento no encontrado");
+            if (evento.EstadoEvento == EEstados.Cancelado)
+                throw new Exception("Evento ya cancelado");
             try
-            {
-                
-                var funciones = await db.QueryAsync<Funcion>(
-                    "SELECT * FROM Funcion WHERE idEvento = @Id",
-                    new { Id = idEvento }
-                );
-
-                foreach (var funcion in funciones)
                 {
-                    
-                    var entradas = await db.QueryAsync<Entrada>(
-                        @"SELECT *
+
+                    var funciones = await db.QueryAsync<Funcion>(
+                        "SELECT * FROM Funcion WHERE idEvento = @Id",
+                        new { Id = idEvento }
+                    );
+
+                    foreach (var funcion in funciones)
+                    {
+
+                        var entradas = await db.QueryAsync<Entrada>(
+                            @"SELECT *
                           FROM Entrada e
                           INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
                           WHERE t.idFuncion = @idFuncion",
-                        new { idFuncion = funcion.idFuncion }
+                            new { idFuncion = funcion.idFuncion }
+                        );
+
+                        foreach (var entrada in entradas)
+                        {
+
+                            await db.ExecuteAsync(
+                                "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
+                                new { Id = entrada.tarifa?.idTarifa ?? entrada.tarifa.idTarifa }
+                            );
+
+
+                            await db.ExecuteAsync(
+                                "UPDATE Entrada SET Estado = 'Cancelado' WHERE idEntrada = @Id",
+                                new { Id = entrada.idEntrada }
+                            );
+                        }
+                    }
+
+
+                    await db.ExecuteAsync(
+                        "UPDATE Evento SET Estado = 'Cancelado' WHERE idEvento = @Id",
+                        new { Id = idEvento }
                     );
 
-                    foreach (var entrada in entradas)
-                    {
-                        
-                        await db.ExecuteAsync(
-                            "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
-                            new { Id = entrada.tarifa?.idTarifa ?? entrada.tarifa.idTarifa }
-                        );
-
-                        
-                        await db.ExecuteAsync(
-                            "UPDATE Entrada SET Estado = 'Cancelado' WHERE idEntrada = @Id",
-                            new { Id = entrada.idEntrada }
-                        );
-                    }
+                    return string.Empty;
                 }
-
-                
-                await db.ExecuteAsync(
-                    "UPDATE Evento SET Estado = 'Cancelado' WHERE idEvento = @Id",
-                    new { Id = idEvento }
-                );
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
         }
 
         public async Task<bool> DeleteEvento(int id)
@@ -111,6 +113,10 @@ namespace Evento.Dapper
                 (ev, tipo) =>
                 {
                     ev.tipoEvento = tipo;
+                    if (Enum.TryParse<EEstados>(ev.EstadoEvento.ToString(), true, out var estado))
+                        ev.EstadoEvento = estado;
+                    else
+                        ev.EstadoEvento = EEstados.Pendiente;
                     return ev;
                 },
                 new { idevento = id },
@@ -135,6 +141,10 @@ namespace Evento.Dapper
                 (ev, tipo) =>
                 {
                     ev.tipoEvento = tipo;
+                    if (Enum.TryParse<EEstados>(ev.EstadoEvento.ToString(), true, out var estado))
+                        ev.EstadoEvento = estado;
+                    else
+                        ev.EstadoEvento = EEstados.Pendiente;
                     return ev;
                 },
                 new { Nombre = nombre },
@@ -144,7 +154,7 @@ namespace Evento.Dapper
             return result.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento)
+        public async Task<IEnumerable<Funcion>> ObtenerFuncionesPorEvento(int idEvento)
         {
             var db = _ado.GetDbConnection();
             var sql = @"
@@ -170,36 +180,43 @@ namespace Evento.Dapper
 
         public async Task<TipoEventoDto?> ObtenerTipoEventoPorNombre(string tipo)
         {
-            var db = _ado.GetDbConnection();
-            string query = "SELECT * FROM TipoEvento WHERE LOWER(tipoEvento) = @tipoevento";
-
-            var tipoevento = await db.QueryFirstAsync<TipoEvento?>(query, new { tipoevento = tipo });
-            if (tipoevento == null) return null;
+            using var db = _ado.GetDbConnection();
+            string query = $"SELECT * FROM TipoEvento WHERE LOWER(tipoEvento) = @tipo";
+            var tipoEvento = await db.QueryFirstAsync<TipoEvento>(query, new
+            {
+                tipo = UniqueFormatStrings.NormalizarString(tipo)
+            });
 
             return new TipoEventoDto
             {
-                idTipoEvento = tipoevento.idTipoEvento,
-                tipoEvento = Enum.Parse<ETipoEvento>(tipoevento.tipoEvento, true)
+                idTipoEvento = tipoEvento.idTipoEvento,
+                tipoEvento = Enum.Parse<ETipoEvento>(tipoEvento.tipoEvento, true)
             };
         }
         public async Task<IEnumerable<Eventos>> ObtenerTodos()
         {
             var db = _ado.GetDbConnection();
             string query = @"
-                    SELECT e.idEvento, e.Nombre, e.idTipoEvento, e.Estado, e.fechaInicio, e.fechaFin,
-                        t.idTipoEvento, t.tipoEvento
-                    FROM Evento e
-                    INNER JOIN TipoEvento t ON e.idTipoEvento = t.idTipoEvento";
+                            SELECT e.idEvento, e.Nombre, e.idTipoEvento AS Evento_idTipoEvento, e.Estado AS EstadoEvento, e.fechaInicio, e.fechaFin,
+                                t.idTipoEvento AS Tipo_idTipoEvento, t.tipoEvento
+                            FROM Evento e
+                            INNER JOIN TipoEvento t ON e.idTipoEvento = t.idTipoEvento";
 
             var eventos = await db.QueryAsync<Eventos, TipoEvento, Eventos>(
-                query,
-                (ev, tipo) =>
-                {
-                    ev.tipoEvento = tipo;
-                    return ev;
-                },
-                splitOn: "idTipoEvento"
-            );
+                        query,
+                        (ev, tipo) =>
+                        {
+                            ev.tipoEvento = tipo;
+
+                            if (Enum.TryParse<EEstados>(ev.EstadoEvento.ToString(), true, out var estado))
+                                ev.EstadoEvento = estado;
+                            else
+                                ev.EstadoEvento = EEstados.Pendiente;
+
+                            return ev;
+                        },
+                        splitOn: "Tipo_idTipoEvento"
+                    );
             return eventos;
         }
 
@@ -211,22 +228,34 @@ namespace Evento.Dapper
             if (evento == null)
                 throw new Exception("El evento no existe");
 
-            if (evento.EstadoEvento.ToString() == UniqueFormatStrings.NormalizarString(EEstados.Publicado.ToString()))
+            if (evento.EstadoEvento.ToString().ToLower() == UniqueFormatStrings.NormalizarString(EEstados.Publicado.ToString()))
                 throw new Exception("El evento ya está publicado");
+            
 
-            string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0 LIMIT 1";
-            var respuesta = await db.ExecuteAsync(query, new
-            {
-                idevento = id
-            });
-            if (respuesta < 0)
-                throw new Exception("No se puede publicar el Evento por falta de Stock");
+            string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0";
+            var funcionesConTarifas = await db.QueryAsync<Funcion, Tarifa, FuncionTarifaDto>(
+                query,
+                (funcion, tarifa) => new FuncionTarifaDto
+                {
+                    funcion = funcion,
+                    tarifa = tarifa
+                },
+                new { idEvento = id },
+                splitOn: "idTarifa"
+            );
+            if (!funcionesConTarifas.Any())
+                throw new Exception("No se puede publicar el evento por falta de stock");
 
             var rows = await db.ExecuteAsync(
-                "UPDATE Evento SET Estado = 'Publicado' WHERE idEvento = @IdEvento",
-                new { IdEvento = id });
+                "UPDATE Evento SET Estado = @estado WHERE idEvento = @IdEvento",
+                new { IdEvento = id, estado = UniqueFormatStrings.NormalizarString(EEstados.Publicado.ToString()) });
 
-            return rows > 0 ? "Evento publicado correctamente" : "No se pudo publicar el evento";
+            if (rows > 0)
+            {
+                evento.EstadoEvento = EEstados.Publicado;
+                return "Evento publicado correctamente";
+            }
+            throw new Exception("No se pudo publicar el evento");
         }
 
         public async Task<bool> UpdateEvento(Eventos evento)

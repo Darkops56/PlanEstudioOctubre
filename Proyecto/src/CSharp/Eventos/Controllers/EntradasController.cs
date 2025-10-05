@@ -45,13 +45,13 @@ namespace Evento.Controllers
             var ordencompra = await _repoOrden.ObtenerOrdenCompra(dto.idOrdenCompra);
             if (ordencompra?.usuario == null)
                 return BadRequest("No se encontró la orden de compra o su usuario.");
-
+            
             var entrada = new Entrada
             {
                 tarifa = tarifaObtenida,
                 ordenesCompra = ordencompra,
                 PrecioPagado = dto.PrecioPagado,
-                Estado = EEstados.Activo
+                Estado = EEstados.Creado
             };
 
             var id = await _repoEntrada.InsertEntrada(entrada);

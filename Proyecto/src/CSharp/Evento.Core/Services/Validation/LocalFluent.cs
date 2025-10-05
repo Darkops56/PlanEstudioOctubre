@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Evento.Core.Entidades;
+using Evento.Core.DTOs;
 using FluentValidation;
 
 namespace Evento.Core.Services.Validation
 {
-    public class LocalFluent : AbstractValidator<Local>
+    public class LocalFluent : AbstractValidator<LocalDto>
     {
         public LocalFluent()
         {

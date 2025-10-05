@@ -1,5 +1,7 @@
+using System.Net.Http.Headers;
 using Evento.Core.DTOs;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +24,6 @@ namespace Evento.Controllers
         {
             if (oc == null) return BadRequest("Debes enviar un cuerpo.");
             
-            var estadoOC = _repoOrden.ObtenerEstado(oc.Estado);
             var metodoPago = _repoOrden.ObtenerMetodoPago(oc.metodoPago);
             var user = await _repoUsuario.ObtenerPorEmail(oc.Email);
             
@@ -32,7 +33,7 @@ namespace Evento.Controllers
             var OrdenCompra = new OrdenesCompra
             {
                 metodoPago = metodoPago,
-                Estado = estadoOC,
+                Estado = EEstados.Pendiente,
                 Fecha = oc.Fecha,
                 Total = oc.Total,
                 usuario = user
@@ -54,7 +55,25 @@ namespace Evento.Controllers
             var orden = await _repoOrden.ObtenerOrdenCompra(id);
             return orden != null ? Ok(orden) : NotFound();
         }
-
+        [HttpPost("{id}/reservar")]
+        public async Task<IActionResult> ReservarStock([FromBody] StockReservacionesDto dto)
+        {
+            var stockReservacion = new StockReservaciones
+            {
+                idTarifa = dto.idTarifa,
+                idOrdenCompra = dto.idOrdenCompra,
+                fechReserva = DateTime.Now,
+                expiraEn = DateTime.Now.AddMinutes(15),
+                Cantidad = dto.Cantidad
+            };
+            return Ok(await _repoOrden.InsertStockReservaciones(stockReservacion));
+        }
+        [HttpGet("{id}/reservas")]
+        public async Task<IActionResult> ObtenerReservas(int idOrden)
+        {
+            var orden = await _repoOrden.ObtenerOrdenCompra(idOrden);
+            return Ok(await _repoOrden.ObtenerReservacionesPorIdOrden(orden.idOrdenCompra));
+        }
         [HttpPost("{id}/pagar")]
         public async Task<IActionResult> PagarOrden(int id)
         {
@@ -78,7 +97,9 @@ namespace Evento.Controllers
         public async Task<IActionResult> LiberarStockExpirado()
         {
             var cantidadLiberada = await _repoOrden.LiberarStockExpirado();
-            return Ok(new { mensaje = $"Se liberaron {cantidadLiberada} reservas expiradas." });
+            return cantidadLiberada > 0
+                ? Ok(new { mensaje = $"Se liberaron {cantidadLiberada} reservas expiradas." })
+                : NoContent();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Evento.Core.Services.Validation
         public ClienteFluent()
         {
             RuleFor(c => c.DNI)
-            .GreaterThan(0).WithMessage("El DNI debe ser mayor a 0");
+            .GreaterThan(0).NotEmpty().WithMessage("El DNI debe ser mayor a 0");
 
         RuleFor(c => c.nombreCompleto)
             .NotEmpty().WithMessage("El nombre completo es obligatorio")

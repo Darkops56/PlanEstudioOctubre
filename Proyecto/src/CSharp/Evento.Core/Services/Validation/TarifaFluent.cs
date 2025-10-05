@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using FluentValidation;
 
 namespace Evento.Core.Services.Validation
 {
-    public class TarifaFluent : AbstractValidator<Tarifa>
+    public class TarifaFluent : AbstractValidator<TarifaDto>
     {
         public TarifaFluent()
         {
-            RuleFor(t => t.funcion)
+            RuleFor(t => t.idFuncion)
             .NotNull().WithMessage("La función asociada es obligatoria");
 
             RuleFor(t => t.Tipo)

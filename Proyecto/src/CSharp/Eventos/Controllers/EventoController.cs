@@ -10,7 +10,7 @@ namespace Evento.Controllers
     [Route("api/[controller]")]
     public class EventoController : ControllerBase
     {
-        private readonly IRepoEvento _repo;
+    private readonly IRepoEvento _repo;
 
     public EventoController(IRepoEvento repo) => _repo = repo;
 
@@ -102,6 +102,6 @@ namespace Evento.Controllers
 
     [HttpGet("{id}/funciones")]
     public async Task<IActionResult> ObtenerFunciones(int id) =>
-        Ok(await _repo.ObtenerFuncionesPorEventoAsync(id));
+        Ok(await _repo.ObtenerFuncionesPorEvento(id));
     }
 }

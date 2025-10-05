@@ -47,7 +47,7 @@ namespace Evento.Controllers
                 Tipo = tipo,
                 funcion = funcion,
                 Stock = dto.Stock,
-                Estado = true
+                Estado = EEstados.Creado
             };
 
             var id = await _repo.InsertTarifa(tarifa);

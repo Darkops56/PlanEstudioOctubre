@@ -8,7 +8,7 @@ public class Tarifa
     public ETipoTarifa Tipo { get; set; }
     public int Precio { get; set; }
     public byte Stock { get; set; }
-    public bool Estado { get; set; }
+    public EEstados Estado { get; set; }
 
     public Tarifa()
     { }

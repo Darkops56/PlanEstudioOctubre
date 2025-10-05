@@ -7,6 +7,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("MySqlConnectio
 builder.Services.AddControllers()
     .AddFluentValidation(fv =>
     {
-        fv.RegisterValidatorsFromAssemblyContaining<ClienteFluent>();
+        fv.RegisterValidatorsFromAssembly(Assembly.Load("Evento.Core"));
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -33,7 +34,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    // Configuración de seguridad a JWT para Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: \"Bearer {token}\"",
@@ -69,7 +69,7 @@ builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
 builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
 builder.Services.AddScoped<IRepoRefreshToken, RepoRefreshToken>();
 
-//builder.Services.AddHostedService<StockExpiradoService>();
+builder.Services.AddHostedService<StockExpiradoService>();
 builder.WebHost.UseUrls("http://localhost:5002");
 
 builder.Services.AddAuthentication(options =>
@@ -98,9 +98,9 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("v1/swagger.json", "Eventos API V1");
-    c.RoutePrefix = "swagger"; // URL: /swagger
-    c.DisplayRequestDuration(); // Muestra el tiempo de respuesta
-    c.EnableDeepLinking(); // Permite enlaces directos a endpoints
+    c.RoutePrefix = "swagger";
+    c.DisplayRequestDuration(); 
+    c.EnableDeepLinking(); 
     c.EnableTryItOutByDefault();
 });
 

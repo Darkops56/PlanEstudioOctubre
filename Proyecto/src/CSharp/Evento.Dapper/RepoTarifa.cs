@@ -27,38 +27,57 @@ namespace Evento.Dapper
         public async Task<Tarifa?> ObtenerPorId(int id)
         {
             using var db = _ado.GetDbConnection();
-        var query = @"
-            SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
-            FROM Tarifa t
-            INNER JOIN Funcion f ON t.idFuncion = f.idFuncion
-            WHERE t.idTarifa = @idTarifa";
+            var query = @"
+                SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
+                FROM Tarifa t
+                INNER JOIN Funcion f ON t.idFuncion = f.idFuncion
+                WHERE t.idTarifa = @idTarifa";
 
-        var tarifaDiccionario = new Dictionary<int, Tarifa>();
+            var tarifaDiccionario = new Dictionary<int, Tarifa>();
 
-        var resultado = await db.QueryAsync<Tarifa, Funcion, Tarifa>(
-            query,
-            (tarifa, funcion) =>
-            {
-                if (!tarifaDiccionario.TryGetValue(tarifa.idTarifa, out var tarifaExistente))
+            var resultado = await db.QueryAsync<Tarifa, Funcion, Tarifa>(
+                query,
+                (tarifa, funcion) =>
                 {
-                    tarifaExistente = tarifa;
-                    tarifaExistente.funcion = funcion;
-                    tarifaDiccionario.Add(tarifa.idTarifa, tarifaExistente);
-                }
-                return tarifaExistente;
-            },
-            new { idTarifa = id},
-            splitOn: "idFuncion"
-        );
+                    if (!tarifaDiccionario.TryGetValue(tarifa.idTarifa, out var tarifaExistente))
+                    {
+                        tarifaExistente = tarifa;
+                        tarifaExistente.funcion = funcion;
+                        tarifaDiccionario.Add(tarifa.idTarifa, tarifaExistente);
+                    }
+                    return tarifaExistente;
+                },
+                new { idTarifa = id},
+                splitOn: "idFuncion"
+            );
 
-        return resultado.FirstOrDefault();
+            return resultado.FirstOrDefault();
         }
         public async Task<IEnumerable<Tarifa>> ObtenerTodos()
         {
             using var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Tarifa";
+            var query = @"
+                SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
+                FROM Tarifa t
+                INNER JOIN Funcion f ON t.idFuncion = f.idFuncion";
 
-            return await db.QueryAsync<Tarifa>(query);
+            var tarifaDiccionario = new Dictionary<int, Tarifa>();
+
+            var resultado = await db.QueryAsync<Tarifa, Funcion, Tarifa>(
+                query,
+                (tarifa, funcion) =>
+                {
+                    if (!tarifaDiccionario.TryGetValue(tarifa.idTarifa, out var tarifaExistente))
+                    {
+                        tarifaExistente = tarifa;
+                        tarifaExistente.funcion = funcion;
+                        tarifaDiccionario.Add(tarifa.idTarifa, tarifaExistente);
+                    }
+                    return tarifaExistente;
+                },
+                splitOn: "idFuncion"
+            );
+            return resultado;
         }
 
         public async Task<bool> UpdateTarifa(Tarifa tarifa)
@@ -70,7 +89,7 @@ namespace Evento.Dapper
                 idtarifa = tarifa.idTarifa,
                 tipo = tarifa.Tipo.ToString(),
                 precio = tarifa.Precio,
-                estado = tarifa.Estado
+                estado = tarifa.Estado.ToString()
             });
             return rows > 0;
         }

@@ -114,17 +114,56 @@ namespace Evento.Dapper
             if (funcion == null)
                 return "Función no encontrada";
                 
+            if (UniqueFormatStrings.NormalizarString(funcion.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
+                return "la funcion ya fue cancelada";
+
             db.Open();
             using var tran = db.BeginTransaction();
-
             try
             {
-                var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idFuncion = @idFuncion",
+                var sql = @"
+                    SELECT 
+                        e.idEntrada, e.idTarifa, e.idOrdenCompra AS Entrada_idOrdenCompra, e.Estado AS EstadoEntrada, e.PrecioPagado,
+                        t.idTarifa AS Tarifa_idTarifa, t.idFuncion AS Tarifa_idFuncion, t.Stock, t.Precio, t.Estado AS TarifaEstado, t.Tipo,
+                        f.idFuncion AS Funcion_idFuncion, f.idEvento, f.Nombre AS FuncionNombre, f.Estado AS FuncionEstado, f.Fecha AS FuncionFecha,
+                        o.idOrdenCompra AS OrdenCompra_idOrdenCompra, o.idUsuario, o.Fecha AS OrdenFecha, o.Total, o.metodoPago, o.estado AS OrdenEstado
+                    FROM Entrada e
+                    INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                    INNER JOIN Funcion f ON t.idFuncion = f.idFuncion
+                    INNER JOIN OrdenesCompra o ON e.idOrdenCompra = o.idOrdenCompra
+                    WHERE f.idFuncion = @idFuncion";
+
+                var entradas = await db.QueryAsync<Entrada, Tarifa, Funcion, OrdenesCompra, Entrada>(
+                    sql,
+                    (entrada, tarifa, funcionMap, orden) =>
+                    {
+                        tarifa.funcion = funcionMap;
+                        entrada.tarifa = tarifa;
+                        entrada.ordenesCompra = orden;
+
+                        
+                        if (Enum.TryParse<EEstados>(entrada.Estado.ToString(), true, out var estadoEntrada))
+                            entrada.Estado = estadoEntrada;
+                        else
+                            entrada.Estado = EEstados.Pendiente;
+
+                        if (Enum.TryParse<EEstados>(tarifa.Estado.ToString(), true, out var estadoTarifa))
+                            tarifa.Estado = estadoTarifa;
+
+                        if (Enum.TryParse<EEstados>(funcionMap.Estado.ToString(), true, out var estadoFuncion))
+                            funcionMap.Estado = estadoFuncion;
+
+                        if (Enum.TryParse<EEstados>(orden.Estado.ToString(), true, out var estadoOrden))
+                            orden.Estado = estadoOrden;
+
+                        return entrada;
+                    },
                     new { idFuncion },
-                    tran
+                    splitOn: "Tarifa_idTarifa,Funcion_idFuncion,OrdenCompra_idOrdenCompra",
+                    transaction: tran
                 );
 
+                
                 foreach (var entrada in entradas)
                 {
                     await db.ExecuteAsync(
@@ -134,20 +173,20 @@ namespace Evento.Dapper
                     );
 
                     await db.ExecuteAsync(
-                        "UPDATE Entrada SET Estado = 'Anulada' WHERE idEntrada = @idEntrada",
-                        new { idEntrada = entrada.idEntrada },
+                        "UPDATE Entrada SET Estado = @estado WHERE idEntrada = @idEntrada",
+                        new { idEntrada = entrada.idEntrada, estado = EEstados.Anulada.ToString() },
                         tran
                     );
                 }
 
                 await db.ExecuteAsync(
-                    "UPDATE Funcion SET Estado = 'Cancelada' WHERE idFuncion = @idFuncion",
-                    new { idFuncion },
+                    "UPDATE Funcion SET Estado = @estado WHERE idFuncion = @idFuncion",
+                    new { idFuncion, estado = EEstados.Cancelado.ToString() },
                     tran
                 );
 
                 tran.Commit();
-                return string.Empty;
+                return "Se canceló correctamente";
             }
             catch (Exception ex)
             {
