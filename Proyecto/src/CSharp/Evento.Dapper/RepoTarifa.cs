@@ -2,6 +2,7 @@ using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
+using Evento.Core.Services.Utility;
 using Mysqlx.Resultset;
 
 namespace Evento.Dapper
@@ -12,26 +13,49 @@ namespace Evento.Dapper
         public RepoTarifa(IAdo ado) => _ado = ado;
         public async Task<int> InsertTarifa(Tarifa tarifa)
         {
-            var db = _ado.GetDbConnection();
-            var query = "INSERT INTO Tarifa (Tipo, Precio, Stock, Estado) VALUES(@tipo, @precio, @stock, FALSE)";
+            using var db = _ado.GetDbConnection();
+            var query = "INSERT INTO Tarifa (Tipo, idFuncion, Precio, Stock, Estado) VALUES(@tipo, @idfuncion, @precio, @stock, FALSE)";
 
             return await db.ExecuteAsync(query, new
             {
                 tipo = tarifa.Tipo.ToString(),
                 precio = tarifa.Precio,
-                stock = tarifa.Stock
+                stock = tarifa.Stock,
+                idfuncion = tarifa.funcion?.idFuncion
             });
         }
         public async Task<Tarifa?> ObtenerPorId(int id)
         {
-            var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Tarifa WHERE idTarifa = @idtarifa";
+            using var db = _ado.GetDbConnection();
+        var query = @"
+            SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
+            FROM Tarifa t
+            INNER JOIN Funcion f ON t.idFuncion = f.idFuncion
+            WHERE t.idTarifa = @idTarifa";
 
-            return await db.QueryFirstAsync<Tarifa?>(query, new { idtarifa = id });
+        var tarifaDiccionario = new Dictionary<int, Tarifa>();
+
+        var resultado = await db.QueryAsync<Tarifa, Funcion, Tarifa>(
+            query,
+            (tarifa, funcion) =>
+            {
+                if (!tarifaDiccionario.TryGetValue(tarifa.idTarifa, out var tarifaExistente))
+                {
+                    tarifaExistente = tarifa;
+                    tarifaExistente.funcion = funcion;
+                    tarifaDiccionario.Add(tarifa.idTarifa, tarifaExistente);
+                }
+                return tarifaExistente;
+            },
+            new { idTarifa = id},
+            splitOn: "idFuncion"
+        );
+
+        return resultado.FirstOrDefault();
         }
         public async Task<IEnumerable<Tarifa>> ObtenerTodos()
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var query = "SELECT * FROM Tarifa";
 
             return await db.QueryAsync<Tarifa>(query);
@@ -52,7 +76,7 @@ namespace Evento.Dapper
         }
         public async Task<bool> ReducirStock(int id)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var query = "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @idtarifa";
             var rows = await db.ExecuteAsync(query, new
             {
@@ -61,15 +85,17 @@ namespace Evento.Dapper
             return rows > 0;
         }
 
-        public async Task<ETipoTarifa> ObtenerTipoTarifa(string tipo)
+        public ETipoTarifa ObtenerTipoTarifa(string tipo)
         {
-            var db = _ado.GetDbConnection();
-            string query = "SELECT Tipo FROM Tarifa WHERE Tipo = @tipotarifa";
 
-            return await db.QueryFirstOrDefaultAsync<ETipoTarifa>(query, new
+            string tipoNormalizado = UniqueFormatStrings.NormalizarString(tipo);
+
+            foreach (var nombre in Enum.GetNames(typeof(ETipoTarifa)))
             {
-                tipotarifa = tipo
-            });
+                if (nombre.ToLowerInvariant() == tipoNormalizado)
+                    return (ETipoTarifa)Enum.Parse(typeof(ETipoTarifa), nombre);
+            }
+            throw new Exception($"El tipo de tarifa '{tipo}' no es válido.");
         }
     }
 }

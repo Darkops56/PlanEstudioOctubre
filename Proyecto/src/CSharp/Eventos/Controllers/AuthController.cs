@@ -211,7 +211,7 @@ namespace Evento.Controllers
             if (usuario == null)
                 return NotFound("Usuario no encontrado");
 
-            if (UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()) != UniqueFormatStrings.NormalizarString(rol) || UniqueFormatStrings.NormalizarString(ERoles.Admin.ToString()) != UniqueFormatStrings.NormalizarString(rol))
+            if (UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()) != UniqueFormatStrings.NormalizarString(rol) && UniqueFormatStrings.NormalizarString(ERoles.Admin.ToString()) != UniqueFormatStrings.NormalizarString(rol))
                 return NotFound("El Role no se encuentra existente");
 
             if (UniqueFormatStrings.NormalizarString(ERoles.Usuario.ToString()) == UniqueFormatStrings.NormalizarString(rol))

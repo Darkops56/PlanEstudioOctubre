@@ -32,22 +32,23 @@ namespace Evento.Controllers
             if (!Enum.TryParse<EEstados>(dto.Estado, true, out var estadoFuncion))
                 return BadRequest($"Estado '{dto.Estado}' no válido.");
 
-            // Obtener evento
+            
             var evento = await _repoEvento.ObtenerEventoPorId(dto.idEvento);
 
-            // Validar null
+            
             if (evento == null)
             {
                 _logger.LogWarning("No se encontró el evento con id {IdEvento}", dto.idEvento);
                 return NotFound($"No se encontró el evento con id {dto.idEvento}");
             }
 
-            // Crear función
+            
             var funcion = new Funcion
             {
                 Estado = estadoFuncion,
                 evento = evento,
-                Fecha = dto.Fecha
+                Fecha = dto.Fecha,
+                Nombre = dto.Nombre,
             };
 
             _logger.LogInformation("Insertando Funcion con idEvento {IdEvento} y fecha {Fecha}", funcion.evento.idEvento, funcion.Fecha);

@@ -18,7 +18,7 @@ namespace Evento.Dapper
 
         public async Task<int> InsertToken(RefreshToken token)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var sql = "INSERT INTO RefreshTokens (Token, Email, Expiration) VALUES (@toke, @email, @expiration)";
             var rows = await db.ExecuteAsync(sql, new
             {
@@ -32,28 +32,28 @@ namespace Evento.Dapper
 
         public async Task<RefreshToken?> ObtenerToken(string token)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var sql = "SELECT * FROM RefreshTokens WHERE Token = @Token";
             return await db.QueryFirstOrDefaultAsync<RefreshToken>(sql, new { Token = token });
         }
 
         public async Task DeleteToken(string token)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var sql = "DELETE FROM RefreshTokens WHERE Token = @Token";
             await db.ExecuteAsync(sql, new { Token = token });
         }
 
         public async Task DeleteTokensPorEmail(string email)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var sql = "DELETE FROM RefreshTokens WHERE Email = @Email";
             await db.ExecuteAsync(sql, new { Email = email });
         }
 
         public async Task ReemplazarToken(int idUsuario, string nuevoHash, DateTime expiracion)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
 
             string queryUsuario = "SELECT * FROM Usuario WHERE idUsuario = @idusuario";
             var usuario = await db.QueryFirstOrDefaultAsync<Usuario>(queryUsuario, new {idusuario = idUsuario});

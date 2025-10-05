@@ -43,7 +43,30 @@ namespace Evento.Dapper
         public async Task<IEnumerable<Entrada>> ObtenerEntradasPorCliente(int id)
         {
             using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada JOIN OrdenesCompra USING (idOrdenCompra) JOIN Usuario u USING (idUsuario) WHERE u.DNI = @Id", new{ Id = id });
+            var sql = @"
+                        SELECT *
+                        FROM Entrada e
+                        INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                        INNER JOIN OrdenesCompra o ON e.idOrdenCompra = o.idOrdenCompra
+                        INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
+                        INNER JOIN Cliente c ON u.DNI = c.DNI
+                        WHERE c.DNI = @Id";
+
+            var result = await db.QueryAsync<Entrada, Tarifa, OrdenesCompra, Usuario, Cliente, Entrada>(
+                sql,
+                (entrada, tarifa, orden, usuario, cliente) =>
+                {
+                    usuario.cliente = cliente;
+                    orden.usuario = usuario;
+                    entrada.tarifa = tarifa;
+                    entrada.ordenesCompra = orden;
+                    return entrada;
+                },
+                new { Id = id },
+                splitOn: "idTarifa,idOrdenCompra,idUsuario,DNI"
+            );
+
+            return result;
         }
 
         public async Task<Cliente?> ObtenerPorId(int id)

@@ -14,7 +14,7 @@ namespace Evento.Dapper
 
         public async Task<string> AnularEntrada(int id)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
 
             var entrada = await ObtenerEntrada(id);
             if (entrada == null)
@@ -22,56 +22,122 @@ namespace Evento.Dapper
 
             if (entrada.Estado.ToString().ToLower().Trim() == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                 throw new Exception("La entrada ya está anulada");
+            db.Open();
+            using var tran = db.BeginTransaction();
 
-            await db.ExecuteAsync(
-                "UPDATE Entrada SET Estado = 'Anulada' WHERE idEntrada = @IdEntrada",
-                new { IdEntrada = id });
-            var EntradaPagada = await db.QueryFirstAsync<Entrada>("SELECT * FROM Entrada e JOIN OrdenesCompra oc USING (idOrdenCompra) WHERE e.Estado = 'Pagado' AND oc.Estado = 'Pagado'");
-            if (EntradaPagada != null)
+            try
             {
-                await db.ExecuteAsync("UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @idtarifa", new
+                
+                await db.ExecuteAsync(
+                    "UPDATE Entrada SET Estado = 'anulada' WHERE idEntrada = @IdEntrada",
+                    new { IdEntrada = id },
+                    tran
+                );
+
+                
+                if (entrada.Estado.ToString().ToLower().Trim() == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()))
                 {
-                    idtarifa = EntradaPagada.tarifa.idTarifa
-                });
+                    await db.ExecuteAsync(
+                        "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @idTarifa",
+                        new { idTarifa = entrada.tarifa.idTarifa },
+                        tran
+                    );
+                }
+
+                tran.Commit();
+                return string.Empty;
             }
-            return string.Empty;
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                return ex.Message;
+            }
         }
 
         public async Task<bool> DeleteEntrada(int id)
         {
-            var db = _ado.GetDbConnection();
+            using var db = _ado.GetDbConnection();
             var rows = await db.ExecuteAsync("DELETE FROM Entrada WHERE idEntrada = @Id", new { Id = id });
             return rows > 0;
         }
 
         public async Task<int> InsertEntrada(Entrada entrada)
         {
-            if (entrada.tarifa == null) throw new ArgumentNullException("Tarifa no puede ser null");
-            if (entrada.ordenesCompra == null) throw new ArgumentNullException("OrdenCompra no puede ser null");
+            if (entrada.tarifa?.idTarifa == null)
+                throw new ArgumentNullException("Tarifa no puede ser null o tener idTarifa null");
+            if (entrada.ordenesCompra?.idOrdenCompra == null)
+                throw new ArgumentNullException("OrdenCompra no puede ser null o tener idOrdenCompra null");
 
+            using var db = _ado.GetDbConnection();
 
-            var db = _ado.GetDbConnection();
-            var rows = await db.ExecuteAsync("INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
-            new
-            {
-                idtarifa = entrada.tarifa.idTarifa,
-                idordencompra = entrada.ordenesCompra.idOrdenCompra,
-                estado = entrada.Estado.ToString(),
-                preciopagado = entrada.PrecioPagado
-            }
+            var id = await db.ExecuteScalarAsync<int>(
+                "INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) " +
+                "VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
+                new
+                {
+                    idtarifa = entrada.tarifa.idTarifa,
+                    idordencompra = entrada.ordenesCompra.idOrdenCompra,
+                    estado = entrada.Estado.ToString(),
+                    preciopagado = entrada.PrecioPagado
+                }
             );
-            return rows > 0 ? rows : 0;
+
+            return id;
         }
 
         public async Task<Entrada?> ObtenerEntrada(int id)
         {
-            var db = _ado.GetDbConnection();
-            return await db.QueryFirstOrDefaultAsync<Entrada?>("SELECT * FROM Entrada WHERE idEntrada = @Id", new { Id = id });
+            using var db = _ado.GetDbConnection();
+            var sql = @"
+                        SELECT *
+                        FROM Entrada e
+                        INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                        INNER JOIN OrdenesCompra o ON e.idOrdenCompra = o.idOrdenCompra
+                        INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
+                        INNER JOIN Cliente c ON u.DNI = c.DNI
+                        WHERE e.idEntrada = @Id";
+
+            var result = await db.QueryAsync<Entrada, Tarifa, OrdenesCompra, Usuario, Cliente, Entrada>(
+                sql,
+                (entrada, tarifa, orden, usuario, cliente) =>
+                {
+                    usuario.cliente = cliente;
+                    orden.usuario = usuario;
+                    entrada.tarifa = tarifa;
+                    entrada.ordenesCompra = orden;
+                    return entrada;
+                },
+                new { Id = id },
+                splitOn: "idTarifa,idOrdenCompra,idUsuario,DNI"
+            );
+
+            return result.FirstOrDefault();
         }
         public async Task<IEnumerable<Entrada>> ObtenerTodos()
         {
-            var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>("SELECT * FROM Entrada");
+            using var db = _ado.GetDbConnection();
+             var sql = @"
+                        SELECT *
+                        FROM Entrada e
+                        INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                        INNER JOIN OrdenesCompra o ON e.idOrdenCompra = o.idOrdenCompra
+                        INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
+                        INNER JOIN Cliente c ON u.DNI = c.DNI";
+
+            var result = await db.QueryAsync<Entrada, Tarifa, OrdenesCompra, Usuario, Cliente, Entrada>(
+                sql,
+                (entrada, tarifa, orden, usuario, cliente) =>
+                {
+                    usuario.cliente = cliente;
+                    orden.usuario = usuario;
+                    entrada.tarifa = tarifa;
+                    entrada.ordenesCompra = orden;
+                    return entrada;
+                },
+                splitOn: "idTarifa,idOrdenCompra,idUsuario,DNI"
+            );
+
+            return result;
         }
     }
 }

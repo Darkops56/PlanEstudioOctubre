@@ -12,22 +12,26 @@ namespace Evento.Controllers
         private readonly IRepoOrdenCompra _repoOrden;
         private readonly IRepoUsuario _repoUsuario;
 
-        public OrdenesCompraController(IRepoOrdenCompra repoOrden)
+        public OrdenesCompraController(IRepoOrdenCompra repoOrden, IRepoUsuario repoUsuario)
         {
             _repoOrden = repoOrden;
+            _repoUsuario = repoUsuario;
         }
         [HttpPost]
         public async Task<IActionResult> CrearOrden([FromBody] OrdenesCompraDto oc)
         {
             if (oc == null) return BadRequest("Debes enviar un cuerpo.");
             
-            var estadoOC = await _repoOrden.ObtenerEstado(oc.Estado);
-            var MetodoPago = await _repoOrden.ObtenerMetodoPago(oc.metodoPago);
+            var estadoOC = _repoOrden.ObtenerEstado(oc.Estado);
+            var metodoPago = _repoOrden.ObtenerMetodoPago(oc.metodoPago);
             var user = await _repoUsuario.ObtenerPorEmail(oc.Email);
+            
+            if (user == null)
+                return BadRequest($"Usuario con email '{oc.Email}' no encontrado.");
 
             var OrdenCompra = new OrdenesCompra
             {
-                metodoPago = MetodoPago,
+                metodoPago = metodoPago,
                 Estado = estadoOC,
                 Fecha = oc.Fecha,
                 Total = oc.Total,

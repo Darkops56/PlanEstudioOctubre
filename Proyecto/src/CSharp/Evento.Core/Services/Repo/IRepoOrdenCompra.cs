@@ -14,8 +14,8 @@ namespace Evento.Core.Services.Repo
         Task<IEnumerable<OrdenesCompra>> ObtenerOrdenesCompra();
         Task<string> PagarOrdenCompra(int id);
         Task<string> CancelarOrdenCompra(int id);
-        Task<EMetodoPago> ObtenerMetodoPago(string metodo);
-        Task<EEstados> ObtenerEstado(string estadoOC);
+        EMetodoPago ObtenerMetodoPago(string metodo);
+        EEstados ObtenerEstado(string estadoOC);
         Task<int> LiberarStockExpirado();
     }
 }

@@ -1,5 +1,6 @@
 using Evento.Core.DTOs;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,11 @@ namespace Evento.Controllers
         private readonly IRepoTarifa _repo;
         private readonly IRepoFuncion _repoFuncion;
 
-        public TarifasController(IRepoTarifa repo) => _repo = repo;
+        public TarifasController(IRepoTarifa repo, IRepoFuncion repoFuncion)
+        {
+            _repo = repo;
+            _repoFuncion = repoFuncion;
+        }
 
         [HttpGet]
         public async Task<IActionResult> ObtenerTodos() =>
@@ -31,7 +36,11 @@ namespace Evento.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var funcion = await _repoFuncion.ObtenerPorId(dto.idFuncion);
-            var tipo = await _repo.ObtenerTipoTarifa(dto.Tipo);
+            if(funcion == null)
+                return BadRequest("No se encontro la funcion");
+
+            var tipo = _repo.ObtenerTipoTarifa(dto.Tipo);
+
             var tarifa = new Tarifa
             {
                 Precio = dto.Precio,

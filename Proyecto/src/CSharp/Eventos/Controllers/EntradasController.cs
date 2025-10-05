@@ -15,7 +15,12 @@ namespace Evento.Controllers
         private readonly IRepoTarifa _repoTarifa;
         private readonly IRepoOrdenCompra _repoOrden;
 
-        public EntradasController(IRepoEntrada repo) => _repoEntrada = repo;
+        public EntradasController(IRepoEntrada repo, IRepoTarifa repoTarifa, IRepoOrdenCompra repoOrdenCompra)
+        {
+            _repoEntrada = repo;
+            _repoTarifa = repoTarifa;
+            _repoOrden = repoOrdenCompra;
+        }
 
         [HttpGet]
         public async Task<IActionResult> ObtenerTodos() =>
@@ -33,13 +38,22 @@ namespace Evento.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var tarifaObtenida = await _repoTarifa.ObtenerPorId(dto.idTarifa);
+            if (tarifaObtenida?.funcion == null)
+                return BadRequest("La tarifa o la función asociada no existen.");
+
+            var ordencompra = await _repoOrden.ObtenerOrdenCompra(dto.idOrdenCompra);
+            if (ordencompra?.usuario == null)
+                return BadRequest("No se encontró la orden de compra o su usuario.");
+
             var entrada = new Entrada
             {
-                tarifa = await _repoTarifa.ObtenerPorId(dto.idTarifa),
-                ordenesCompra = await _repoOrden.ObtenerOrdenCompra(dto.idOrdenCompra),
+                tarifa = tarifaObtenida,
+                ordenesCompra = ordencompra,
                 PrecioPagado = dto.PrecioPagado,
-                Estado = EEstados.Pendiente // por defecto
+                Estado = EEstados.Activo
             };
+
             var id = await _repoEntrada.InsertEntrada(entrada);
             return CreatedAtAction(nameof(ObtenerPorId), new { id }, entrada);
         }

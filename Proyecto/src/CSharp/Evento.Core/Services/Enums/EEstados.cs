@@ -8,4 +8,7 @@ public enum EEstados
     Publicado,
     Cancelado,
     Expirada,
+    Activo,
+    Inactivo,
+    Anulada,
 }

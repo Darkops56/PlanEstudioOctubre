@@ -15,16 +15,14 @@ namespace Evento.Dapper
 
         public async Task<string> CancelarEvento(int idEvento)
         {
-            var db = _ado.GetDbConnection();
-            var evento = await db.QueryFirstOrDefaultAsync<Eventos>(
-                "SELECT * FROM Eventos WHERE idEvento = @Id",
-                new { Id = idEvento }
-            );
+            using var db = _ado.GetDbConnection();
+            
+            var evento = await ObtenerEventoPorId(idEvento);
             if (evento == null) return "Evento no encontrado";
 
             try
             {
-                // Obtener funciones del evento
+                
                 var funciones = await db.QueryAsync<Funcion>(
                     "SELECT * FROM Funcion WHERE idEvento = @Id",
                     new { Id = idEvento }
@@ -32,35 +30,38 @@ namespace Evento.Dapper
 
                 foreach (var funcion in funciones)
                 {
-                    // Obtener entradas de la función
+                    
                     var entradas = await db.QueryAsync<Entrada>(
-                        "SELECT * FROM Entrada WHERE idFuncion = @Id",
-                        new { Id = funcion.idFuncion }
+                        @"SELECT *
+                          FROM Entrada e
+                          INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                          WHERE t.idFuncion = @idFuncion",
+                        new { idFuncion = funcion.idFuncion }
                     );
 
                     foreach (var entrada in entradas)
                     {
-                        // Liberar stock
+                        
                         await db.ExecuteAsync(
                             "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
-                            new { Id = entrada.tarifa.idTarifa }
+                            new { Id = entrada.tarifa?.idTarifa ?? entrada.tarifa.idTarifa }
                         );
 
-                        // Anular entrada
+                        
                         await db.ExecuteAsync(
-                            "UPDATE Entrada SET EstadoQR = 'Anulada' WHERE idEntrada = @Id",
+                            "UPDATE Entrada SET Estado = 'Cancelado' WHERE idEntrada = @Id",
                             new { Id = entrada.idEntrada }
                         );
                     }
                 }
 
-                // Actualizar estado del evento
+                
                 await db.ExecuteAsync(
-                    "UPDATE Eventos SET estado = 'Cancelado' WHERE idEvento = @Id",
+                    "UPDATE Evento SET Estado = 'Cancelado' WHERE idEvento = @Id",
                     new { Id = idEvento }
                 );
 
-                return string.Empty; // OK
+                return string.Empty;
             }
             catch (Exception ex)
             {
@@ -78,16 +79,20 @@ namespace Evento.Dapper
         public async Task<int> InsertEvento(Eventos evento)
         {
             var db = _ado.GetDbConnection();
-            var rows = await db.ExecuteAsync("INSERT INTO Evento(idEvento, Nombre, idTipoEvento, fechaInicio, fechaFin, Estado) VALUES(@idevento, @nombre, @tipoevento, @fechainicio, @fechafin, @estado)", new
+            var sql = @"INSERT INTO Evento(Nombre, idTipoEvento, Estado, fechaInicio, fechaFin)
+                        VALUES(@Nombre, @idTipoEvento, @Estado, @fechaInicio, @fechaFin);
+                        SELECT LAST_INSERT_ID();";
+
+            var newId = await db.QuerySingleAsync<int>(sql, new
             {
-                idevento = evento.idEvento,
-                nombre = evento.Nombre,
-                tipoevento = evento.idTipoEvento,
-                fechainicio = evento.fechaInicio,
-                fechafin = evento.fechaFin,
-                estado = evento.EstadoEvento
+                evento.Nombre,
+                evento.idTipoEvento,
+                Estado = evento.EstadoEvento.ToString(),
+                evento.fechaInicio,
+                evento.fechaFin
             });
-            return rows > 0 ? rows : 0;
+
+            return newId;
         }
 
         public async Task<Eventos?> ObtenerEventoPorId(int id)
@@ -112,29 +117,55 @@ namespace Evento.Dapper
                 splitOn: "Tipo_idTipoEvento"
             );
             var result = evento.FirstOrDefault();
-            if (result == null)
-            {
-                Console.WriteLine($"⚠️ No se encontró evento con id {id}");
-            }
-            else
-            {
-                Console.WriteLine($"✅ Evento encontrado: {result.Nombre}, {result.idEvento}, {result.tipoEvento.tipoEvento}");
-            }
             return result;
         }
 
         public async Task<Eventos?> ObtenerEventoPorNombre(string nombre)
         {
             var db = _ado.GetDbConnection();
-            var query = "SELECT * FROM Evento WHERE Nombre = @name";
+             var sql = @"
+                        SELECT e.idEvento, e.Nombre, e.idTipoEvento, e.fechaInicio, e.fechaFin, e.Estado,
+                            t.idTipoEvento, t.tipoEvento
+                        FROM Evento e
+                        INNER JOIN TipoEvento t ON e.idTipoEvento = t.idTipoEvento
+                        WHERE e.Nombre = @Nombre";
 
-            return await db.QueryFirstAsync<Eventos>(query, new { name = nombre });
+            var result = await db.QueryAsync<Eventos, TipoEvento, Eventos>(
+                sql,
+                (ev, tipo) =>
+                {
+                    ev.tipoEvento = tipo;
+                    return ev;
+                },
+                new { Nombre = nombre },
+                splitOn: "idTipoEvento"
+            );
+
+            return result.FirstOrDefault();
         }
 
         public async Task<IEnumerable<Funcion>> ObtenerFuncionesPorEventoAsync(int idEvento)
         {
             var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Funcion>("SELECT * FROM Funcion WHERE idEvento = @idevento", new { idevento = idEvento });
+            var sql = @"
+                        SELECT f.idFuncion, f.idEvento, f.Estado, f.Fecha,
+                            e.idEvento, e.Nombre, e.idTipoEvento, e.fechaInicio, e.fechaFin, e.Estado
+                        FROM Funcion f
+                        INNER JOIN Evento e ON f.idEvento = e.idEvento
+                        WHERE f.idEvento = @idEvento";
+
+            var result = await db.QueryAsync<Funcion, Eventos, Funcion>(
+                sql,
+                (func, evento) =>
+                {
+                    func.evento = evento;
+                    return func;
+                },
+                new { idEvento },
+                splitOn: "idEvento"
+            );
+
+            return result;
         }
 
         public async Task<TipoEventoDto?> ObtenerTipoEventoPorNombre(string tipo)
