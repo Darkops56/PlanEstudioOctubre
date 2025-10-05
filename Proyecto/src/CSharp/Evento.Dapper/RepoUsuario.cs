@@ -24,7 +24,6 @@ public class RepoUsuario : IRepoUsuario
             role = UniqueFormatStrings.NormalizarString(usuario.Role.ToString())
         });
     }
-
     public async Task<Usuario?> ObtenerPorEmail(string nuevoEmail)
     {
         using var db = _ado.GetDbConnection();
@@ -62,7 +61,6 @@ public class RepoUsuario : IRepoUsuario
 
         return user;
     }
-
     public async Task<bool> UpdateUsuario(Usuario usuario)
     {
         using var db = _ado.GetDbConnection();
@@ -84,7 +82,6 @@ public class RepoUsuario : IRepoUsuario
         });
         return rows > 0;
     }
-
     public async Task<bool> DeleteUsuario(int id)
     {
         using var db = _ado.GetDbConnection();
@@ -92,7 +89,6 @@ public class RepoUsuario : IRepoUsuario
         var rows = await db.ExecuteAsync(query, new { idusuario = id });
         return rows > 0;
     }
-
     public async Task<bool> ExisteUsuarioPorEmail(string nuevoEmail)
     {
         using var db = _ado.GetDbConnection();
@@ -100,7 +96,6 @@ public class RepoUsuario : IRepoUsuario
         var count = await db.ExecuteScalarAsync<int>(query, new { email = nuevoEmail });
         return count > 0;
     }
-
     public async Task<IEnumerable<Usuario>> ObtenerTodos()
     {
         using var db = _ado.GetDbConnection();
@@ -117,7 +112,6 @@ public class RepoUsuario : IRepoUsuario
 
         return users;
     }
-
     public async Task<IEnumerable<OrdenesCompra>> ObtenerComprasPorUsuario(int id)
     {
         using var db = _ado.GetDbConnection();

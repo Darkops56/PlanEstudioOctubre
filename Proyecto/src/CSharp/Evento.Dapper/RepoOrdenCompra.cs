@@ -65,33 +65,6 @@ namespace Evento.Dapper
                 throw;
             }
         }
-        public async Task<bool> UpdateOrdenCompra(OrdenesCompra orden)
-        {
-            if (orden.usuario == null) throw new Exception("El usuario es obligatorio");
-
-            using var db = _ado.GetDbConnection();
-            var sql = @"UPDATE OrdenesCompra 
-                        SET idUsuario = @IdUsuario, Fecha = @fecha, Total = @total, MetodoPago = @metodopago, Estado = @estado
-                        WHERE idOrdenCompra = @idordencompra";
-            var rows = await db.ExecuteAsync(sql, new
-            {
-                IdUsuario = orden.usuario.idUsuario,
-                fecha = orden.Fecha,
-                total = orden.Total,
-                metodopago = orden.metodoPago,
-                estado = orden.Estado.ToString(),
-                idordencompra = orden.idOrdenCompra
-            });
-            return rows > 0;
-        }
-
-        public async Task<bool> DeleteOrdenCompra(int id)
-        {
-            using var db = _ado.GetDbConnection();
-            var rows = await db.ExecuteAsync("DELETE FROM OrdenesCompra WHERE idOrdenCompra = @Id", new { Id = id });
-            return rows > 0;
-        }
-
         public async Task<OrdenesCompra?> ObtenerOrdenCompra(int id)
         {
             using var db = _ado.GetDbConnection();
@@ -121,7 +94,6 @@ namespace Evento.Dapper
 
             return orden;
         }
-
         public async Task<IEnumerable<OrdenesCompra>> ObtenerOrdenesCompra()
         {
             using var db = _ado.GetDbConnection();
@@ -149,15 +121,6 @@ namespace Evento.Dapper
 
             return ordenes;
         }
-
-        public async Task<IEnumerable<Entrada>> ObtenerEntradasPorOrden(int idOrdenCompra)
-        {
-            using var db = _ado.GetDbConnection();
-            return await db.QueryAsync<Entrada>(
-                "SELECT * FROM Entradas WHERE idOrdenCompra = @IdOrdenCompra",
-                new { IdOrdenCompra = idOrdenCompra });
-        }
-
         public async Task<string> PagarOrdenCompra(int idOrdenCompra)
         {
             using var db = _ado.GetDbConnection();
@@ -306,7 +269,6 @@ namespace Evento.Dapper
                 return ex.Message;
             }
         }
-
         public async Task<int> LiberarStockExpirado()
         {
             using var db = _ado.GetDbConnection();
@@ -343,47 +305,6 @@ namespace Evento.Dapper
                 throw;
             }
         }
-
-        private async Task ValidarOrdenParaPago(IDbConnection db, int id)
-        {
-
-            var orden = await ObtenerOrdenCompra(id);
-            if (orden == null)
-                throw new Exception("Orden no encontrada.");
-
-
-            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()))
-                throw new Exception("La orden ya fue pagada.");
-            if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
-                throw new Exception("La orden fue cancelada y no puede pagarse.");
-
-
-            var entradas = await db.QueryAsync<Entrada>(
-                "SELECT * FROM Entrada WHERE idOrdenCompra = @Id",
-                new { Id = id }
-            );
-
-            if (!entradas.Any())
-                throw new Exception("La orden no tiene entradas asociadas para pagar.");
-        }
-        private async Task ValidarStockEntradas(IDbConnection db, IEnumerable<Entrada> entradas)
-        {
-            foreach (var entrada in entradas)
-            {
-
-                var tarifa = await db.QueryFirstOrDefaultAsync<Tarifa>(
-                    "SELECT * FROM Tarifa WHERE idTarifa = @Id",
-                    new { Id = entrada.tarifa.idTarifa }
-                );
-
-                if (tarifa == null)
-                    throw new Exception($"No se encontró la tarifa para la entrada {entrada.idEntrada}.");
-
-                if (tarifa.Stock <= 0)
-                    throw new Exception($"No hay stock suficiente para la tarifa {tarifa.Tipo} (Entrada {entrada.idEntrada}).");
-            }
-        }
-
         public EMetodoPago ObtenerMetodoPago(string metodo)
         {
             string metodoPagoNormalizado = UniqueFormatStrings.NormalizarString(metodo);
@@ -395,7 +316,6 @@ namespace Evento.Dapper
             }
             throw new ArgumentException($"El metodo de pago: {metodoPagoNormalizado} no es valido");
         }
-
         public EEstados ObtenerEstado(string estadoOC)
         {
             string estadoNormalizado = UniqueFormatStrings.NormalizarString(estadoOC);
@@ -423,7 +343,6 @@ namespace Evento.Dapper
 
             return rows > 0 ? "Se creo correctamente" : "Hubo un problema en el insert.";
         }
-
         public async Task<IEnumerable<StockReservaciones>> ObtenerReservacionesPorIdOrden(int idOrden)
         {
             var db = _ado.GetDbConnection();

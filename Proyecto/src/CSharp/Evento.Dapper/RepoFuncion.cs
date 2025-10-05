@@ -18,7 +18,6 @@ namespace Evento.Dapper
 
             return rows > 0;
         }
-
         public async Task<int> InsertFuncion(Funcion funcion)
         {
             using var db = _ado.GetDbConnection();
@@ -36,7 +35,6 @@ namespace Evento.Dapper
 
             return id;
         }
-
         public async Task<IEnumerable<Tarifa>> ObtenerTarifasDeFuncion(int id)
         {
             using var db = _ado.GetDbConnection();
@@ -194,8 +192,6 @@ namespace Evento.Dapper
                 return ex.Message;
             }
         }
-
-
         public async Task<EEstados> ObtenerEstadoFuncion(string estadoFuncion)
         {
             using var db = _ado.GetDbConnection();

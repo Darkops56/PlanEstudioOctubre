@@ -79,7 +79,6 @@ namespace Evento.Dapper
             );
             return resultado;
         }
-
         public async Task<bool> UpdateTarifa(Tarifa tarifa)
         {
             using var db = _ado.GetDbConnection();
@@ -103,7 +102,6 @@ namespace Evento.Dapper
             });
             return rows > 0;
         }
-
         public ETipoTarifa ObtenerTipoTarifa(string tipo)
         {
 
