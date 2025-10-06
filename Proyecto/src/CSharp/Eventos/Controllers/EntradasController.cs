@@ -86,10 +86,10 @@ namespace Evento.Controllers
         public async Task<IActionResult> ValidarQrPost([FromBody] QrDto dto)
         {
             if (dto == null) return BadRequest("Payload requerido");
-            if (dto.entradaId <= 0) return BadRequest("entradaId inválido");
+            if (dto.idEntrada <= 0) return BadRequest("entradaId inválido");
             if (string.IsNullOrWhiteSpace(dto.token)) return BadRequest("token requerido");
 
-            var qr = await _repoQR.ObtenerQRPorEntrada(dto.entradaId);
+            var qr = await _repoQR.ObtenerQRPorEntrada(dto.idEntrada);
             if (qr == null) return NotFound("QR no encontrado");
 
             if (qr.token != dto.token)
@@ -98,7 +98,7 @@ namespace Evento.Controllers
             if (qr.ExpiraEn < DateTime.Now)
                 return BadRequest("QR vencido");
 
-            var entrada = await _repoEntrada.ObtenerEntrada(dto.entradaId);
+            var entrada = await _repoEntrada.ObtenerEntrada(dto.idEntrada);
             if (entrada == null) return NotFound("Entrada no encontrada");
 
             if (entrada.Estado == EEstados.Cancelado)
@@ -107,21 +107,21 @@ namespace Evento.Controllers
             if (entrada.Estado == EEstados.Usado)
                 return BadRequest("Entrada ya fue utilizada");
 
-            await _repoEntrada.MarcarEntradaUsada(dto.entradaId);
+            await _repoEntrada.MarcarEntradaUsada(dto.idEntrada);
 
             return Ok(new
             {
                 mensaje = "QR válido",
                 estado = "Usado",
-                entradaId = dto.entradaId,
+                entradaId = dto.idEntrada,
             });
         }
 
         // GET para que el escáner que abra la URL valide automáticamente
         [HttpGet("validar")]
-        public async Task<IActionResult> ValidarQrGet([FromQuery] int entradaId, [FromQuery] string token)
+        public async Task<IActionResult> ValidarQrGet([FromQuery] int idEntrada, [FromQuery] string token)
         {
-            return await ValidarQrPost(new QrDto { entradaId = entradaId, token = token });
+            return await ValidarQrPost(new QrDto { idEntrada = idEntrada, token = token });
         }
         [HttpGet("tokenQr")]
         public async Task<IActionResult> ObtenerQRToken([FromQuery] int entradaId)
