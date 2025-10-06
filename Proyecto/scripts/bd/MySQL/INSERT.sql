@@ -1,87 +1,95 @@
--- Insert Cliente
-INSERT INTO Cliente (DNI, nombreCompleto, Telefono) VALUES
-(101, 'Juan Pérez', '1123456789'),
-(102, 'María López', '1134567890'),
-(103, 'Carlos Fernández', '1145678901'),
-(104, 'Ana Gómez', '1156789012'),
-(105, 'Luis Martínez', '1167890123');
+USE 5to_Eventos;
 
--- Insert Usuario
-INSERT INTO Usuario (DNI, Apodo, Contrasena) VALUES
-(101, 'juancho', '1234'),
-(102, 'maru', 'abcd'),
-(103, 'carlitos', 'pass123'),
-(104, 'anitag', 'qwerty'),
-(105, 'lucho', '9876');
+-- CLIENTE + USUARIO
+INSERT INTO Cliente (DNI, nombreCompleto, Telefono)
+VALUES (12345678, 'Sebastian Zerpa', '1122334455');
 
--- Insert TipoEvento
-INSERT INTO TipoEvento (tipoEvento) VALUES
-('Concierto'),
-('Teatro'),
-('Deporte'),
-('Conferencia'),
-('Festival');
+INSERT INTO Usuario (DNI, Email, Apodo, Contrasena, Roles)
+VALUES (12345678, 'micho@gmail.com', 'MichoRhodesia', '1234contra', 'Usuario');
 
--- Insert Eventos
-INSERT INTO Eventos (Nombre, idTipoEvento, fechaInicio, fechaFin) VALUES
-('Recital Rock Nacional', 1, '2025-10-01 20:00:00', '2025-10-01 23:30:00'),
-('Obra Romeo y Julieta', 2, '2025-10-05 18:00:00', '2025-10-05 20:30:00'),
-('Partido Fútbol Amistoso', 3, '2025-10-10 21:00:00', '2025-10-10 23:00:00'),
-('Congreso Tecnología IA', 4, '2025-11-01 09:00:00', '2025-11-01 18:00:00'),
-('Festival de Jazz', 5, '2025-11-15 19:00:00', '2025-11-15 23:00:00');
+INSERT INTO Usuario (DNI, Email, Apodo, Contrasena, Roles)
+VALUES (12345678, 'zerpa@gmail.com', 'EñAdmin', 'admincontra', 'Admin');
 
--- Insert Funcion
-INSERT INTO Funcion (idEvento, fecha) VALUES
-(1, '2025-10-01 20:00:00'),
-(2, '2025-10-05 18:00:00'),
-(3, '2025-10-10 21:00:00'),
-(4, '2025-11-01 09:00:00'),
-(5, '2025-11-15 19:00:00');
 
--- Insert Local
-INSERT INTO Local (Nombre, Ubicacion) VALUES
-('Luna Park', 'Av. Madero 420, CABA'),
-('Teatro Colón', 'Cerrito 628, CABA'),
-('Estadio Monumental', 'Av. Figueroa Alcorta 7597, CABA'),
-('Centro de Convenciones', 'Av. Figueroa Alcorta 2099, CABA'),
-('Parque Sarmiento', 'Av. Ricardo Balbín 4750, CABA');
+-- TIPOS DE EVENTO
 
--- Insert Sector
-INSERT INTO Sector (idLocal, capacidad) VALUES
-(1, 5000),
-(2, 1500),
-(3, 70000),
-(4, 2000),
-(5, 10000);
+INSERT INTO TipoEvento (tipoEvento)
+VALUES 
+('Formales'), ('Informales'), ('Externos'), ('Internos'),
+('Corporativos'), ('Empresariales'), ('Sociales'), ('Ocio'),
+('Entretenimiento'), ('Deportivos'), ('Causa'), ('Politicos'),
+('Religiosos'), ('Formativos'), ('Virtuales'), ('Hibridos');
 
--- Insert Sector_Evento
-INSERT INTO Sector_Evento (idSector, idEvento) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
 
--- Insert Tarifa
-INSERT INTO Tarifa (Stock, Tipo) VALUES
-(100, 'General'),
-(50, 'VIP'),
-(200, 'Campo'),
-(300, 'Platea'),
-(150, 'Preferencial');
+-- EVENTO
 
--- Insert Entrada
-INSERT INTO Entrada (Precio, idEvento, idTarifa) VALUES
-(5000, 1, 6),
-(12000, 1, 7),
-(3500, 2, 8),
-(8000, 3, 9),
-(10000, 5, 10);
+INSERT INTO Evento (Nombre, idTipoEvento, Estado, fechaInicio, fechaFin)
+VALUES ('Concierto Rock Nacional', 9, 'Publicado', '2025-12-10 20:00:00', '2025-12-10 23:30:00');
 
--- Insert RegistroCompra
-INSERT INTO RegistroCompra (idCliente, idEntrada, Fecha) VALUES
-(101, 6, '2025-09-10 14:30:00'),
-(102, 7, '2025-09-11 16:00:00'),
-(103, 8, '2025-09-12 18:45:00'),
-(104, 9, '2025-09-13 20:15:00'),
-(105, 10, '2025-09-14 19:30:00');
+
+-- FUNCIONES
+
+INSERT INTO Funcion (idEvento, Nombre, Estado, Fecha)
+VALUES 
+(1, 'Función Principal', 'Publicado', '2025-12-10 20:00:00'),
+(1, 'Función Secundaria', 'Publicado', '2025-12-11 20:00:00');
+
+
+-- LOCAL + SECTOR
+
+INSERT INTO Local (Nombre, Ubicacion)
+VALUES ('Estadio Central', 'Av. Siempre Viva 123, Buenos Aires');
+
+INSERT INTO Sector (idLocal, Capacidad)
+VALUES (1, 1000), (1, 500), (1, 200);
+
+INSERT INTO Sector_Evento (idSector, idEvento)
+VALUES (1,1), (2,1), (3,1);
+
+
+-- TARIFAS
+
+INSERT INTO Tarifa (idFuncion, Stock, Precio, Estado, Tipo)
+VALUES
+(1, 500, 5000, TRUE, 'General'),
+(1, 100, 8000, TRUE, 'Vip'),
+(2, 200, 3000, TRUE, 'Descuento');
+
+
+-- ORDENES DE COMPRA
+
+INSERT INTO OrdenesCompra (idUsuario, Fecha, Total, metodoPago, estado)
+VALUES (1, '2025-12-01 15:30:00', 13000, 'Credito', 'Pagado');
+
+
+-- STOCK RESERVACIONES
+
+INSERT INTO StockReservaciones (idTarifa, Cantidad, ExpiraEn, idOrdenCompra)
+VALUES 
+(1, 2, '2025-12-05 23:59:59', 1),
+(2, 1, '2025-12-05 23:59:59', 1);
+
+
+-- ENTRADAS
+
+INSERT INTO Entrada (idTarifa, idOrdenCompra, Estado, PrecioPagado)
+VALUES
+(1, 1, 'Pagado', 5000),
+(1, 1, 'Pagado', 5000),
+(2, 1, 'Pagado', 8000);
+
+
+-- QR
+
+INSERT INTO QR (idEntrada, url, token, ExpiraEn, VCard)
+VALUES
+(1, 'http://localhost:5001/api/entradas/1/validar?token=abc123', 'abc123', '2025-12-11 23:59:59', 'VCARD DATA 1'),
+(2, 'http://localhost:5001/api/entradas/2/validar?token=def456', 'def456', '2025-12-11 23:59:59', 'VCARD DATA 2'),
+(3, 'http://localhost:5001/api/entradas/3/validar?token=ghi789', 'ghi789', '2025-12-11 23:59:59', 'VCARD DATA 3');
+
+
+-- REFRESH TOKENS
+
+INSERT INTO RefreshTokens (Token, Email, Expiration)
+VALUES ('refreshToken123', 'micho@gmail.com', '2025-12-31 23:59:59');
+

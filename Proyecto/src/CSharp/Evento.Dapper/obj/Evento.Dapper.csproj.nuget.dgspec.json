@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {}
+    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {}
   },
   "projects": {
-    "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
         "projectName": "Evento.Core",
-        "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
-        "packagesPath": "C:\\Users\\darko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\obj\\",
+        "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\darko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -96,20 +95,20 @@
         }
       }
     },
-    "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
+    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
         "projectName": "Evento.Dapper",
-        "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
-        "packagesPath": "C:\\Users\\darko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\obj\\",
+        "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\darko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -118,15 +117,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
-                "projectPath": "C:\\Users\\darko\\Documents\\GitHub\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
+              "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
               }
             }
           }
