@@ -91,7 +91,16 @@ namespace Evento.Dapper
             string qrUrl = Evento.Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
 
             // Insertar en tabla QR
-            var qr = new QR(idEntrada, qrUrl, 60 /*minutos de vigencia*/, "");
+            var qr = new QR
+            {
+                idEntrada = idEntrada,
+                url = qrUrl,
+                token = token,
+                ExpiraEn = DateTime.Now.AddMinutes(20),
+                VCard = "",
+                Estado = EEstados.Activo
+                
+            };
             qr.token = token;
             var repoQR = new RepoQR(_ado);
             await repoQR.InsertQR(qr);
@@ -99,7 +108,15 @@ namespace Evento.Dapper
             return idEntrada;
         }
 
-
+        public async Task<bool> MarcarEntradaUsada(int id)
+        {
+            using var db = _ado.GetDbConnection();
+        var filas = await db.ExecuteAsync(
+            "UPDATE Entrada SET Estado = @estado WHERE idEntrada = @idEntrada",
+            new { estado = "Usado", idEntrada = id }
+        );
+        return filas > 0;
+        }
 
         public async Task<Entrada?> ObtenerEntrada(int id)
         {

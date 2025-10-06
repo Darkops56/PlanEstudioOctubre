@@ -95,17 +95,26 @@ namespace Evento.Controllers
             if (qr.token != dto.token)
                 return BadRequest("Token inválido");
 
-            if (qr.duracion > 0 && qr.FechaCreacion.AddMinutes(qr.duracion) < DateTime.UtcNow)
+            if (qr.ExpiraEn < DateTime.Now)
                 return BadRequest("QR vencido");
 
             var entrada = await _repoEntrada.ObtenerEntrada(dto.entradaId);
             if (entrada == null) return NotFound("Entrada no encontrada");
-            if (entrada.Estado == EEstados.Cancelado) return BadRequest("Entrada anulada");
 
-            // opcional: marcar como usado
-            // await _repoEntrada.MarcarEntradaUsada(dto.entradaId);
+            if (entrada.Estado == EEstados.Cancelado)
+                return BadRequest("Entrada anulada");
 
-            return Ok(new { mensaje = "QR válido", entradaId = dto.entradaId });
+            if (entrada.Estado == EEstados.Usado)
+                return BadRequest("Entrada ya fue utilizada");
+
+            await _repoEntrada.MarcarEntradaUsada(dto.entradaId);
+
+            return Ok(new
+            {
+                mensaje = "QR válido",
+                estado = "Usado",
+                entradaId = dto.entradaId,
+            });
         }
 
         // GET para que el escáner que abra la URL valide automáticamente
@@ -113,6 +122,16 @@ namespace Evento.Controllers
         public async Task<IActionResult> ValidarQrGet([FromQuery] int entradaId, [FromQuery] string token)
         {
             return await ValidarQrPost(new QrDto { entradaId = entradaId, token = token });
+        }
+        [HttpGet("tokenQr")]
+        public async Task<IActionResult> ObtenerQRToken([FromQuery] int entradaId)
+        {
+            var qr = await _repoQR.ObtenerQRPorEntrada(entradaId);
+            return Ok(new
+            {
+                idEntrada = qr.idEntrada,
+                token = qr.token,
+            });
         }
     }
 }

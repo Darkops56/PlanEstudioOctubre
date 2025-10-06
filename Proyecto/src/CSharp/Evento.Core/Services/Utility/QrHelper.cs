@@ -22,9 +22,9 @@ namespace Evento.Core.Services
         }
 
         // Construye la URL de validación
-        // NOTA: usamos /qr/validar y query params, apuntando a http://localhost:5001
+        // NOTA: usamos /qr/validar y query params, apuntando a http://localhost:5002
         public static string GenerarUrlValidacion(int entradaId, string token)
-            => $"http://localhost:5001/entradas/validar?entradaId={entradaId}&token={token}";
+            => $"http://localhost:5002/entradas/validar?entradaId={entradaId}&token={token}";
 
         // Genera PNG bytes del QR usando QRCoder para obtener la matriz y SkiaSharp para render
         public static byte[] GenerarQrImageSkia(string url, int pixelsPerModule = 8, int quietZoneModules = 4)
