@@ -19,4 +19,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Evento.Core\Evento.Core.csproj" />
+    <ProjectReference Include="..\Evento.Dapper\Evento.Dapper.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Moq;
 using Xunit;
 
-namespace Evento.Tests
+namespace Evento.Test
 {
     public class TestAdoOrdenCompra
     {
@@ -13,7 +15,15 @@ namespace Evento.Tests
         public async Task Insertar_OrdenCompra_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoOrdenCompra>();
-            var orden = new OrdenesCompra { Id = 0 }; // ejemplo
+            var orden = new OrdenesCompra
+            {
+                usuario = new Usuario { idUsuario = 1, Apodo = "Juan", Email = "juan@mail.com" },
+                entradas = new List<Entrada>(),
+                Fecha = DateTime.Now,
+                Total = 500,
+                metodoPago = EMetodoPago.Efectivo,
+                Estado = EEstados.Activo
+            };
             mockRepo.Setup(r => r.InsertOrdenCompra(orden)).ReturnsAsync(5);
 
             var resultado = await mockRepo.Object.InsertOrdenCompra(orden);
@@ -25,13 +35,22 @@ namespace Evento.Tests
         public async Task Obtener_OrdenCompra_Por_Id_Debe_Devolver_Orden_Si_Existe()
         {
             var mockRepo = new Mock<IRepoOrdenCompra>();
-            var orden = new OrdenesCompra { Id = 1 };
+            var orden = new OrdenesCompra
+            {
+                idOrdenCompra = 1,
+                usuario = new Usuario { idUsuario = 1, Apodo = "Juan", Email = "juan@mail.com" },
+                entradas = new List<Entrada>(),
+                Fecha = DateTime.Now,
+                Total = 500,
+                metodoPago = EMetodoPago.Efectivo,
+                Estado = EEstados.Activo
+            };
             mockRepo.Setup(r => r.ObtenerOrdenCompra(1)).ReturnsAsync(orden);
 
             var resultado = await mockRepo.Object.ObtenerOrdenCompra(1);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.Id);
+            Assert.Equal(1, resultado.idOrdenCompra);
         }
 
         [Fact]
@@ -40,8 +59,8 @@ namespace Evento.Tests
             var mockRepo = new Mock<IRepoOrdenCompra>();
             var ordenes = new List<OrdenesCompra>
             {
-                new OrdenesCompra { Id = 1 },
-                new OrdenesCompra { Id = 2 }
+                new OrdenesCompra { idOrdenCompra = 1 },
+                new OrdenesCompra { idOrdenCompra = 2 }
             };
             mockRepo.Setup(r => r.ObtenerOrdenesCompra()).ReturnsAsync(ordenes);
 

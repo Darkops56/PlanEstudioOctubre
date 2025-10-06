@@ -5,7 +5,7 @@ using Evento.Core.Services.Repo;
 using Moq;
 using Xunit;
 
-namespace Evento.Tests
+namespace Evento.Test
 {
     public class TestAdoRefreshToken
     {
@@ -13,7 +13,7 @@ namespace Evento.Tests
         public async Task Insertar_Token_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoRefreshToken>();
-            var token = new RefreshToken { Id = 0, Token = "abc123" };
+            var token = new RefreshToken { Id = 0, Token = "abc123", Email = "usuario@test.com", Expiration = DateTime.UtcNow.AddHours(1) };
             mockRepo.Setup(r => r.InsertToken(token)).ReturnsAsync(5);
 
             var resultado = await mockRepo.Object.InsertToken(token);
@@ -25,7 +25,7 @@ namespace Evento.Tests
         public async Task Obtener_Token_Debe_Devolver_Token_Si_Existe()
         {
             var mockRepo = new Mock<IRepoRefreshToken>();
-            var token = new RefreshToken { Id = 1, Token = "abc123" };
+            var token = new RefreshToken { Id = 1, Token = "abc123", Email = "usuario@test.com", Expiration = DateTime.UtcNow.AddHours(1) };
             mockRepo.Setup(r => r.ObtenerToken("abc123")).ReturnsAsync(token);
 
             var resultado = await mockRepo.Object.ObtenerToken("abc123");
@@ -60,10 +60,11 @@ namespace Evento.Tests
         public async Task Reemplazar_Token_Debe_Correr_Sin_Errores()
         {
             var mockRepo = new Mock<IRepoRefreshToken>();
-            mockRepo.Setup(r => r.ReemplazarToken(1, "nuevoHash", DateTime.UtcNow.AddHours(1)))
+            var nuevaExpiracion = DateTime.UtcNow.AddHours(1);
+            mockRepo.Setup(r => r.ReemplazarToken(1, "nuevoHash", nuevaExpiracion))
                     .Returns(Task.CompletedTask);
 
-            await mockRepo.Object.ReemplazarToken(1, "nuevoHash", DateTime.UtcNow.AddHours(1));
+            await mockRepo.Object.ReemplazarToken(1, "nuevoHash", nuevaExpiracion);
 
             mockRepo.Verify(r => r.ReemplazarToken(1, "nuevoHash", It.IsAny<DateTime>()), Times.Once);
         }

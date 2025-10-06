@@ -5,7 +5,7 @@ using Evento.Core.Services.Repo;
 using Moq;
 using Xunit;
 
-namespace Evento.Tests
+namespace Evento.Test
 {
     public class TestAdoLocal
     {
@@ -15,8 +15,8 @@ namespace Evento.Tests
             var mockRepo = new Mock<IRepoLocal>();
             var locales = new List<Local>
             {
-                new Local { IdLocal = 1, Nombre = "Teatro A" },
-                new Local { IdLocal = 2, Nombre = "Estadio B" }
+                new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" },
+                new Local { idLocal = 2, Nombre = "Estadio B", Ubicacion = "Calle 2" }
             };
             mockRepo.Setup(r => r.ObtenerTodos()).ReturnsAsync(locales);
 
@@ -30,33 +30,36 @@ namespace Evento.Tests
         public async Task Obtener_Local_Por_Id_Debe_Devolver_Local_Si_Existe()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var local = new Local { IdLocal = 1, Nombre = "Teatro A" };
+            var local = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
             mockRepo.Setup(r => r.ObtenerPorId(1)).ReturnsAsync(local);
 
             var resultado = await mockRepo.Object.ObtenerPorId(1);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.IdLocal);
+            Assert.Equal(1, resultado.idLocal);
+            Assert.Equal("Teatro A", resultado.Nombre);
         }
 
         [Fact]
         public async Task Obtener_Sector_Por_Id_Debe_Devolver_Sector_Si_Existe()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var sector = new Sector { Id = 1, Nombre = "Platea" };
+            var localEjemplo = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
+            var sector = new Sector { idSector = 1, Capacidad = 100, local = localEjemplo };
             mockRepo.Setup(r => r.ObtenerSectorPorId(1)).ReturnsAsync(sector);
 
             var resultado = await mockRepo.Object.ObtenerSectorPorId(1);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.Id);
+            Assert.Equal(1, resultado.idSector);
+            Assert.Equal(100, resultado.Capacidad);
         }
 
         [Fact]
         public async Task Insertar_Local_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var local = new Local { Nombre = "Nuevo Local" };
+            var local = new Local { Nombre = "Nuevo Local", Ubicacion = "Calle 3" };
             mockRepo.Setup(r => r.InsertLocal(local)).ReturnsAsync(5);
 
             var resultado = await mockRepo.Object.InsertLocal(local);
@@ -68,7 +71,7 @@ namespace Evento.Tests
         public async Task Actualizar_Local_Debe_Devolver_True_Si_Se_Actualizo()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var local = new Local { IdLocal = 1, Nombre = "Teatro A" };
+            var local = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
             mockRepo.Setup(r => r.UpdateLocal(local)).ReturnsAsync(true);
 
             var resultado = await mockRepo.Object.UpdateLocal(local);
@@ -91,10 +94,11 @@ namespace Evento.Tests
         public async Task Obtener_Sectores_Del_Local_Debe_Devolver_Lista()
         {
             var mockRepo = new Mock<IRepoLocal>();
+            var localEjemplo = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
             var sectores = new List<Sector>
             {
-                new Sector { Id = 1, Nombre = "Platea" },
-                new Sector { Id = 2, Nombre = "VIP" }
+                new Sector { idSector = 1, Capacidad = 100, local = localEjemplo },
+                new Sector { idSector = 2, Capacidad = 50, local = localEjemplo }
             };
             mockRepo.Setup(r => r.ObtenerSectoresDelLocal(1)).ReturnsAsync(sectores);
 
@@ -108,7 +112,8 @@ namespace Evento.Tests
         public async Task Insertar_Sector_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var sector = new Sector { Nombre = "Balcon" };
+            var localEjemplo = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
+            var sector = new Sector { Capacidad = 120, local = localEjemplo };
             mockRepo.Setup(r => r.InsertSector(sector, 1)).ReturnsAsync(10);
 
             var resultado = await mockRepo.Object.InsertSector(sector, 1);
@@ -120,7 +125,8 @@ namespace Evento.Tests
         public async Task Actualizar_Sector_Debe_Devolver_True_Si_Se_Actualizo()
         {
             var mockRepo = new Mock<IRepoLocal>();
-            var sector = new Sector { Id = 1, Nombre = "Platea" };
+            var localEjemplo = new Local { idLocal = 1, Nombre = "Teatro A", Ubicacion = "Calle 1" };
+            var sector = new Sector { idSector = 1, Capacidad = 100, local = localEjemplo };
             mockRepo.Setup(r => r.UpdateSector(sector, 1)).ReturnsAsync(true);
 
             var resultado = await mockRepo.Object.UpdateSector(sector, 1);

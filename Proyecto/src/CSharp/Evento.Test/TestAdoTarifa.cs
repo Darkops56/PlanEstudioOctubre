@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Moq;
 using Xunit;
 
-namespace Evento.Tests
+namespace Evento.Test
 {
     public class TestAdoTarifa
     {
@@ -15,8 +15,8 @@ namespace Evento.Tests
             var mockRepo = new Mock<IRepoTarifa>();
             var tarifas = new List<Tarifa>
             {
-                new Tarifa { Id = 1, Descripcion = "Tarifa 1" },
-                new Tarifa { Id = 2, Descripcion = "Tarifa 2" }
+                new Tarifa { idTarifa = 1 },
+                new Tarifa { idTarifa = 2 }
             };
             mockRepo.Setup(r => r.ObtenerTodos()).ReturnsAsync(tarifas);
 
@@ -30,20 +30,20 @@ namespace Evento.Tests
         public async Task Obtener_Tarifa_Por_Id_Debe_Devolver_Tarifa_Si_Existe()
         {
             var mockRepo = new Mock<IRepoTarifa>();
-            var tarifa = new Tarifa { Id = 1, Descripcion = "Tarifa 1" };
+            var tarifa = new Tarifa { idTarifa = 1 };
             mockRepo.Setup(r => r.ObtenerPorId(1)).ReturnsAsync(tarifa);
 
             var resultado = await mockRepo.Object.ObtenerPorId(1);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.Id);
+            Assert.Equal(1, resultado.idTarifa);
         }
 
         [Fact]
         public async Task Insertar_Tarifa_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoTarifa>();
-            var tarifa = new Tarifa { Descripcion = "Nueva Tarifa" };
+            var tarifa = new Tarifa { Precio = 100 };
             mockRepo.Setup(r => r.InsertTarifa(tarifa)).ReturnsAsync(5);
 
             var resultado = await mockRepo.Object.InsertTarifa(tarifa);
@@ -55,7 +55,7 @@ namespace Evento.Tests
         public async Task Actualizar_Tarifa_Debe_Devolver_True_Si_Se_Actualizo()
         {
             var mockRepo = new Mock<IRepoTarifa>();
-            var tarifa = new Tarifa { Id = 1, Descripcion = "Tarifa 1" };
+            var tarifa = new Tarifa { idTarifa = 1 };
             mockRepo.Setup(r => r.UpdateTarifa(tarifa)).ReturnsAsync(true);
 
             var resultado = await mockRepo.Object.UpdateTarifa(tarifa);
@@ -72,6 +72,19 @@ namespace Evento.Tests
             var resultado = await mockRepo.Object.ReducirStock(1);
 
             Assert.True(resultado);
+        }
+
+        [Fact]
+        public void Obtener_TipoTarifa_Debe_Devolver_Correcto()
+        {
+            var mockRepo = new Mock<IRepoTarifa>();
+
+            mockRepo.Setup(r => r.ObtenerTipoTarifa("General"))
+                    .Returns(ETipoTarifa.General);
+
+            var resultado = mockRepo.Object.ObtenerTipoTarifa("General");
+
+            Assert.Equal(ETipoTarifa.General, resultado);
         }
     }
 }

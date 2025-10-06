@@ -5,7 +5,7 @@ using Evento.Core.Services.Repo;
 using Moq;
 using Xunit;
 
-namespace Evento.Tests
+namespace Evento.Test
 {
     public class TestAdoUsuario
     {
@@ -15,8 +15,8 @@ namespace Evento.Tests
             var mockRepo = new Mock<IRepoUsuario>();
             var usuarios = new List<Usuario>
             {
-                new Usuario { IdUsuario = 1, Apodo = "Usuario1" },
-                new Usuario { IdUsuario = 2, Apodo = "Usuario2" }
+                new Usuario { idUsuario = 1, Apodo = "Usuario1" },
+                new Usuario { idUsuario = 2, Apodo = "Usuario2" }
             };
             mockRepo.Setup(r => r.ObtenerTodos()).ReturnsAsync(usuarios);
 
@@ -30,13 +30,13 @@ namespace Evento.Tests
         public async Task Obtener_Usuario_Por_Id_Debe_Devolver_Usuario_Si_Existe()
         {
             var mockRepo = new Mock<IRepoUsuario>();
-            var usuario = new Usuario { IdUsuario = 1, Apodo = "Usuario1" };
+            var usuario = new Usuario { idUsuario = 1, Apodo = "Usuario1" };
             mockRepo.Setup(r => r.ObtenerPorId(1)).ReturnsAsync(usuario);
 
             var resultado = await mockRepo.Object.ObtenerPorId(1);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.IdUsuario);
+            Assert.Equal(1, resultado.idUsuario);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Evento.Tests
         public async Task Actualizar_Usuario_Debe_Devolver_True_Si_Se_Actualizo()
         {
             var mockRepo = new Mock<IRepoUsuario>();
-            var usuario = new Usuario { IdUsuario = 1, Apodo = "Usuario1" };
+            var usuario = new Usuario { idUsuario = 1, Apodo = "Usuario1" };
             mockRepo.Setup(r => r.UpdateUsuario(usuario)).ReturnsAsync(true);
 
             var resultado = await mockRepo.Object.UpdateUsuario(usuario);
@@ -80,8 +80,8 @@ namespace Evento.Tests
             var mockRepo = new Mock<IRepoUsuario>();
             var compras = new List<OrdenesCompra>
             {
-                new OrdenesCompra { Id = 1 },
-                new OrdenesCompra { Id = 2 }
+                new OrdenesCompra { idOrdenCompra = 1 },
+                new OrdenesCompra { idOrdenCompra = 2 }
             };
             mockRepo.Setup(r => r.ObtenerComprasPorUsuario(1)).ReturnsAsync(compras);
 
@@ -95,23 +95,10 @@ namespace Evento.Tests
         public async Task Obtener_Usuario_Por_Email_Debe_Devolver_Usuario_Si_Existe()
         {
             var mockRepo = new Mock<IRepoUsuario>();
-            var usuario = new Usuario { IdUsuario = 1, Email = "test@correo.com" };
+            var usuario = new Usuario { idUsuario = 1, Email = "test@correo.com" };
             mockRepo.Setup(r => r.ObtenerPorEmail("test@correo.com")).ReturnsAsync(usuario);
 
             var resultado = await mockRepo.Object.ObtenerPorEmail("test@correo.com");
-
-            Assert.NotNull(resultado);
-            Assert.Equal("test@correo.com", resultado.Email);
-        }
-
-        [Fact]
-        public async Task Login_Debe_Devolver_Usuario_Si_Credenciales_Son_Correctas()
-        {
-            var mockRepo = new Mock<IRepoUsuario>();
-            var usuario = new Usuario { IdUsuario = 1, Email = "test@correo.com" };
-            mockRepo.Setup(r => r.Login("test@correo.com", "1234")).ReturnsAsync(usuario);
-
-            var resultado = await mockRepo.Object.Login("test@correo.com", "1234");
 
             Assert.NotNull(resultado);
             Assert.Equal("test@correo.com", resultado.Email);

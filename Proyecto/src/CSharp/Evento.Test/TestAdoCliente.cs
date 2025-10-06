@@ -12,54 +12,51 @@ namespace Evento.Test
         [Fact]
         public async Task Obtener_Todos_Los_Clientes_Debe_Devolver_Lista()
         {
-            // Arrange
             var mockRepo = new Mock<IRepoCliente>();
             var clientes = new List<Cliente>
             {
-                new Cliente { Id = 1, Nombre = "Juan" },
-                new Cliente { Id = 2, Nombre = "Ana" }
+                new Cliente { DNI = 12345678, nombreCompleto = "Juan Pérez", Telefono = "111-222-3333" },
+                new Cliente { DNI = 87654321, nombreCompleto = "Ana Gómez", Telefono = "444-555-6666" }
             };
             mockRepo.Setup(r => r.ObtenerTodos()).ReturnsAsync(clientes);
 
-            // Act
             var resultado = await mockRepo.Object.ObtenerTodos();
 
-            // Assert
             Assert.NotNull(resultado);
             Assert.Equal(2, ((List<Cliente>)resultado).Count);
         }
 
         [Fact]
-        public async Task Obtener_Cliente_Por_Id_Debe_Devolver_Cliente_Si_Existe()
+        public async Task Obtener_Cliente_Por_DNI_Debe_Devolver_Cliente_Si_Existe()
         {
             var mockRepo = new Mock<IRepoCliente>();
-            var cliente = new Cliente { Id = 1, Nombre = "Juan" };
-            mockRepo.Setup(r => r.ObtenerPorId(1)).ReturnsAsync(cliente);
+            var cliente = new Cliente { DNI = 12345678, nombreCompleto = "Juan Pérez", Telefono = "111-222-3333" };
+            mockRepo.Setup(r => r.ObtenerPorId(12345678)).ReturnsAsync(cliente);
 
-            var resultado = await mockRepo.Object.ObtenerPorId(1);
+            var resultado = await mockRepo.Object.ObtenerPorId(12345678);
 
             Assert.NotNull(resultado);
-            Assert.Equal(1, resultado.Id);
-            Assert.Equal("Juan", resultado.Nombre);
+            Assert.Equal(12345678, resultado.DNI);
+            Assert.Equal("Juan Pérez", resultado.nombreCompleto);
         }
 
         [Fact]
-        public async Task Insertar_Cliente_Debe_Devolver_Id()
+        public async Task Insertar_Cliente_Debe_Devolver_DNI()
         {
             var mockRepo = new Mock<IRepoCliente>();
-            var cliente = new Cliente { Nombre = "Pedro" };
-            mockRepo.Setup(r => r.InsertCliente(cliente)).ReturnsAsync(5);
+            var cliente = new Cliente { nombreCompleto = "Pedro Martínez", Telefono = "777-888-9999" };
+            mockRepo.Setup(r => r.InsertCliente(cliente)).ReturnsAsync(99999999);
 
             var resultado = await mockRepo.Object.InsertCliente(cliente);
 
-            Assert.Equal(5, resultado);
+            Assert.Equal(99999999, resultado);
         }
 
         [Fact]
         public async Task Actualizar_Cliente_Debe_Devolver_True_Si_Se_Actualizo()
         {
             var mockRepo = new Mock<IRepoCliente>();
-            var cliente = new Cliente { Id = 1, Nombre = "Juan" };
+            var cliente = new Cliente { DNI = 12345678, nombreCompleto = "Juan Pérez", Telefono = "111-222-3333" };
             mockRepo.Setup(r => r.UpdateCliente(cliente)).ReturnsAsync(true);
 
             var resultado = await mockRepo.Object.UpdateCliente(cliente);
@@ -71,9 +68,9 @@ namespace Evento.Test
         public async Task Eliminar_Cliente_Debe_Devolver_True_Si_Se_Elimino()
         {
             var mockRepo = new Mock<IRepoCliente>();
-            mockRepo.Setup(r => r.DeleteCliente(1)).ReturnsAsync(true);
+            mockRepo.Setup(r => r.DeleteCliente(12345678)).ReturnsAsync(true);
 
-            var resultado = await mockRepo.Object.DeleteCliente(1);
+            var resultado = await mockRepo.Object.DeleteCliente(12345678);
 
             Assert.True(resultado);
         }
@@ -84,12 +81,12 @@ namespace Evento.Test
             var mockRepo = new Mock<IRepoCliente>();
             var entradas = new List<Entrada>
             {
-                new Entrada { Id = 1, Descripcion = "Entrada1" },
-                new Entrada { Id = 2, Descripcion = "Entrada2" }
+                new Entrada { idEntrada = 1, PrecioPagado = 1000 },
+                new Entrada { idEntrada = 2, PrecioPagado = 1500 }
             };
-            mockRepo.Setup(r => r.ObtenerEntradasPorCliente(1)).ReturnsAsync(entradas);
+            mockRepo.Setup(r => r.ObtenerEntradasPorCliente(12345678)).ReturnsAsync(entradas);
 
-            var resultado = await mockRepo.Object.ObtenerEntradasPorCliente(1);
+            var resultado = await mockRepo.Object.ObtenerEntradasPorCliente(12345678);
 
             Assert.NotNull(resultado);
             Assert.Equal(2, ((List<Entrada>)resultado).Count);
