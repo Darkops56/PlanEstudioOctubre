@@ -1,8 +1,6 @@
-DROP DATABASE if EXISTS 5to_Eventos
-
+DROP DATABASE IF EXISTS 5to_Eventos;
 CREATE DATABASE 5to_Eventos;
-
-use 5to_Eventos;
+USE 5to_Eventos;
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
@@ -10,6 +8,7 @@ CREATE TABLE Cliente (
     nombreCompleto VARCHAR(100) NOT NULL,
     Telefono VARCHAR(30)
 );
+
 -- Tabla Usuario
 CREATE TABLE Usuario(
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
@@ -80,7 +79,7 @@ CREATE TABLE Tarifa (
     Precio INT NOT NULL,
     Estado BOOLEAN,
     Tipo VARCHAR(50) NOT NULL,
-    Foreign Key (idFuncion) REFERENCES Funcion(idFuncion)
+    FOREIGN KEY (idFuncion) REFERENCES Funcion(idFuncion)
 );
 
 -- Tabla OrdenesCompra
@@ -91,8 +90,9 @@ CREATE TABLE OrdenesCompra(
     Total INT NOT NULL,
     metodoPago VARCHAR(45) NOT NULL,
     estado VARCHAR(45) NOT NULL,
-    Foreign Key (idUsuario) REFERENCES Usuario (idUsuario)
+    FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario)
 );
+
 CREATE TABLE StockReservaciones (
     IdStockReservacion INT AUTO_INCREMENT PRIMARY KEY,
     idTarifa INT NOT NULL,
@@ -103,6 +103,7 @@ CREATE TABLE StockReservaciones (
     FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa),
     FOREIGN KEY (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra)
 );
+
 -- Tabla Entrada
 CREATE TABLE Entrada (
     idEntrada INT AUTO_INCREMENT PRIMARY KEY,
@@ -110,31 +111,36 @@ CREATE TABLE Entrada (
     idOrdenCompra INT NOT NULL,
     Estado VARCHAR(45) NOT NULL,
     PrecioPagado INT NOT NULL,
-    Foreign Key (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra),
+    FOREIGN KEY (idOrdenCompra) REFERENCES OrdenesCompra(idOrdenCompra),
     FOREIGN KEY (idTarifa) REFERENCES Tarifa(idTarifa)
 );
 
--- Tabla RegistroCompra
-/* CREATE TABLE RegistroCompra (
-    idRegistro INT AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT NOT NULL,
-    idEntrada INT NOT NULL,
-    Fecha DATETIME NOT NULL,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario),
-    FOREIGN KEY (idEntrada) REFERENCES Entrada(idEntrada)
-); */
--- Tabla QR
+-- (Opcional) RegistroCompra (si lo querés activar)
+-- CREATE TABLE RegistroCompra (
+--     idRegistro INT AUTO_INCREMENT PRIMARY KEY,
+--     idUsuario INT NOT NULL,
+--     idEntrada INT NOT NULL,
+--     Fecha DATETIME NOT NULL,
+--     FOREIGN KEY (idUsuario) REFERENCES Usuario (idUsuario),
+--     FOREIGN KEY (idEntrada) REFERENCES Entrada(idEntrada)
+-- );
+
+-- Tabla QR (corregida: vínculo con idEntrada + token + FechaCreacion)
 CREATE TABLE QR (
     idQR INT AUTO_INCREMENT PRIMARY KEY,
-    url VARCHAR(255) NOT NULL,
+    idEntrada INT NOT NULL,
+    url VARCHAR(512) NOT NULL,
+    token VARCHAR(64) DEFAULT NULL,
     Duracion TINYINT UNSIGNED NOT NULL,
-    VCard TEXT
+    VCard TEXT,
+    FechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idEntrada) REFERENCES Entrada(idEntrada)
 );
+
 CREATE TABLE RefreshTokens (
     IdRefreshTokens INT AUTO_INCREMENT PRIMARY KEY,
     Token VARCHAR(200) NOT NULL,
     Email VARCHAR(100) NOT NULL,
     Expiration DATETIME NOT NULL,
-    CONSTRAINT FK_UsuarioRT Foreign Key (Email) REFERENCES Usuario (Email)
+    CONSTRAINT FK_UsuarioRT FOREIGN KEY (Email) REFERENCES Usuario (Email)
 );
-SELECT '✅ Tablas creadas correctamente' AS Resultado;

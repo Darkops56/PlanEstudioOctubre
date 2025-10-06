@@ -68,6 +68,7 @@ builder.Services.AddScoped<IRepoTarifa, RepoTarifa>();
 builder.Services.AddScoped<IRepoUsuario, RepoUsuario>();
 builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
 builder.Services.AddScoped<IRepoRefreshToken, RepoRefreshToken>();
+builder.Services.AddScoped<IRepoQR, RepoQR>();
 
 builder.Services.AddHostedService<StockExpiradoService>();
 builder.WebHost.UseUrls("http://localhost:5002");
