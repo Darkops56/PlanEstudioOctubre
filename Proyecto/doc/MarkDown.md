@@ -91,10 +91,14 @@ Cliente {
     }
 
     Qr {
-        INT IdQr PK
-        VARCHAR Url
-        TINYINT Duracion
+        INT idQR PK
+        INT idEntrada FK
+        VARCHAR(512) url
+        VARCHAR(64) token
+        DateTime ExpiraEn
+        DateTime FechaCreacion
         TEXT VCard
+        VARCHAR(50) Estado
     }
 
     Refreshtokens {
@@ -122,6 +126,8 @@ Cliente {
 
     Ordenescompra ||--o{ Entrada : incluye
     Ordenescompra ||--o{ Stockreservaciones : contiene
+
+    Entrada || -- o| Qr : ""
 ```
 # Diagrama UML
 ```mermaid
@@ -204,6 +210,20 @@ classDiagram
         +int idSector
         +byte Capacidad
     }
+    class QR {
+        +int idQR
+        +int idEntrada
+        +string url
+        +string? token
+        +DateTime ExpiraEn
+        +DateTime FechaCreacion
+        +string VCard
+        +EEstados Estado
+        +QR()
+        +QR(idEntrada, url, ExpiraEn, vCard, token, estado)
+    }
+
+    
 
     %% ===================== ENUMS =====================
 
@@ -218,6 +238,7 @@ classDiagram
         Activo
         Inactivo
         Anulada
+        Usado
     }
 
     class EMetodoPago {
@@ -358,6 +379,12 @@ classDiagram
         +Task ReemplazarToken(int idUsuario, string nuevoHash, DateTime expiracion)
     }
 
+    class IRepoQR {
+        +Task<int> InsertQR(QR qr)
+        +Task<QR?> ObtenerQRPorEntrada(int idEntrada)
+        +Task<QR?> ObtenerQRPorToken(string token)
+    }
+
     class IRepoTarifa {
         <<interface>>
         +Task<IEnumerable<Tarifa>> ObtenerTodos()
@@ -390,6 +417,7 @@ classDiagram
     Funcion --> Eventos : pertenece a >
     Eventos --> TipoEvento : clasificado como >
     Sector --> Local : ubicado en >
+    QR --> Entrada : relacion
 
     %% Relación interfaces con entidades
     IRepoCliente ..> Cliente
@@ -401,6 +429,8 @@ classDiagram
     IRepoRefreshToken ..> RefreshToken
     IRepoTarifa ..> Tarifa
     IRepoUsuario ..> Usuario
+    IRepoQR ..> QR : maneja
+
 
 
 ```

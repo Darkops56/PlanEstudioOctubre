@@ -9,5 +9,6 @@ namespace Evento.Core.Services.Repo
         Task<bool> DeleteEntrada(int id);
         Task<Entrada?> ObtenerEntrada(int id);
         Task<string> AnularEntrada(int id);
+        Task<bool> MarcarEntradaUsada(int id);
     }
 }

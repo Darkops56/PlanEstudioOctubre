@@ -1,2 +1,12 @@
-EventosControllers
-strings.txt
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+.vs/
+*.cache
+*.pdb
+*.dll
+*.log

@@ -11,4 +11,5 @@ public enum EEstados
     Activo,
     Inactivo,
     Anulada,
+    Usado,
 }

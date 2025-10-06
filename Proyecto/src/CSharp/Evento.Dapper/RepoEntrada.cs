@@ -72,7 +72,7 @@ namespace Evento.Dapper
 
             using var db = _ado.GetDbConnection();
 
-            var id = await db.ExecuteScalarAsync<int>(
+            var idEntrada = await db.ExecuteScalarAsync<int>(
                 "INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) " +
                 "VALUES(@idtarifa, @idordencompra, @estado, @preciopagado); SELECT LAST_INSERT_ID();",
                 new
@@ -84,7 +84,38 @@ namespace Evento.Dapper
                 }
             );
 
-            return id;
+            // ------------------------------
+            // Generación del token ligero y URL de validación
+            // ------------------------------
+            var token = Evento.Core.Services.QrHelper.GenerarToken(10); // token corto y seguro (10 chars)
+            string qrUrl = Evento.Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
+
+            // Insertar en tabla QR
+            var qr = new QR
+            {
+                idEntrada = idEntrada,
+                url = qrUrl,
+                token = token,
+                ExpiraEn = DateTime.Now.AddMinutes(20),
+                VCard = "",
+                Estado = EEstados.Activo
+                
+            };
+            qr.token = token;
+            var repoQR = new RepoQR(_ado);
+            await repoQR.InsertQR(qr);
+
+            return idEntrada;
+        }
+
+        public async Task<bool> MarcarEntradaUsada(int id)
+        {
+            using var db = _ado.GetDbConnection();
+        var filas = await db.ExecuteAsync(
+            "UPDATE Entrada SET Estado = @estado WHERE idEntrada = @idEntrada",
+            new { estado = "Usado", idEntrada = id }
+        );
+        return filas > 0;
         }
 
         public async Task<Entrada?> ObtenerEntrada(int id)
