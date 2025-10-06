@@ -137,3 +137,4 @@ CREATE TABLE RefreshTokens (
     Expiration DATETIME NOT NULL,
     CONSTRAINT FK_UsuarioRT Foreign Key (Email) REFERENCES Usuario (Email)
 );
+SELECT '✅ Tablas creadas correctamente' AS Resultado;

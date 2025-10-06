@@ -1,5 +1,5 @@
 -- Índices en FKs y columnas de búsqueda frecuente
-
+USE 5to_Eventos;
 -- Cliente
 CREATE INDEX idx_Cliente_nombreCompleto ON Cliente(nombreCompleto);
 
@@ -41,3 +41,4 @@ CREATE INDEX idx_StockReservaciones_Fecha ON StockReservaciones(FechaReserva);
 -- Entrada
 CREATE INDEX idx_Entrada_idTarifa ON Entrada(idTarifa);
 CREATE INDEX idx_Entrada_idOrdenCompra ON Entrada(idOrdenCompra);
+SELECT '✅ Índices creados correctamente' AS Resultado;
