@@ -1162,6 +1162,61 @@
           }
         }
       },
+      "SkiaSharp.NativeAssets.Linux/3.119.1": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/_._": {}
+        },
+        "runtime": {
+          "lib/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-loongarch64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-loongarch64"
+          },
+          "runtimes/linux-musl-arm/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-loongarch64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-musl-loongarch64"
+          },
+          "runtimes/linux-musl-riscv64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-musl-riscv64"
+          },
+          "runtimes/linux-musl-x64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-riscv64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-riscv64"
+          },
+          "runtimes/linux-x64/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x86/native/libSkiaSharp.so": {
+            "assetType": "native",
+            "rid": "linux-x86"
+          }
+        }
+      },
       "SkiaSharp.NativeAssets.macOS/3.119.1": {
         "type": "package",
         "compile": {
@@ -1655,7 +1710,8 @@
           "Microsoft.Extensions.Hosting": "9.0.9",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.9",
           "QRCoder": "1.6.0",
-          "SkiaSharp": "3.119.1"
+          "SkiaSharp": "3.119.1",
+          "SkiaSharp.NativeAssets.Linux": "3.119.1"
         },
         "compile": {
           "bin/placeholder/Evento.Core.dll": {}
@@ -3300,6 +3356,39 @@
         "skiasharp.nuspec"
       ]
     },
+    "SkiaSharp.NativeAssets.Linux/3.119.1": {
+      "sha512": "9YNoc4SeKvQhrwiqwT4ezkNfMywPdPSK+UFvo/CaoXqLixcnYOTsQKm5BF9mc4+q3vKgDtEgMt0d1ygZhJTEHg==",
+      "type": "package",
+      "path": "skiasharp.nativeassets.linux/3.119.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "THIRD-PARTY-NOTICES.txt",
+        "build/net462/SkiaSharp.NativeAssets.Linux.targets",
+        "buildTransitive/net462/SkiaSharp.NativeAssets.Linux.targets",
+        "icon.png",
+        "lib/net462/_._",
+        "lib/net6.0/_._",
+        "lib/net8.0/_._",
+        "lib/netstandard2.0/_._",
+        "lib/netstandard2.1/_._",
+        "runtimes/linux-arm/native/libSkiaSharp.so",
+        "runtimes/linux-arm64/native/libSkiaSharp.so",
+        "runtimes/linux-loongarch64/native/libSkiaSharp.so",
+        "runtimes/linux-musl-arm/native/libSkiaSharp.so",
+        "runtimes/linux-musl-arm64/native/libSkiaSharp.so",
+        "runtimes/linux-musl-loongarch64/native/libSkiaSharp.so",
+        "runtimes/linux-musl-riscv64/native/libSkiaSharp.so",
+        "runtimes/linux-musl-x64/native/libSkiaSharp.so",
+        "runtimes/linux-riscv64/native/libSkiaSharp.so",
+        "runtimes/linux-x64/native/libSkiaSharp.so",
+        "runtimes/linux-x86/native/libSkiaSharp.so",
+        "skiasharp.nativeassets.linux.3.119.1.nupkg.sha512",
+        "skiasharp.nativeassets.linux.nuspec"
+      ]
+    },
     "SkiaSharp.NativeAssets.macOS/3.119.1": {
       "sha512": "6hR3BdLhApjDxR1bFrJ7/lMydPfI01s3K+3WjIXFUlfC0MFCFCwRzv+JtzIkW9bDXs7XUVQS+6EVf0uzCasnGQ==",
       "type": "package",
@@ -4576,42 +4665,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Lab20-PC02\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/et12alumno/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Test\\Evento.Test.csproj",
+      "projectUniqueName": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
       "projectName": "Evento.Test",
-      "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Test\\Evento.Test.csproj",
-      "packagesPath": "C:\\Users\\Lab20-PC02\\.nuget\\packages\\",
-      "outputPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Test\\obj\\",
+      "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/Evento.Test.csproj",
+      "packagesPath": "/home/et12alumno/.nuget/packages/",
+      "outputPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Test/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Lab20-PC02\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/et12alumno/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "/usr/lib/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
-              "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
+            "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/Evento.Core.csproj": {
+              "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Core/Evento.Core.csproj"
             },
-            "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
-              "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj"
+            "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/Evento.Dapper.csproj": {
+              "projectPath": "/mnt/Datos/PlanEstudioOctubre/Proyecto/src/CSharp/Evento.Dapper/Evento.Dapper.csproj"
             }
           }
         }
@@ -4626,7 +4709,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -4669,7 +4752,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

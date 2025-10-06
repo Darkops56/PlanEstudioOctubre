@@ -28,7 +28,17 @@ namespace Evento.Dapper
         {
             using var db = _ado.GetDbConnection();
             var query = @"
-                SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
+                SELECT 
+                    t.idTarifa,
+                    t.idFuncion,
+                    t.Stock,
+                    t.Precio,
+                    t.Estado AS Tarifa_Estado,
+                    f.idFuncion AS Funcion_idFuncion,
+                    f.Nombre,
+                    f.Fecha,
+                    f.idEvento,
+                    f.Estado AS Funcion_Estado
                 FROM Tarifa t
                 INNER JOIN Funcion f ON t.idFuncion = f.idFuncion
                 WHERE t.idTarifa = @idTarifa";
@@ -48,7 +58,7 @@ namespace Evento.Dapper
                     return tarifaExistente;
                 },
                 new { idTarifa = id},
-                splitOn: "idFuncion"
+                splitOn: "Funcion_idFuncion"
             );
 
             return resultado.FirstOrDefault();

@@ -19,7 +19,7 @@ namespace Evento.Dapper
             using var db = _ado.GetDbConnection();
             
             var evento = await ObtenerEventoPorId(idEvento);
-            if (evento == null)
+            if (evento is null)
                 throw new ArgumentNullException("Evento no encontrado");
             if (evento.EstadoEvento == EEstados.Cancelado)
                 throw new Exception("Evento ya cancelado");
@@ -55,7 +55,7 @@ namespace Evento.Dapper
 
                             await db.ExecuteAsync(
                                 "UPDATE Tarifa SET Stock = Stock + 1 WHERE idTarifa = @Id",
-                                new { Id = entrada.tarifa?.idTarifa ?? entrada.tarifa.idTarifa }
+                                new { Id = entrada.tarifa?.idTarifa! }
                             );
 
                             await db.ExecuteAsync(
