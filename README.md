@@ -46,7 +46,7 @@ git clone https://github.com/Darkops56/PlanEstudioOctubre
 El proyecto incluye scripts SQL dentro de /scripts/bd/MySQL. Ejecutar los siguientes en orden:
 ```
 1. DDL.sql
-2. INSERTS.sql
+2. De INSERT.sql ¡NECESARIO! hacer el INSERT INTO TipoEvento
 ```
 
 ### b. Configurar la cadena de conexión
