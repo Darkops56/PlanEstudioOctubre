@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj": {}
+    "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+    "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
+        "projectUniqueName": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
         "projectName": "Evento.Core",
-        "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
-        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\obj\\",
+        "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj",
+        "packagesPath": "C:\\Users\\Lab20-PC02\\.nuget\\packages\\",
+        "outputPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lab20-PC02\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -91,24 +91,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
+    "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
+        "projectUniqueName": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
         "projectName": "Evento.Dapper",
-        "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
-        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\obj\\",
+        "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj",
+        "packagesPath": "C:\\Users\\Lab20-PC02\\.nuget\\packages\\",
+        "outputPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lab20-PC02\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -123,8 +123,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
-                "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
+              "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+                "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
               }
             }
           }
@@ -170,24 +170,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj": {
+    "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
+        "projectUniqueName": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
         "projectName": "Eventos",
-        "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
-        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\obj\\",
+        "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\Eventos.csproj",
+        "packagesPath": "C:\\Users\\Lab20-PC02\\.nuget\\packages\\",
+        "outputPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Eventos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lab20-PC02\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -202,11 +202,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
-                "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
+              "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj": {
+                "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Core\\Evento.Core.csproj"
               },
-              "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
-                "projectPath": "C:\\Users\\Lenovo\\Desktop\\PlanLunes\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj"
+              "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj": {
+                "projectPath": "D:\\Repo\\PlanEstudioOctubre\\Proyecto\\src\\CSharp\\Evento.Dapper\\Evento.Dapper.csproj"
               }
             }
           }
@@ -267,7 +267,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
