@@ -144,28 +144,30 @@ namespace Evento.Dapper
                 var entradas = await db.QueryAsync<Entrada>(
                     "SELECT * FROM Entrada WHERE idOrdenCompra = @Id AND Estado = @estado",
                     new { Id = idOrdenCompra, estado = EEstados.Creado.ToString() }, transaction);
+                if(!entradas.Any())
+                    return "No hay entradas.";
 
                 foreach (var entrada in entradas)
-                {
+                    {
 
-                    var tarifa = await db.QueryFirstOrDefaultAsync<Tarifa>(
-                        "SELECT * FROM Tarifa WHERE idTarifa = @Id",
-                        new { Id = entrada.tarifa.idTarifa }, transaction);
+                        var tarifa = await db.QueryFirstOrDefaultAsync<Tarifa>(
+                            "SELECT * FROM Tarifa WHERE idTarifa = @Id",
+                            new { Id = entrada.tarifa.idTarifa }, transaction);
 
-                    if (tarifa == null) return $"Tarifa no encontrada para entrada {entrada.idEntrada}";
-                    if (tarifa.Stock <= 0) return $"No hay stock suficiente para la tarifa {tarifa.Tipo}";
-
-
-                    await db.ExecuteAsync(
-                        "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @Id AND Stock > 0",
-                        new { Id = tarifa.idTarifa }, transaction);
+                        if (tarifa == null) return $"Tarifa no encontrada para entrada {entrada.idEntrada}";
+                        if (tarifa.Stock <= 0) return $"No hay stock suficiente para la tarifa {tarifa.Tipo}";
 
 
-                    await db.ExecuteAsync(
-                        @"UPDATE Entrada SET Estado = @estado, PrecioPagado = @precio 
+                        await db.ExecuteAsync(
+                            "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @Id AND Stock > 0",
+                            new { Id = tarifa.idTarifa }, transaction);
+
+
+                        await db.ExecuteAsync(
+                            @"UPDATE Entrada SET Estado = @estado, PrecioPagado = @precio 
                         WHERE idEntrada = @IdEntrada",
-                        new { precio = tarifa.Precio, IdEntrada = entrada.idEntrada, estado = EEstados.Pagado.ToString() }, transaction);
-                }
+                            new { precio = tarifa.Precio, IdEntrada = entrada.idEntrada, estado = EEstados.Pagado.ToString() }, transaction);
+                    }
 
                 await db.ExecuteAsync(
                     "UPDATE OrdenesCompra SET Estado = @estado WHERE idOrdenCompra = @Id",
@@ -311,7 +313,7 @@ namespace Evento.Dapper
 
             foreach (var nombre in Enum.GetNames(typeof(EMetodoPago)))
             {
-                if (nombre.ToLowerInvariant() == metodoPagoNormalizado)
+                if (nombre.ToLowerInvariant().Trim() == metodoPagoNormalizado)
                     return (EMetodoPago)Enum.Parse(typeof(EMetodoPago), nombre);
             }
             throw new ArgumentException($"El metodo de pago: {metodoPagoNormalizado} no es valido");
@@ -322,9 +324,9 @@ namespace Evento.Dapper
 
             foreach (var nombre in Enum.GetNames(typeof(EEstados)))
             {
-                if (nombre.ToLowerInvariant() == estadoNormalizado)
+                if (nombre.ToLowerInvariant().Trim() == estadoNormalizado)
                     return (EEstados)Enum.Parse(typeof(EEstados), nombre);
-            }
+            }   
             throw new ArgumentException($"El estado: {estadoNormalizado} no es valido");
         }
         public async Task<string> InsertStockReservaciones(StockReservaciones stockReservaciones)

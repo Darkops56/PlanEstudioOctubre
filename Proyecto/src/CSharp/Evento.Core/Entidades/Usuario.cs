@@ -9,7 +9,7 @@ public class Usuario
     public string Email { get; set; }
     public string Contrasena { get; set; }
     public Cliente cliente { get; set; }
-    public ERoles Role { get; set; }
+    public ERoles Role { get; set; } = ERoles.Usuario;
 
     public Usuario()
     { }

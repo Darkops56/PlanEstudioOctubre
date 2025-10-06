@@ -10,7 +10,8 @@
         "dependencies": {
           "Dapper": "2.1.66",
           "Evento.Core": "1.0.0",
-          "MySql.Data": "9.4.0"
+          "MySql.Data": "9.4.0",
+          "MySqlConnector": "2.4.0"
         },
         "runtime": {
           "Evento.Dapper.dll": {}
@@ -523,6 +524,18 @@
           }
         }
       },
+      "MySqlConnector/2.4.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.9",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.9"
+        },
+        "runtime": {
+          "lib/net9.0/MySqlConnector.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.4.0.0"
+          }
+        }
+      },
       "QRCoder/1.6.0": {
         "runtime": {
           "lib/net6.0/QRCoder.dll": {
@@ -1022,6 +1035,13 @@
       "sha512": "sha512-yGfcv5TSj72rwUdywZqtM90qlZ9AuSNckG2Fb9OxuXkskhnqi/DGBaOji9z2G4q3BgFfddbm/WmZzFfAggjbSw==",
       "path": "mysql.data/9.4.0",
       "hashPath": "mysql.data.9.4.0.nupkg.sha512"
+    },
+    "MySqlConnector/2.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-78M+gVOjbdZEDIyXQqcA7EYlCGS3tpbUELHvn6638A2w0pkPI625ixnzsa5staAd3N9/xFmPJtkKDYwsXpFi/w==",
+      "path": "mysqlconnector/2.4.0",
+      "hashPath": "mysqlconnector.2.4.0.nupkg.sha512"
     },
     "QRCoder/1.6.0": {
       "type": "package",

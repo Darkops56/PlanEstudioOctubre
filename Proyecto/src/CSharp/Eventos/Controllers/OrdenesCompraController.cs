@@ -33,7 +33,7 @@ namespace Evento.Controllers
             var OrdenCompra = new OrdenesCompra
             {
                 metodoPago = metodoPago,
-                Estado = EEstados.Pendiente,
+                Estado = EEstados.Creado,
                 Fecha = oc.Fecha,
                 Total = oc.Total,
                 usuario = user

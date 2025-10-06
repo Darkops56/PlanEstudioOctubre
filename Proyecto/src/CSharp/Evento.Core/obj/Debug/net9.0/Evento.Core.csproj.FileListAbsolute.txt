@@ -76,3 +76,16 @@ C:\Users\Lenovo\Desktop\PlanLunes\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.
 C:\Users\Lenovo\Desktop\PlanLunes\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\refint\Evento.Core.dll
 C:\Users\Lenovo\Desktop\PlanLunes\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.pdb
 C:\Users\Lenovo\Desktop\PlanLunes\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\ref\Evento.Core.dll
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.deps.json
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.dll
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\bin\Debug\net9.0\Evento.Core.pdb
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.csproj.AssemblyReference.cache
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.AssemblyInfoInputs.cache
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.AssemblyInfo.cs
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.csproj.CoreCompileInputs.cache
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.sourcelink.json
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.dll
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\refint\Evento.Core.dll
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\Evento.Core.pdb
+D:\Repo\PlanEstudioOctubre\Proyecto\src\CSharp\Evento.Core\obj\Debug\net9.0\ref\Evento.Core.dll

@@ -4,6 +4,7 @@ using Evento.Core.Services.Repo;
 using Evento.Core.Services.Enums;
 using Evento.Core.Services.Utility;
 using Evento.Core.DTOs;
+using ZstdSharp;
 
 namespace Evento.Dapper
 {
@@ -23,23 +24,31 @@ namespace Evento.Dapper
             if (evento.EstadoEvento == EEstados.Cancelado)
                 throw new Exception("Evento ya cancelado");
             try
-                {
+            {
+                var funciones = await db.QueryAsync<Funcion>(
+                    "SELECT * FROM Funcion WHERE idEvento = @Id",
+                    new { Id = idEvento }
+                );
+                if (!funciones.Any())
+                    throw new ArgumentNullException ("El evento no tiene funciones");
 
-                    var funciones = await db.QueryAsync<Funcion>(
-                        "SELECT * FROM Funcion WHERE idEvento = @Id",
-                        new { Id = idEvento }
-                    );
-
-                    foreach (var funcion in funciones)
+                foreach (var funcion in funciones)
                     {
-
-                        var entradas = await db.QueryAsync<Entrada>(
-                            @"SELECT *
-                          FROM Entrada e
-                          INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
-                          WHERE t.idFuncion = @idFuncion",
-                            new { idFuncion = funcion.idFuncion }
-                        );
+                        var entradas = await db.QueryAsync<Entrada, Tarifa, Entrada>(
+                                @"SELECT e.idEntrada, e.idTarifa AS Entrada_Tarifa, e.idOrdenCompra, e.Estado AS Entrada_Estado, e.PrecioPagado, t.idTarifa AS Tarifa_idTarifa, t.idFuncion AS Funcion_idFuncion, t.Stock, t.Precio, t.Estado AS Tarifa_Estado, t.Tipo
+                                FROM Entrada e
+                                INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+                                WHERE t.idFuncion = @idFuncion",
+                                (entrada, tarifa) =>
+                                {
+                                    entrada.tarifa = tarifa;
+                                    return entrada;
+                                },
+                                new { idFuncion = funcion.idFuncion },
+                                splitOn: "Tarifa_idTarifa"
+                            );
+                        if (!entradas.Any())
+                            throw new ArgumentNullException("No hay entradas.");
 
                         foreach (var entrada in entradas)
                         {
@@ -49,26 +58,25 @@ namespace Evento.Dapper
                                 new { Id = entrada.tarifa?.idTarifa ?? entrada.tarifa.idTarifa }
                             );
 
-
                             await db.ExecuteAsync(
-                                "UPDATE Entrada SET Estado = 'Cancelado' WHERE idEntrada = @Id",
-                                new { Id = entrada.idEntrada }
+                                "UPDATE Entrada SET Estado = @estado WHERE idEntrada = @Id",
+                                new { Id = entrada.idEntrada, estado = EEstados.Cancelado.ToString() }
                             );
                         }
                     }
 
 
-                    await db.ExecuteAsync(
-                        "UPDATE Evento SET Estado = 'Cancelado' WHERE idEvento = @Id",
-                        new { Id = idEvento }
-                    );
+                await db.ExecuteAsync(
+                    "UPDATE Evento SET Estado = @estado WHERE idEvento = @Id",
+                    new { Id = idEvento, estado = EEstados.Cancelado.ToString() }
+                );
 
-                    return string.Empty;
-                }
-                catch (Exception ex)
-                {
-                    return ex.Message;
-                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public async Task<bool> DeleteEvento(int id)
@@ -230,7 +238,6 @@ namespace Evento.Dapper
 
             if (evento.EstadoEvento.ToString().ToLower() == UniqueFormatStrings.NormalizarString(EEstados.Publicado.ToString()))
                 throw new Exception("El evento ya está publicado");
-            
 
             string query = "SELECT * FROM Funcion f JOIN Tarifa t USING (idFuncion) WHERE f.idEvento = @idevento AND t.Stock > 0";
             var funcionesConTarifas = await db.QueryAsync<Funcion, Tarifa, FuncionTarifaDto>(

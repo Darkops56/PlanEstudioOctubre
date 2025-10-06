@@ -199,7 +199,7 @@ namespace Evento.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult GetRoles()
         {
-            var roles = new[] { ERoles.Admin, ERoles.Usuario };
+            var roles = Enum.GetNames(typeof(ERoles)).ToList();
             return Ok(roles);
         }
 

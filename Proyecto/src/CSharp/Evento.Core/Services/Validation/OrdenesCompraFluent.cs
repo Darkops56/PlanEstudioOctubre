@@ -31,14 +31,14 @@ namespace Evento.Core.Services.Validation
                 .WithMessage("El total de la orden debe ser mayor a cero");
 
             RuleFor(x => x.metodoPago)
-                .IsInEnum()
+                .NotEmpty()
                 .WithMessage("El método de pago no es válido");
 
             RuleFor(x => x.Estado)
                 .NotEmpty()
                 .WithMessage("El estado de la orden es obligatorio")
-                .Must(Estado => UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Creado.ToString()) || UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()) || UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
-                .WithMessage("El estado de la orden debe ser 'Creada', 'Pagada' o 'Cancelada'");
+                .Must(Estado => UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Creado.ToString()))
+                .WithMessage("El estado de la orden debe ser 'Creado'");
         }
     }
 }
