@@ -77,7 +77,7 @@ CREATE TABLE Tarifa (
     idFuncion INT,
     Stock INT,
     Precio INT NOT NULL,
-    Estado BOOLEAN,
+    Estado VARCHAR(45),
     Tipo VARCHAR(50) NOT NULL,
     FOREIGN KEY (idFuncion) REFERENCES Funcion(idFuncion)
 );
