@@ -56,7 +56,7 @@ namespace Evento.Controllers
             };
 
             var id = await _repoEntrada.InsertEntrada(entrada);
-            if (id == -1)
+            if (id == 0)
                 return Created("Se genero correctamente la entrada, pero debe ser pagada antes de generar el QR.", new { mensaje = "Entrada no pagada."});
             return CreatedAtAction(nameof(ObtenerPorId), new { id }, entrada);
         }

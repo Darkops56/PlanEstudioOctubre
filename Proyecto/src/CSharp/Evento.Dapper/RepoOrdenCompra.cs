@@ -203,7 +203,7 @@ namespace Evento.Dapper
                         };
                         qr.token = token;
                         var repoQR = new RepoQR(_ado);
-                        await repoQR.InsertQR(qr);
+                        await repoQR.InsertQR(qr, db, transaction);
                     }
                 
                 await db.ExecuteAsync(

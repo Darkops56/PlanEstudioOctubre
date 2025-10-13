@@ -83,16 +83,15 @@ namespace Evento.Dapper
                     idordencompra = entrada.ordenesCompra.idOrdenCompra,
                     estado = entrada.Estado.ToString(),
                     preciopagado = entrada.PrecioPagado
-                }
+                },
+                trans
             );
-            var ent = await ObtenerEntrada(idEntrada);
 
-            if(ent.Estado == EEstados.Pagado)
+            if (entrada.Estado == EEstados.Pagado)
             {
-                var token = Evento.Core.Services.QrHelper.GenerarToken(10); // token corto y seguro (10 chars)
-                string qrUrl = Evento.Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
+                var token = Core.Services.QrHelper.GenerarToken(10);
+                string qrUrl = Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
 
-                // Insertar en tabla QR
                 var qr = new QR
                 {
                     idEntrada = idEntrada,
@@ -101,15 +100,14 @@ namespace Evento.Dapper
                     ExpiraEn = DateTime.Now.AddMinutes(20),
                     VCard = "",
                     Estado = EEstados.Activo
-                    
                 };
-                qr.token = token;
-                var repoQR = new RepoQR(_ado);
-                await repoQR.InsertQR(qr, db );
 
-                return idEntrada;
+                var repoQR = new RepoQR(_ado);
+                await repoQR.InsertQR(qr, db, trans);
+                return 1;
             }
-            return -1;
+            trans.Commit();
+            return idEntrada;
         }
 
         public async Task<bool> MarcarEntradaUsada(int id)
@@ -159,7 +157,8 @@ namespace Evento.Dapper
                         INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
                         INNER JOIN OrdenesCompra o ON e.idOrdenCompra = o.idOrdenCompra
                         INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
-                        INNER JOIN Cliente c ON u.DNI = c.DNI";
+                        INNER JOIN Cliente c ON u.DNI = c.DNI
+                        ORDER BY e.idEntrada ASC";
 
             var result = await db.QueryAsync<Entrada, Tarifa, OrdenesCompra, Usuario, Cliente, Entrada>(
                 sql,

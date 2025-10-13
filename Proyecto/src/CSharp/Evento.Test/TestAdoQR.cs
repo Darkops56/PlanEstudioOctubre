@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
@@ -14,6 +16,8 @@ namespace Evento.Test
         public async Task Insertar_QR_Debe_Devolver_Id()
         {
             var mockRepo = new Mock<IRepoQR>();
+            var mockConnection = new Mock<IDbConnection>();
+            var mockTransaction = new Mock<IDbTransaction>();
             var qr = new QR 
             { 
                 idEntrada = 1, 
@@ -23,9 +27,11 @@ namespace Evento.Test
                 VCard = "VCARD DATA"
             };
 
-            mockRepo.Setup(r => r.InsertQR(qr)).ReturnsAsync(42);
+        mockRepo
+            .Setup(r => r.InsertQR(qr, mockConnection.Object, mockTransaction.Object))
+            .ReturnsAsync(42);
 
-            var resultado = await mockRepo.Object.InsertQR(qr);
+            var resultado = await mockRepo.Object.InsertQR(qr, mockConnection.Object, mockTransaction.Object);
 
             Assert.Equal(42, resultado);
         }
