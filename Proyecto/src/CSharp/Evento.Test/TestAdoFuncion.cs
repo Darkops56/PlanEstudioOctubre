@@ -110,5 +110,16 @@ namespace Evento.Test
 
             Assert.Equal("Función cancelada correctamente", resultado);
         }
+
+        [Fact]
+        public async Task Obtener_Estado_Funcion()
+        {
+            var mockRepo = new Mock<IRepoFuncion>();
+            mockRepo.Setup(r => r.ObtenerEstadoFuncion("Activo")).ReturnsAsync(EEstados.Activo);
+
+            var resultado = await mockRepo.Object.ObtenerEstadoFuncion("Activo");
+
+            Assert.Equal(EEstados.Activo, resultado);
+        }
     }
 }

@@ -102,5 +102,63 @@ namespace Evento.Test
 
             Assert.Equal(3, resultado);
         }
+
+        [Fact]
+        public void Obtener_MetodoPago_Debe_Devolver_Correcto()
+        {
+            var mockRepo = new Mock<IRepoOrdenCompra>();
+            mockRepo.Setup(r => r.ObtenerMetodoPago("Efectivo")).Returns(EMetodoPago.Efectivo);
+
+            var resultado = mockRepo.Object.ObtenerMetodoPago("Efectivo");
+
+            Assert.Equal(EMetodoPago.Efectivo, resultado);
+        }
+
+        [Fact]
+        public void Obtener_Estado_Debe_Devolver_Correcto()
+        {
+            var mockRepo = new Mock<IRepoOrdenCompra>();
+            mockRepo.Setup(r => r.ObtenerEstado("Activo")).Returns(EEstados.Activo);
+
+            var resultado = mockRepo.Object.ObtenerEstado("Activo");
+
+            Assert.Equal(EEstados.Activo, resultado);
+        }
+
+        [Fact]
+        public async Task InsertStockReservaciones_Debe_Devolver_Cadena_Correcta()
+        {
+            var mockRepo = new Mock<IRepoOrdenCompra>();
+            var stock = new StockReservaciones
+            {
+                idTarifa = 1,
+                Cantidad = 2,
+                fechReserva = DateTime.Now,
+                expiraEn = DateTime.Now.AddMinutes(10),
+                idOrdenCompra = 5
+            };
+            mockRepo.Setup(r => r.InsertStockReservaciones(stock)).ReturnsAsync("Se creo correctamente");
+
+            var resultado = await mockRepo.Object.InsertStockReservaciones(stock);
+
+            Assert.Equal("Se creo correctamente", resultado);
+        }
+
+        [Fact]
+        public async Task ObtenerReservacionesPorIdOrden_Debe_Devolver_Lista()
+        {
+            var mockRepo = new Mock<IRepoOrdenCompra>();
+            var reservaciones = new List<StockReservaciones>
+            {
+                new StockReservaciones { idStockReservacion = 1, idTarifa = 1, Cantidad = 1, idOrdenCompra = 5 },
+                new StockReservaciones { idStockReservacion = 2, idTarifa = 2, Cantidad = 2, idOrdenCompra = 5 }
+            };
+            mockRepo.Setup(r => r.ObtenerReservacionesPorIdOrden(5)).ReturnsAsync(reservaciones);
+
+            var resultado = await mockRepo.Object.ObtenerReservacionesPorIdOrden(5);
+
+            Assert.NotNull(resultado);
+            Assert.Equal(2, ((List<StockReservaciones>)resultado).Count);
+        }
     }
 }
