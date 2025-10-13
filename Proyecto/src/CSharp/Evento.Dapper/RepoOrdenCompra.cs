@@ -68,7 +68,7 @@ namespace Evento.Dapper
         public async Task<OrdenesCompra?> ObtenerOrdenCompra(int id)
         {
             using var db = _ado.GetDbConnection();
-            string sql = @"SELECT o.*, u.idUsuario, u.Apodo, u.DNI
+            string sql = @"SELECT o.idOrdenCompra, o.idUsuario AS OrdenCompra_idUsuario, o.Total, o.metodoPago, o.Estado, o.Fecha, u.idUsuario AS Usuario_idUsuario, u.Apodo, u.DNI
                            FROM OrdenesCompra o
                            INNER JOIN Usuario u ON o.idUsuario = u.idUsuario
                            WHERE o.idOrdenCompra = @Id";
@@ -81,7 +81,7 @@ namespace Evento.Dapper
                     return o;
                 },
                 new { Id = id },
-                splitOn: "idUsuario"
+                splitOn: "Usuario_idUsuario"
             )).SingleOrDefault();
 
             if (orden != null)
@@ -140,23 +140,43 @@ namespace Evento.Dapper
                     UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                     return "Orden fue cancelada y no puede pagarse";
 
+                string sql = @"
+                    SELECT 
+                        e.idEntrada, e.idTarifa, e.idOrdenCompra, e.Estado, e.PrecioPagado, t.idTarifa, t.idFuncion, t.Stock, t.Precio, t.Estado, t.Tipo
+                    FROM Entrada e
+                    JOIN Tarifa t USING (idTarifa)
+                    WHERE idOrdenCompra = @Id AND e.Estado = @estado";
+                var entradas = await db.QueryAsync<Entrada, Tarifa, Entrada>(
+                    sql,
+                    (entrada, tarifa) =>
+                    {
+                        entrada.tarifa = tarifa;
 
-                var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idOrdenCompra = @Id AND Estado = @estado",
-                    new { Id = idOrdenCompra, estado = EEstados.Creado.ToString() }, transaction);
+                        if (Enum.TryParse<EEstados>(entrada.Estado.ToString(), true, out var estadoEntrada))
+                            entrada.Estado = estadoEntrada;
+
+
+                        if (Enum.TryParse<EEstados>(tarifa.Estado.ToString(), true, out var estadoTarifa))
+                            tarifa.Estado = estadoTarifa;
+
+                        return entrada;
+                    },
+                    new { Id = idOrdenCompra, estado = EEstados.Creado },
+                    transaction,
+                    splitOn: "idTarifa");
+                    
                 if(!entradas.Any())
                     return "No hay entradas.";
 
                 foreach (var entrada in entradas)
                     {
 
-                        var tarifa = await db.QueryFirstOrDefaultAsync<Tarifa>(
-                            "SELECT * FROM Tarifa WHERE idTarifa = @Id",
-                            new { Id = entrada.tarifa.idTarifa }, transaction);
+                        var tarifa = entrada.tarifa;
 
-                        if (tarifa == null) return $"Tarifa no encontrada para entrada {entrada.idEntrada}";
-                        if (tarifa.Stock <= 0) return $"No hay stock suficiente para la tarifa {tarifa.Tipo}";
-
+                        if (tarifa == null) 
+                            return $"Tarifa no encontrada para entrada {entrada.idEntrada}";
+                        if (tarifa.Stock <= 0)
+                            return $"No hay stock suficiente para la tarifa {tarifa.Tipo}";
 
                         await db.ExecuteAsync(
                             "UPDATE Tarifa SET Stock = Stock - 1 WHERE idTarifa = @Id AND Stock > 0",
@@ -203,10 +223,31 @@ namespace Evento.Dapper
                     UniqueFormatStrings.NormalizarString(EEstados.Cancelado.ToString()))
                     return "La orden ya está cancelada";
 
-                var entradas = await db.QueryAsync<Entrada>(
-                    "SELECT * FROM Entrada WHERE idOrdenCompra = @Id",
-                    new { Id = idOrdenCompra }, transaction);
+                string sql = @"
+                    SELECT 
+                        e.idEntrada, e.idTarifa, e.idOrdenCompra, e.Estado, e.PrecioPagado, t.idTarifa, t.idFuncion, t.Stock, t.Precio, t.Estado, t.Tipo
+                    FROM Entrada e
+                    JOIN Tarifa t USING (idTarifa)
+                    WHERE idOrdenCompra = @Id AND e.Estado = @estado";
 
+                var entradas = await db.QueryAsync<Entrada, Tarifa, Entrada>(
+                    sql,
+                    (entrada, tarifa) =>
+                    {
+                        entrada.tarifa = tarifa;
+
+                        if (Enum.TryParse<EEstados>(entrada.Estado.ToString(), true, out var estadoEntrada))
+                            entrada.Estado = estadoEntrada;
+
+
+                        if (Enum.TryParse<EEstados>(tarifa.Estado.ToString(), true, out var estadoTarifa))
+                            tarifa.Estado = estadoTarifa;
+
+                        return entrada;
+                    },
+                    new { Id = idOrdenCompra, estado = EEstados.Creado },
+                    transaction,
+                    splitOn: "idTarifa");
                
                 if (UniqueFormatStrings.NormalizarString(orden.Estado.ToString()) ==
                     UniqueFormatStrings.NormalizarString(EEstados.Pagado.ToString()))

@@ -194,7 +194,7 @@ namespace Evento.Dapper
             {
                 tipo = UniqueFormatStrings.NormalizarString(tipo)
             });
-
+    
             return new TipoEventoDto
             {
                 idTipoEvento = tipoEvento.idTipoEvento,

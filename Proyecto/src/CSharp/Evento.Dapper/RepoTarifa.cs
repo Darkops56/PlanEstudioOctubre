@@ -14,14 +14,15 @@ namespace Evento.Dapper
         public async Task<int> InsertTarifa(Tarifa tarifa)
         {
             using var db = _ado.GetDbConnection();
-            var query = "INSERT INTO Tarifa (Tipo, idFuncion, Precio, Stock, Estado) VALUES(@tipo, @idfuncion, @precio, @stock, FALSE)";
+            var query = "INSERT INTO Tarifa (Tipo, idFuncion, Precio, Stock, Estado) VALUES(@tipo, @idfuncion, @precio, @stock, @estado)";
 
             return await db.ExecuteAsync(query, new
             {
                 tipo = tarifa.Tipo.ToString(),
                 precio = tarifa.Precio,
                 stock = tarifa.Stock,
-                idfuncion = tarifa.funcion?.idFuncion
+                idfuncion = tarifa.funcion?.idFuncion,
+                estado = EEstados.Creado.ToString()
             });
         }
         public async Task<Tarifa?> ObtenerPorId(int id)
@@ -67,7 +68,7 @@ namespace Evento.Dapper
         {
             using var db = _ado.GetDbConnection();
             var query = @"
-                SELECT t.*, f.idFuncion, f.Nombre, f.Fecha, f.idEvento, f.Estado
+                SELECT t.idTarifa, t.idFuncion AS Tarifa_Funcion, t.Tipo, t.Precio, t.Stock, t.Estado, f.idFuncion AS Funcion_Funcion, f.Nombre, f.Fecha, f.idEvento, f.Estado
                 FROM Tarifa t
                 INNER JOIN Funcion f ON t.idFuncion = f.idFuncion";
 
@@ -85,7 +86,7 @@ namespace Evento.Dapper
                     }
                     return tarifaExistente;
                 },
-                splitOn: "idFuncion"
+                splitOn: "Funcion_Funcion"
             );
             return resultado;
         }
