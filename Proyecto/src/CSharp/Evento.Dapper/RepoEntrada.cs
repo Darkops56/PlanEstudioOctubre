@@ -71,6 +71,8 @@ namespace Evento.Dapper
                 throw new ArgumentOutOfRangeException("No se puede crear una entrada con una tarifa sin stock");
 
             using var db = _ado.GetDbConnection();
+            db.Open();
+            var trans = db.BeginTransaction();
 
             var idEntrada = await db.ExecuteScalarAsync<int>(
                 "INSERT INTO Entrada(idTarifa, idOrdenCompra, Estado, PrecioPagado) " +
@@ -83,29 +85,31 @@ namespace Evento.Dapper
                     preciopagado = entrada.PrecioPagado
                 }
             );
+            var ent = await ObtenerEntrada(idEntrada);
 
-            // ------------------------------
-            // Generación del token ligero y URL de validación
-            // ------------------------------
-            var token = Evento.Core.Services.QrHelper.GenerarToken(10); // token corto y seguro (10 chars)
-            string qrUrl = Evento.Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
-
-            // Insertar en tabla QR
-            var qr = new QR
+            if(ent.Estado == EEstados.Pagado)
             {
-                idEntrada = idEntrada,
-                url = qrUrl,
-                token = token,
-                ExpiraEn = DateTime.Now.AddMinutes(20),
-                VCard = "",
-                Estado = EEstados.Activo
-                
-            };
-            qr.token = token;
-            var repoQR = new RepoQR(_ado);
-            await repoQR.InsertQR(qr);
+                var token = Evento.Core.Services.QrHelper.GenerarToken(10); // token corto y seguro (10 chars)
+                string qrUrl = Evento.Core.Services.QrHelper.GenerarUrlValidacion(idEntrada, token);
 
-            return idEntrada;
+                // Insertar en tabla QR
+                var qr = new QR
+                {
+                    idEntrada = idEntrada,
+                    url = qrUrl,
+                    token = token,
+                    ExpiraEn = DateTime.Now.AddMinutes(20),
+                    VCard = "",
+                    Estado = EEstados.Activo
+                    
+                };
+                qr.token = token;
+                var repoQR = new RepoQR(_ado);
+                await repoQR.InsertQR(qr, db );
+
+                return idEntrada;
+            }
+            return -1;
         }
 
         public async Task<bool> MarcarEntradaUsada(int id)

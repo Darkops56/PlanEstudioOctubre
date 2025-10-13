@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
@@ -10,13 +11,12 @@ public class RepoQR : IRepoQR
     private readonly IAdo _ado;
     public RepoQR(IAdo ado) => _ado = ado;
 
-    public async Task<int> InsertQR(QR qr)
+   public async Task<int> InsertQR(QR qr, IDbConnection db, IDbTransaction transaction)
     {
-        using var db = _ado.GetDbConnection();
         var id = await db.ExecuteScalarAsync<int>(
             @"INSERT INTO QR(idEntrada, url, token, ExpiraEn, VCard, Estado)
-              VALUES(@idEntrada, @url, @token, @ExpiraEn, @vcard, @Estado);
-              SELECT LAST_INSERT_ID();",
+            VALUES(@idEntrada, @url, @token, @ExpiraEn, @vcard, @Estado);
+            SELECT LAST_INSERT_ID();",
             new
             {
                 qr.idEntrada,
@@ -25,7 +25,8 @@ public class RepoQR : IRepoQR
                 qr.ExpiraEn,
                 qr.VCard,
                 Estado = UniqueFormatStrings.NormalizarString(qr.Estado.ToString()),
-            }
+            },
+            transaction: transaction
         );
         return id;
     }

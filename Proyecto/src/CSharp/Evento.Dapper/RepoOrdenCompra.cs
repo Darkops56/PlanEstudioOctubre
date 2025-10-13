@@ -187,8 +187,25 @@ namespace Evento.Dapper
                             @"UPDATE Entrada SET Estado = @estado, PrecioPagado = @precio 
                         WHERE idEntrada = @IdEntrada",
                             new { precio = tarifa.Precio, IdEntrada = entrada.idEntrada, estado = EEstados.Pagado.ToString() }, transaction);
-                    }
+                        
+                        var token = Core.Services.QrHelper.GenerarToken(10); // token corto y seguro (10 chars)
+                        string qrUrl = Core.Services.QrHelper.GenerarUrlValidacion(entrada.idEntrada, token);
 
+                        var qr = new QR
+                        {
+                            idEntrada = entrada.idEntrada,
+                            url = qrUrl,
+                            token = token,
+                            ExpiraEn = DateTime.Now.AddMinutes(20),
+                            VCard = "",
+                            Estado = EEstados.Activo
+                            
+                        };
+                        qr.token = token;
+                        var repoQR = new RepoQR(_ado);
+                        await repoQR.InsertQR(qr);
+                    }
+                
                 await db.ExecuteAsync(
                     "UPDATE OrdenesCompra SET Estado = @estado WHERE idOrdenCompra = @Id",
                     new { Id = idOrdenCompra, estado = EEstados.Pagado.ToString() }, transaction);
