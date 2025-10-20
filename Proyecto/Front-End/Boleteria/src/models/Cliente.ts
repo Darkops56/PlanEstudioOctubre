@@ -1,5 +1,5 @@
 export interface Cliente {
-    DNI: number;
+    dni: number;
     nombreCompleto: string;
-    Telefono: string;
+    telefono: string;
 }

@@ -42,3 +42,33 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease forwards;
+}
+.animate-fadeIn.delay-200 {
+  animation-delay: 0.2s;
+}
+.animate-fadeIn.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* Burbujas flotando */
+@keyframes bubble {
+  0% { transform: translateY(100%); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(-50%); opacity: 0; }
+}
+
+.animate-bubble {
+  animation-name: bubble;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+

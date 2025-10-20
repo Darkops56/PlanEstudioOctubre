@@ -13,6 +13,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 builder.Services.AddControllers()
     .AddFluentValidation(fv =>
@@ -23,8 +31,9 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { 
-        Title = "Eventos API", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Eventos API",
         Version = "v1",
         Description = "API para sistema de gestión de entradas QR",
         Contact = new OpenApiContact
@@ -58,6 +67,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
+
 builder.Services.AddScoped<IAdo>(sp => new Ado(connectionString));
 builder.Services.AddScoped<IRepoEvento, RepoEvento>();
 builder.Services.AddScoped<IRepoOrdenCompra, RepoOrdenCompra>();
@@ -105,8 +117,9 @@ app.UseSwaggerUI(c =>
     c.EnableTryItOutByDefault();
 });
 
-
 app.UseRouting();
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();

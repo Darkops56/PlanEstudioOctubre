@@ -9,9 +9,9 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
@@ -22,7 +22,16 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Alias de Path Comunes */
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@types/*": ["types/*"],
+      "@pages/*": ["pages/*"],
+      "@models/*": ["models/*"]
+    }
   },
   "include": ["src"]
 }
