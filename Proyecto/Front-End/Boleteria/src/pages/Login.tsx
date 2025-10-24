@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/"); // Redirige directamente después de login
     } catch (error) {
       alert("Credenciales inválidas");
     }
@@ -42,20 +42,23 @@ export default function Login() {
           className="w-full mb-6 px-3 py-2 rounded bg-gray-700 border border-gray-600"
         />
 
-        <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded">
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded"
+        >
           Entrar
         </button>
       </form>
 
       <p className="mt-4 text-center text-gray-400">
-          ¿No tienes una cuenta?{" "}
-          <span
-            onClick={() => navigate("/register")}
-            className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
-          >
-            Regístrate aquí
-          </span>
-        </p>
+        ¿No tienes una cuenta?{" "}
+        <span
+          onClick={() => navigate("/register")}
+          className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
+        >
+          Regístrate aquí
+        </span>
+      </p>
     </div>
   );
 }

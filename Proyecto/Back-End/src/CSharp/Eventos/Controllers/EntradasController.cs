@@ -110,6 +110,7 @@ namespace Evento.Controllers
                 return BadRequest("Entrada ya fue utilizada");
 
             await _repoEntrada.MarcarEntradaUsada(dto.idEntrada);
+            await _repoQR.MarcarQRComoUsado(qr.idQR);
 
             return Ok(new
             {

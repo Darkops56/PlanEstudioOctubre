@@ -105,7 +105,17 @@ namespace Evento.Controllers
             };
             await _repoRefreshToken.InsertToken(refreshTokenEntity);
 
-            return Ok(new { token, refreshToken });
+            return Ok(new
+            {
+                token,
+                refreshToken,
+                usuario = new
+                {
+                    usuario.Email,
+                    usuario.Apodo,
+                    usuario.Role
+                }
+            });
         }
 
         private string GenerateJwtToken(Usuario usuario)

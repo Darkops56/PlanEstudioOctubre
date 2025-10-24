@@ -6,6 +6,5 @@ public class OrdenesCompraDto
     public DateTime Fecha { get; set; }
     public int Total { get; set; }
     public string metodoPago { get; set; }
-    public string Estado { get; set; }
     
 }

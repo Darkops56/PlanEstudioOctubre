@@ -3,8 +3,6 @@ import { createColumnHelper, useReactTable, getCoreRowModel, flexRender } from "
 import api from "../api/api";
 import type { Cliente } from "../models/Cliente";
 import Layout from "@components/Layout/Layout";
-import CartaEvento from "@components/CartaEvento/CartaEvento";
-import Navbar from "@components/Navbar/Navbar";
 
 export default function Clientes() {
     const [cliente, setCliente] = useState<Cliente[]>([]);

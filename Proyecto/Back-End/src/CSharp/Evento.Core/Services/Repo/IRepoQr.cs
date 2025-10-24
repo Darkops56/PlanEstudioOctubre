@@ -7,4 +7,5 @@ public interface IRepoQR
     Task<int> InsertQR(QR qr, IDbConnection db, IDbTransaction transaction);
     Task<QR?> ObtenerQRPorEntrada(int idEntrada);
     Task<QR?> ObtenerQRPorToken(string token);
+    Task<bool> MarcarQRComoUsado(int id);
 }

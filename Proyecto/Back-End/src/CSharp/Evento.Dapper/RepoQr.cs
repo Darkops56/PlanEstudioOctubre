@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Utility;
 
@@ -29,6 +30,18 @@ public class RepoQR : IRepoQR
             transaction: transaction
         );
         return id;
+    }
+
+    public async Task<bool> MarcarQRComoUsado(int id)
+    {
+        using var db = _ado.GetDbConnection();
+        string sql = "UPDATE QR SET Estado = @estado WHERE idQR = @idqr";
+        var rows = await db.ExecuteAsync(sql, new
+        {
+            idqr = id,
+            estado = UniqueFormatStrings.NormalizarString(EEstados.Usado.ToString())
+        });
+        return rows > 0;
     }
 
     public async Task<QR?> ObtenerQRPorEntrada(int idEntrada)

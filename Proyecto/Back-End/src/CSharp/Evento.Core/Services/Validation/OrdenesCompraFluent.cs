@@ -33,12 +33,6 @@ namespace Evento.Core.Services.Validation
             RuleFor(x => x.metodoPago)
                 .NotEmpty()
                 .WithMessage("El método de pago no es válido");
-
-            RuleFor(x => x.Estado)
-                .NotEmpty()
-                .WithMessage("El estado de la orden es obligatorio")
-                .Must(Estado => UniqueFormatStrings.NormalizarString(Estado.ToString()) == UniqueFormatStrings.NormalizarString(EEstados.Creado.ToString()))
-                .WithMessage("El estado de la orden debe ser 'Creado'");
         }
     }
 }

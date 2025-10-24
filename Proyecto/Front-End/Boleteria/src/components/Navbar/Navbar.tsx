@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Link } from 'react-router-dom';
 import { NavbarProps } from "../../types/NavbarProps";
 
 const Navbar: React.FC<NavbarProps> = ({ open, setOpen}) => {

@@ -113,7 +113,7 @@ namespace Evento.Dapper
         public async Task<bool> MarcarEntradaUsada(int id)
         {
             using var db = _ado.GetDbConnection();
-        var filas = await db.ExecuteAsync(
+            var filas = await db.ExecuteAsync(
             "UPDATE Entrada SET Estado = @estado WHERE idEntrada = @idEntrada",
             new { estado = "Usado", idEntrada = id }
         );

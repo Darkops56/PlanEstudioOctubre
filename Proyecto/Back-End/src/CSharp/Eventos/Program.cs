@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using MySql.Data.MySqlClient;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+var activeUserKey = builder.Configuration["ActiveDatabaseUser"] ?? "MySqlAdminConnection";
+var connectionString = builder.Configuration.GetConnectionString(activeUserKey)
+    ?? throw new Exception($"No se encontró la cadena de conexión '{activeUserKey}' en appsettings.json.");
+
 builder.Services.AddControllers()
     .AddFluentValidation(fv =>
     {
@@ -82,7 +87,11 @@ builder.Services.AddScoped<IRepoEntrada, RepoEntrada>();
 builder.Services.AddScoped<IRepoRefreshToken, RepoRefreshToken>();
 builder.Services.AddScoped<IRepoQR, RepoQR>();
 
-builder.Services.AddHostedService<StockExpiradoService>();
+if (connectionString == "Server=localhost;Port=3305;Database=5to_Eventos;User=administrador;Password=Admin123!;" || connectionString == "Server=localhost;Port=3305;Database=5to_Eventos;User=root;Password=Darkops(1011);")
+{
+    builder.Services.AddHostedService<StockExpiradoService>();
+}
+
 builder.WebHost.UseUrls("http://localhost:5002");
 
 builder.Services.AddAuthentication(options =>
@@ -104,6 +113,71 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddAuthorization();
+
+
+var dbName = "5to_Eventos";
+
+bool databaseExists = false;
+
+using (var conn = new MySqlConnection(connectionString))
+{
+    try
+    {
+        conn.Open();
+        using var cmd = new MySqlCommand($"SHOW DATABASES LIKE '{dbName}';", conn);
+        using var reader = cmd.ExecuteReader();
+        databaseExists = reader.HasRows;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"⚠️ Error al verificar base de datos: {ex.Message}");
+    }
+}
+
+if (!databaseExists)
+{
+    Console.WriteLine($"📦 Base de datos '{dbName}' no encontrada. Ejecutando install.sql...");
+
+    try
+    {
+        var installPath = Path.Combine(AppContext.BaseDirectory, "install.sql");
+
+        if (!File.Exists(installPath))
+        {
+            Console.WriteLine("❌ No se encontró el archivo install.sql en la carpeta del ejecutable.");
+        }
+        else
+        {
+            string script = File.ReadAllText(installPath);
+
+            // Dividir en comandos individuales por ';'
+            var commands = script.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            using var conn = new MySqlConnection(connectionString);
+            conn.Open();
+
+            foreach (var command in commands)
+            {
+                string trimmed = command.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("--"))
+                    continue;
+
+                using var cmd = new MySqlCommand(trimmed, conn);
+                cmd.ExecuteNonQuery();
+            }
+
+            Console.WriteLine($"✅ Base de datos '{dbName}' creada exitosamente.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error al ejecutar install.sql: {ex.Message}");
+    }
+}
+else
+{
+    Console.WriteLine($"✅ Base de datos '{dbName}' ya existente. Continuando con el arranque...");
+}
 
 var app = builder.Build();
 
