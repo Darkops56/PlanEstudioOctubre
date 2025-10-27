@@ -46,19 +46,20 @@ export default function Login() {
           type="submit"
           className="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded"
         >
-          Entrar
+          Iniciar Sesion
         </button>
+        <p className="mt-4 text-center text-gray-400">
+          ¿No tienes una cuenta?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
+          >
+            Regístrate
+          </span>
+        </p>
       </form>
 
-      <p className="mt-4 text-center text-gray-400">
-        ¿No tienes una cuenta?{" "}
-        <span
-          onClick={() => navigate("/register")}
-          className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
-        >
-          Regístrate aquí
-        </span>
-      </p>
+      
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { SidebarProps } from "../../types/SidebarProps";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = [
     { name: "Inicio", path: "/" },
@@ -14,6 +16,19 @@ const menuItems = [
   ];
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("¿Seguro que deseas cerrar sesión?");
+    if (confirmLogout) {
+      logout();
+      navigate("/login"); 
+      setOpen(false);       
+    }
+  };
+
   return (
     <div
       className={`fixed top-0 left-0 w-64 h-full bg-gray-800 z-50 transform transition-transform duration-300
@@ -31,6 +46,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
             </Link>
           </li>
         ))}
+
+        <li className="mt-auto border-t border-gray-700 pt-4">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left py-2 px-3 rounded bg-red-600 hover:bg-red-700 text-white font-semibold"
+          >
+            Cerrar sesión
+          </button>
+        </li>
       </ul>
     </div>
   );

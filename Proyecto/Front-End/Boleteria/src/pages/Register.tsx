@@ -1,15 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "api/api";
 
 export default function Register() {
   const navigate = useNavigate();
 
   // Estados del formulario
   const [formData, setFormData] = useState({
+    DNI: 0,
+    nombreCompleto: "",
+    Telefono: "",
     Apodo: "",
     email: "",
-    DNI: 0,
     Contrasena: "",
     confirmarPassword: "",
   });
@@ -39,18 +42,21 @@ export default function Register() {
     try {
       setLoading(true);
 
-      // 🔹 Cambia esta URL por tu endpoint real
-      const response = await axios.post("http://localhost:5002/api/auth/register", {
+      const reponseCliente = await api.post("/clientes", {
+        nombreComleto: formData.nombreCompleto,
+        Telefono: formData.Telefono,
+        DNI: formData.DNI,
+      });
+      
+      const responseUsuario = await api.post("/auth/register", {
         Apodo: formData.Apodo,
-        email: formData.email,
-        password: formData.Contrasena,
+        Email: formData.email,
+        Contrasena: formData.Contrasena,
         DNI: formData.DNI,
       });
 
-      // 🔹 Guarda el token JWT si tu backend lo devuelve
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", responseUsuario.data.token);
 
-      // Redirigir al login o home
       navigate("/login");
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al registrarse");
@@ -96,7 +102,7 @@ export default function Register() {
 
           <input
             type="password"
-            name="password"
+            name="Contrasena"
             placeholder="Contraseña"
             value={formData.Contrasena}
             onChange={handleChange}
