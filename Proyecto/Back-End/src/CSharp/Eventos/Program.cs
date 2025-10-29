@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Text;
 using MySql.Data.MySqlClient;
 using System.IO;
+using Evento.Dapper.Middleware;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,61 +119,58 @@ builder.Services.AddAuthorization();
 
 var dbName = "5to_Eventos";
 
-bool databaseExists = false;
 
-using (var conn = new MySqlConnection(connectionString))
+var rootConnection = "Server=localhost;Port=3306;User=root;Password=Darkops(1011);";
+var appConnection = "Server=localhost;Port=3306;Database=5to_Eventos;User=administrador;Password=Admin123!;";
+
+
+
+bool dbExists = false;
+using (var conn = new MySqlConnection(rootConnection))
 {
-    try
-    {
-        conn.Open();
-        using var cmd = new MySqlCommand($"SHOW DATABASES LIKE '{dbName}';", conn);
-        using var reader = cmd.ExecuteReader();
-        databaseExists = reader.HasRows;
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"⚠️ Error al verificar base de datos: {ex.Message}");
-    }
+    conn.Open();
+    using var cmd = new MySqlCommand($"SHOW DATABASES LIKE '{dbName}';", conn);
+    using var reader = cmd.ExecuteReader();
+    dbExists = reader.HasRows;
 }
 
-if (!databaseExists)
+if (!dbExists)
 {
-    Console.WriteLine($"📦 Base de datos '{dbName}' no encontrada. Ejecutando install.sql...");
+    Console.WriteLine($"📦 Base de datos '{dbName}' no encontrada. Ejecutando scripts...");
 
     try
     {
-        var installPath = Path.Combine(AppContext.BaseDirectory, "install.sql");
+        // Rutas de los scripts
+        string basePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../scripts/bd/MySQL"));
+        string userScriptPath = Path.Combine(basePath, "USER.sql");
+        string ddlScriptPath = Path.Combine(basePath, "DDL.sql");
+        string insertScriptPath = Path.Combine(basePath, "INSERT.sql");
 
-        if (!File.Exists(installPath))
+        // === Ejecutar USER.sql con root ===
+        if (File.Exists(userScriptPath))
         {
-            Console.WriteLine("❌ No se encontró el archivo install.sql en la carpeta del ejecutable.");
+            Console.WriteLine("🧾 Ejecutando USER.sql...");
+            ExecuteSqlScript(rootConnection, userScriptPath);
         }
-        else
+
+        // === Ejecutar DDL.sql e INSERT.sql con el usuario de aplicación ===
+        if (File.Exists(ddlScriptPath))
         {
-            string script = File.ReadAllText(installPath);
-
-            // Dividir en comandos individuales por ';'
-            var commands = script.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-            using var conn = new MySqlConnection(connectionString);
-            conn.Open();
-
-            foreach (var command in commands)
-            {
-                string trimmed = command.Trim();
-                if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("--"))
-                    continue;
-
-                using var cmd = new MySqlCommand(trimmed, conn);
-                cmd.ExecuteNonQuery();
-            }
-
-            Console.WriteLine($"✅ Base de datos '{dbName}' creada exitosamente.");
+            Console.WriteLine("🧱 Ejecutando DDL.sql...");
+            ExecuteSqlScript(appConnection, ddlScriptPath);
         }
+
+        if (File.Exists(insertScriptPath))
+        {
+            Console.WriteLine("📥 Ejecutando INSERT.sql...");
+            ExecuteSqlScript(appConnection, insertScriptPath);
+        }
+
+        Console.WriteLine($"✅ Base de datos '{dbName}' creada exitosamente.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error al ejecutar install.sql: {ex.Message}");
+        Console.WriteLine($"❌ Error al ejecutar scripts: {ex.Message}");
     }
 }
 else
@@ -195,9 +194,30 @@ app.UseRouting();
 
 app.UseCors("AllowReactApp");
 
+app.UseMiddleware<MiddlewareErrorManage>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+static void ExecuteSqlScript(string connectionString, string filePath)
+{
+    string script = File.ReadAllText(filePath);
+    var commands = script.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+    using var conn = new MySqlConnection(connectionString);
+    conn.Open();
+
+    foreach (var command in commands)
+    {
+        string trimmed = command.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("--"))
+            continue;
+
+        using var cmd = new MySqlCommand(trimmed, conn);
+        cmd.ExecuteNonQuery();
+    }
+}
