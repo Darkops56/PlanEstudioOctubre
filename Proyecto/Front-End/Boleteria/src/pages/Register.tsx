@@ -2,15 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import api from "api/api";
+import { Cliente } from "@models/Cliente";
 
 export default function Register() {
   const navigate = useNavigate();
 
-  // Estados del formulario
   const [formData, setFormData] = useState({
-    DNI: 0,
     nombreCompleto: "",
     Telefono: "",
+    DNI: 0,
     Apodo: "",
     email: "",
     Contrasena: "",
@@ -42,24 +42,40 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const reponseCliente = await api.post("/clientes", {
-        nombreComleto: formData.nombreCompleto,
+      const clienteResponse = await axios.post("http://localhost:5002/api/clientes", {
+        DNI: Number(formData.DNI),
+        nombreCompleto: formData.nombreCompleto,
         Telefono: formData.Telefono,
-        DNI: formData.DNI,
       });
+
+      if (!clienteResponse.data) {
+        throw new Error("No se pudo crear el cliente.");
+      }
       
-      const responseUsuario = await api.post("/auth/register", {
+      const usuarioResponse = await axios.post("http://localhost:5002/api/auth/register", {
         Apodo: formData.Apodo,
         Email: formData.email,
         Contrasena: formData.Contrasena,
-        DNI: formData.DNI,
+        DNI: Number(formData.DNI),
       });
 
-      localStorage.setItem("token", responseUsuario.data.token);
+      if (usuarioResponse.status === 200 || usuarioResponse.status === 201) {
+        alert("Registro exitoso ✅");
+        navigate("/login");
+      } else {
+        throw new Error("Error al registrar el usuario.");
+      }
+
+      localStorage.setItem("token", usuarioResponse.data.token);
 
       navigate("/login");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Error al registrarse");
+      console.error(err);
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "Error al registrarse. Verifique los datos e intente nuevamente."
+      );
     } finally {
       setLoading(false);
     }
@@ -71,11 +87,22 @@ export default function Register() {
         <h2 className="text-3xl font-bold text-center mb-6">Crear Cuenta</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Datos de Cliente */}
           <input
             type="text"
-            name="Apodo"
-            placeholder="Nickname"
-            value={formData.Apodo}
+            name="nombreCompleto"
+            placeholder="Nombre completo"
+            value={formData.nombreCompleto}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+            required
+          />
+          <input
+            type="text"
+            name="Telefono"
+            placeholder="Teléfono"
+            value={formData.Telefono}
             onChange={handleChange}
             className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-indigo-500 outline-none"
             required
@@ -85,6 +112,17 @@ export default function Register() {
             name="DNI"
             placeholder="DNI"
             value={formData.DNI}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+            required
+          />
+
+          {/* Datos de Usuario */}
+          <input
+            type="text"
+            name="Apodo"
+            placeholder="Apodo"
+            value={formData.Apodo}
             onChange={handleChange}
             className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-indigo-500 outline-none"
             required
@@ -120,6 +158,7 @@ export default function Register() {
             required
           />
 
+          {/* Mensajes de error */}
           {error && <p className="text-red-400 text-center">{error}</p>}
 
           <button
@@ -129,17 +168,17 @@ export default function Register() {
           >
             {loading ? "Registrando..." : "Registrarse"}
           </button>
-        </form>
 
-        <p className="mt-4 text-center text-gray-400">
-          ¿Ya tienes una cuenta?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
-          >
-            Inicia sesión
-          </span>
-        </p>
+          <p className="mt-4 text-center text-gray-400">
+            ¿Ya tienes una cuenta?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="text-indigo-400 hover:text-indigo-500 cursor-pointer"
+            >
+              Inicia sesión
+            </span>
+          </p>
+        </form>
       </div>
     </div>
   );
