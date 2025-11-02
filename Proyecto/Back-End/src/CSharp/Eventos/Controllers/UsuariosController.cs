@@ -1,4 +1,4 @@
-/* using Evento.Core.DTOs;
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Security;
@@ -26,18 +26,6 @@ namespace Evento.Controllers
             return usuario != null ? Ok(usuario) : NotFound();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] Usuario usuario)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var hash = ContrasenaHasher.Hash(usuario.Contrasena);
-            usuario.Contrasena = hash;
-
-            var id = await _repo.InsertUsuario(usuario);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id }, usuario);
-        }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Actualizar(int id, [FromBody] Usuario usuario)
         {
@@ -52,21 +40,5 @@ namespace Evento.Controllers
         public async Task<IActionResult> Eliminar(int id) =>
             (await _repo.DeleteUsuario(id)) ? NoContent() : NotFound();
 
-        [HttpGet("{id}/compras")]
-        public async Task<IActionResult> ObtenerCompras(int id) =>
-            Ok(await _repo.ObtenerComprasPorUsuario(id));
-
-        // Login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto login)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var hash = ContrasenaHasher.Hash(login.Contrasena);
-            var usuario = await _repo.Login(login.Email, hash);
-            if (usuario == null) return Unauthorized();
-
-            // Generar JWT si es necesario (igual que tu implementación anterior)
-            return Ok(usuario);
-        }
     }
-} */
+} 

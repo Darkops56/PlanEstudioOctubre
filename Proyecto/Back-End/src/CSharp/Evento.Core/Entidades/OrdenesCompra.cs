@@ -1,4 +1,5 @@
 using Evento.Core.Services.Enums;
+using System.Text.Json.Serialization;
 
 namespace Evento.Core.Entidades
 {
@@ -9,7 +10,11 @@ namespace Evento.Core.Entidades
         public List<Entrada> entradas { get; set; } = new List<Entrada>();
         public DateTime Fecha { get; set; }
         public int Total { get; set; }
+        
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EMetodoPago metodoPago { get; set; }
+        
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EEstados Estado { get; set; } = EEstados.Creado;
         
         public OrdenesCompra() { }

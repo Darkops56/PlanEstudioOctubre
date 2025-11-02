@@ -1,4 +1,3 @@
-using Evento.Core.Services.Enums;
 namespace Evento.Core.Entidades;
 
 

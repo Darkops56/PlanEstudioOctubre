@@ -1,4 +1,5 @@
 using Evento.Core.Services.Enums;
+using System.Text.Json.Serialization;
 
 namespace Evento.Core.Entidades;
 public class Eventos
@@ -9,6 +10,8 @@ public class Eventos
     public TipoEvento tipoEvento { get; set; }
     public DateTime fechaInicio { get; set; }
     public DateTime fechaFin { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EEstados EstadoEvento { get; set; }
 
     public Eventos()

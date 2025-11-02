@@ -1,5 +1,7 @@
 using Dapper;
+using Evento.Core.DTOs;
 using Evento.Core.Entidades;
+using Evento.Core.Services.Enums;
 using Evento.Core.Services.Repo;
 using Evento.Core.Services.Utility;
 
@@ -28,8 +30,8 @@ public class RepoUsuario : IRepoUsuario
     {
         using var db = _ado.GetDbConnection();
         var sql = @"
-                    SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI as UsuarioDNI,
-                        c.DNI as ClienteDNI, c.nombreCompleto, c.Telefono
+                    SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI,
+                        c.DNI, c.nombreCompleto, c.Telefono
                     FROM Usuario u
                     JOIN Cliente c ON u.DNI = c.DNI
                     WHERE u.Email = @email";
@@ -38,7 +40,7 @@ public class RepoUsuario : IRepoUsuario
             sql,
             (u, c) => { u.cliente = c; return u; },
             new { email = nuevoEmail },
-            splitOn: "ClienteDNI" 
+            splitOn: "DNI" 
         )).FirstOrDefault();
 
         return user;
@@ -46,17 +48,18 @@ public class RepoUsuario : IRepoUsuario
     public async Task<Usuario?> ObtenerPorId(int id)
     {
         using var db = _ado.GetDbConnection();
-        var sql = @"SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI as UsuarioDNI,
-                           c.DNI as ClienteDNI, c.nombreCompleto, c.Telefono
+        var sql = @"SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI,
+                           c.DNI, c.nombreCompleto, c.Telefono
                     FROM Usuario u
                     JOIN Cliente c ON u.DNI = c.DNI
-                    WHERE u.idUsuario = @idusuario";
+                    WHERE u.idUsuario = @idusuario
+                    LIMIT 1";
 
         var user = (await db.QueryAsync<Usuario, Cliente, Usuario>(
             sql,
             (u, c) => { u.cliente = c; return u; },
             new { idusuario = id },
-            splitOn: "ClienteDNI"
+            splitOn: "DNI"
         )).FirstOrDefault();
 
         return user;
@@ -99,16 +102,16 @@ public class RepoUsuario : IRepoUsuario
     public async Task<IEnumerable<Usuario>> ObtenerTodos()
     {
         using var db = _ado.GetDbConnection();
-        var sql = @"SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI as UsuarioDNI,
-                           c.DNI as ClienteDNI, c.nombreCompleto, c.Telefono
+        var sql = @"SELECT u.idUsuario, u.Apodo, u.Email, u.Contrasena, u.Roles, u.DNI,
+                           c.DNI, c.nombreCompleto, c.Telefono
                     FROM Usuario u
                     JOIN Cliente c ON u.DNI = c.DNI";
 
-        var users = await db.QueryAsync<Usuario, Cliente, Usuario>(
+        var users = (await db.QueryAsync<Usuario, Cliente, Usuario>(
             sql,
             (u, c) => { u.cliente = c; return u; },
-            splitOn: "ClienteDNI"
-        );
+            splitOn: "DNI"
+        ));
 
         return users;
     }
@@ -120,36 +123,36 @@ public class RepoUsuario : IRepoUsuario
         FROM OrdenesCompra o
         WHERE o.idUsuario = @Id";
 
-    var ordenes = (await db.QueryAsync<OrdenesCompra>(sqlOrdenes, new { Id = id })).ToList();
+        var ordenes = (await db.QueryAsync<OrdenesCompra>(sqlOrdenes, new { Id = id })).ToList();
 
-    if (!ordenes.Any())
-        return ordenes;
+        if (!ordenes.Any())
+            return ordenes;
 
-    var idsOrdenes = ordenes.Select(o => o.idOrdenCompra).ToArray();
+        var idsOrdenes = ordenes.Select(o => o.idOrdenCompra).ToArray();
 
-    var sqlEntradas = @"
-        SELECT e.idEntrada, e.Estado, e.PrecioPagado, e.idOrdenCompra,
-               t.idTarifa, t.Tipo, t.Precio, t.Stock, t.Estado AS EstadoTarifa
-        FROM Entrada e
-        INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
-        WHERE e.idOrdenCompra IN @IdsOrdenes";
+        var sqlEntradas = @"
+            SELECT e.idEntrada, e.Estado, e.PrecioPagado, e.idOrdenCompra,
+                t.idTarifa, t.Tipo, t.Precio, t.Stock, t.Estado AS EstadoTarifa
+            FROM Entrada e
+            INNER JOIN Tarifa t ON e.idTarifa = t.idTarifa
+            WHERE e.idOrdenCompra IN @IdsOrdenes";
 
-    var entradas = await db.QueryAsync<Entrada, Tarifa, Entrada>(
-        sqlEntradas,
-        (entrada, tarifa) =>
+        var entradas = await db.QueryAsync<Entrada, Tarifa, Entrada>(
+            sqlEntradas,
+            (entrada, tarifa) =>
+            {
+                entrada.tarifa = tarifa;
+                return entrada;
+            },
+            new { IdsOrdenes = idsOrdenes },
+            splitOn: "idTarifa"
+        );
+
+        foreach (var orden in ordenes)
         {
-            entrada.tarifa = tarifa;
-            return entrada;
-        },
-        new { IdsOrdenes = idsOrdenes },
-        splitOn: "idTarifa"
-    );
+            orden.entradas = entradas.Where(e => e.ordenesCompra.idOrdenCompra == orden.idOrdenCompra).ToList();
+        }
 
-    foreach (var orden in ordenes)
-    {
-        orden.entradas = entradas.Where(e => e.ordenesCompra.idOrdenCompra == orden.idOrdenCompra).ToList();
-    }
-
-    return ordenes;
+        return ordenes;
     }
 }

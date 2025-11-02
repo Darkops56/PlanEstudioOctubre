@@ -1,4 +1,5 @@
 using Evento.Core.Services.Enums;
+using System.Text.Json.Serialization;
 
 namespace Evento.Core.Entidades;
 
@@ -11,6 +12,8 @@ public class QR
     public DateTime ExpiraEn { get; set; }
     public DateTime FechaCreacion { get; set; }
     public string VCard { get; set; } = string.Empty;
+    
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EEstados Estado { get; set; }
 
     public QR() { }
