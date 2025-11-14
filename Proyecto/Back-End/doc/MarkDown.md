@@ -34,6 +34,7 @@ Cliente {
         INT IdFuncion PK
         INT IdEvento FK
         VARCHAR Nombre
+        INT Stock
         VARCHAR Estado
         DATETIME Fecha
     }
@@ -58,7 +59,6 @@ Cliente {
     Tarifa {
         INT IdTarifa PK
         INT IdFuncion FK
-        INT Stock
         INT Precio
         BOOLEAN Estado
         VARCHAR Tipo
